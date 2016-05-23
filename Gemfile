@@ -31,6 +31,6 @@ group :development do
 end
 
 group :unicorn do
-  gem "unicorn", '~> 4.9.0'
+  gem 'unicorn', '~> 4.9.0'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end

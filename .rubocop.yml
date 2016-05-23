@@ -1,5 +1,8 @@
 nherit_from: rubocop-todo.yml
 
+Rails:
+  Enabled: true
+
 # 日本語でのコメントを許可
 AsciiComments:
   Enabled: false
@@ -24,8 +27,16 @@ Documentation:
 AndOr:
   Enabled: false
 
+LineLength:
+  Max: 120
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+
 AllCops:
   Exclude:
+    - bin/*
     - db/schema.rb
     - config/unicorn.rb
     - config/unicorn_staging.rb
