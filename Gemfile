@@ -4,6 +4,7 @@ gem 'rails', '4.2.6'
 
 # DBs
 gem 'mysql2', '>= 0.3.13', '< 0.5'
+gem 'pg'
 
 # Assets
 gem 'sprockets', '~> 3.6.0'
