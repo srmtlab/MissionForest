@@ -8,7 +8,6 @@ gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'pg'
 
 # Asset
-gem 'sprockets', '~> 3.6.0'
 gem 'uglifier', '>= 1.3.0'
 
 # View

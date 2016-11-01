@@ -1,25 +1,29 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Listing Missions</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @missions.each do |mission| %>
-      <tr>
-        <td><%= link_to 'Show', mission %></td>
-        <td><%= link_to 'Edit', edit_mission_path(mission) %></td>
-        <td><%= link_to 'Destroy', mission, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Mission', new_mission_path %>
+<div class="main">
+  <div class="container">
+    <div class="page-header">
+      <h2>ミッション一覧</h2>
+    </div>
+    <div class="row">
+      <% @missions.each do |mission| %>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+						    <%= link_to mission_path(mission) do %>
+                  ミッションフォレストを開発する
+                <% end %>
+                <span class="label label-danger">New</span>
+              </h3>
+            </div>
+            <div class="panel-body">
+              <p>高齢者が亡くなるにつれて失われていく遠野の民俗知や伝統が絶滅することを防ぎたい。</p>
+            </div>
+            <div class="panel-footer">
+              <p>by 後藤誉昌</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

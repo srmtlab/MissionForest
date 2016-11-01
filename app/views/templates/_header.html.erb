@@ -2,13 +2,16 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">🌳 MissionForest</a>
+      <%= link_to '🌳 MissionForest', root_path, :class => 'navbar-brand' %>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="_active"><a href="#">ミッション一覧</a></li>
+        <li><%= link_to 'ミッション一覧', root_path, :class => 'navbar-link' %></li>
+        <% if user_signed_in? %>
+          <li><%= link_to 'ミッション作成', new_mission_path, :class => 'navbar-link' %></li>
+        <% end %>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <% if user_signed_in? %>
