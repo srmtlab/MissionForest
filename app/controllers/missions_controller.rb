@@ -3,7 +3,7 @@ class MissionsController < ApplicationController
 
   # GET /missions
   def index
-    @missions = Mission.all
+    @missions = Mission.order(created_at: :desc).all
   end
 
   # GET /missions/1
@@ -53,6 +53,6 @@ class MissionsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def mission_params
-      params[:mission]
+      params[:mission].permit(:title, :description)
     end
 end

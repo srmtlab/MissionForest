@@ -10,13 +10,13 @@
             <div class="panel-heading">
               <h3 class="panel-title">
 						    <%= link_to mission_path(mission) do %>
-                  ミッションフォレストを開発する
+                  <%= mission.title %>
                 <% end %>
                 <span class="label label-danger">New</span>
               </h3>
             </div>
             <div class="panel-body">
-              <p>高齢者が亡くなるにつれて失われていく遠野の民俗知や伝統が絶滅することを防ぎたい。</p>
+              <p><%= mission.description %></p>
             </div>
             <div class="panel-footer">
               <p>by 後藤誉昌</p>
