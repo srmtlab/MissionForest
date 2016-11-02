@@ -1,0 +1,11 @@
+<div class="main">
+  <div class="container">
+    <div class="page-header">
+      <h2><%= @task.title %></h2>
+    </div>
+    <div class="well">
+      <p><%= @task.description %></p>
+    </div>
+    <%= link_to '編集', edit_task_path(@task),  :class => 'btn btn-default' %>
+  </div>
+</div>

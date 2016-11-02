@@ -8,6 +8,7 @@ class MissionsController < ApplicationController
 
   # GET /missions/1
   def show
+    @mission = Mission.find(params[:id])
   end
 
   # GET /missions/new

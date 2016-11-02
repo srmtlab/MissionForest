@@ -3,4 +3,5 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :missions
+  has_many :tasks
 end

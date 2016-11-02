@@ -1,4 +1,34 @@
-<p id="notice"><%= notice %></p>
-
-<%= link_to 'Edit', edit_mission_path(@mission) %> |
-<%= link_to 'Back', missions_path %>
+<div class="main">
+  <div class="container">
+    <div class="page-header">
+      <h2><%= @mission.title %></h2>
+    </div>
+    <div class="well">
+      <p><%= @mission.description %></p>
+    </div>
+    <div class="row">
+      <% @mission.tasks.each do |task| %>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+						    <%= link_to task_path(task) do %>
+                  <%= task.title %>
+                <% end %>
+                <span class="label label-danger">New</span>
+              </h3>
+            </div>
+            <div class="panel-body">
+              <p><%= task.description %></p>
+            </div>
+            <div class="panel-footer">
+              <p>作成者: </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
+    <%= link_to '編集', edit_mission_path(@mission),  :class => 'btn btn-default' %>
+  </div>
+</div>
