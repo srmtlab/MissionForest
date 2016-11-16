@@ -1,12 +1,12 @@
 <div class="main">
   <div class="container">
-    <div class="page-header">
+    <!-- <div class="page-header">
       <h2><%= @mission.title %></h2>
     </div>
     <div class="well">
       <p><%= @mission.description %></p>
-    </div>
-    <div class="row">
+    </div> -->
+    <!-- <div class="row">
       <% @mission.tasks.each do |task| %>
         <div class="col-md-4">
           <div class="panel panel-default">
@@ -27,8 +27,18 @@
           </div>
         </div>
       <% end %>
-    </div>
-    <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
-    <%= link_to '編集', edit_mission_path(@mission),  :class => 'btn btn-default' %>
+    </div> -->
+    <!-- <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
+    <%= link_to '編集', edit_mission_path(@mission),  :class => 'btn btn-default' %> -->
   </div>
 </div>
+
+<app></app>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/16.7.3/jcanvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/riot/2.5/riot.min.js"></script>
+<%= javascript_include_tag 'main.min' %>
+<script>
+  riot.mount('*')
+</script>
