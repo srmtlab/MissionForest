@@ -8,7 +8,6 @@
     </div>
     <div class="row">
       <% @mission.tasks.each do |task| %>
-      <p><%= task.parend_id.blank? %></p>
         <% if task.parend_id.blank? then %>
           <div class="col-md-4">
             <div class="panel panel-default">
