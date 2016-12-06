@@ -37,7 +37,6 @@ class UsersController < ApplicationController
     else
       render :edit
     end
-
   end
 
   # DELETE /users/1

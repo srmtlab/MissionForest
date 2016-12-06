@@ -9,11 +9,18 @@ class TasksController < ApplicationController
   # GET /tasks/1
   def show
     @task = Task.find(params[:id])
+    @children = Task.where("parend_id = ?", @task.id)
   end
 
   # GET /tasks/new
   def new
     @task = Task.new
+  end
+
+  # GET /tasks/1/new
+  def new_child
+    @task = Task.new
+    @task.parend_id = params[:id]
   end
 
   # GET /tasks/1/edit
@@ -25,6 +32,20 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     @task.user = current_user
     @task.mission = current_user.missions.last
+
+    if @task.save
+      redirect_to @task, notice: 'Task was successfully created.'
+    else
+      render :new
+    end
+  end
+
+  # POST /1/tasks
+  def create_child
+    @task = Task.new(task_params)
+    @task.user = current_user
+    @task.mission = current_user.missions.last
+    @task.parend_id = params[:id]
 
     if @task.save
       redirect_to @task, notice: 'Task was successfully created.'
@@ -56,6 +77,6 @@ class TasksController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def task_params
-      params[:task].permit(:title, :description)
+      params[:task].permit(:title, :description, :parend_id)
     end
 end

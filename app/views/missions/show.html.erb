@@ -8,24 +8,26 @@
     </div>
     <div class="row">
       <% @mission.tasks.each do |task| %>
-        <div class="col-md-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">
-						    <%= link_to task_path(task) do %>
-                  <%= task.title %>
-                <% end %>
-                <span class="label label-danger">New</span>
-              </h3>
-            </div>
-            <div class="panel-body">
-              <p><%= task.description %></p>
-            </div>
-            <div class="panel-footer">
-              <p>作成者: <%= task.user.name %></p>
+        <% if task.parend_id.blank? then %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+  						    <%= link_to task_path(task) do %>
+                    <%= task.title %>
+                  <% end %>
+                  <span class="label label-danger">New</span>
+                </h3>
+              </div>
+              <div class="panel-body">
+                <p><%= task.description %></p>
+              </div>
+              <div class="panel-footer">
+                <p>作成者: <%= task.user.name %></p>
+              </div>
             </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
     </div>
     <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
