@@ -33,7 +33,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     @task.user = current_user
     @task.mission = current_user.missions.last
-    @task.parend_id = nil
+    @task.parend_id = 0
 
     if @task.save
       redirect_to @task, notice: 'Task was successfully created.'
