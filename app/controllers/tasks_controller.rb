@@ -21,6 +21,7 @@ class TasksController < ApplicationController
   def new_child
     @task = Task.new
     @task.parend_id = params[:id]
+    return @task
   end
 
   # GET /tasks/1/edit
