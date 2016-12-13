@@ -6,31 +6,109 @@
     <div class="well">
       <p><%= @mission.description %></p>
     </div>
-    <div class="row">
-      <% @mission.tasks.each do |task| %>
-        <% if task.parend_id == 0 then %>
-          <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-  						    <%= link_to task_path(task) do %>
-                    <%= task.title %>
-                  <% end %>
-                  <span class="label label-danger">New</span>
-                </h3>
-              </div>
-              <div class="panel-body">
-                <p><%= task.description %></p>
-              </div>
-              <div class="panel-footer">
-                <p>作成者: <%= task.user.name %></p>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% end %>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <span>ツリー</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <div id="Tree"></div>
+        <ul id="TreeSource" style="display: none">
+          <!-- root -->
+          <li>
+            <%= @mission.title %>
+            <ul>
+              <% @mission.tasks.each do |task| %>
+                <% if task.parend_id == 0 then %>
+                  <!-- child 1 -->
+                  <li>
+                    <%= link_to task_path(task) do %>
+                      <%= task.title %>
+                    <% end %>
+                    <ul>
+                      <% task.children.each do |child1| %>
+                        <li>
+                          <%= link_to task_path(child1) do %>
+                            <%= child1.title %>
+                          <% end %>
+                          <!-- child 2 -->
+                          <ul>
+                            <% child1.children.each do |child2| %>
+                              <li>
+                                <%= link_to task_path(child2) do %>
+                                  <%= child2.title %>
+                                <% end %>
+                                <!-- child 3 -->
+                                <ul>
+                                  <% child2.children.each do |child3| %>
+                                    <li>
+                                      <%= link_to task_path(child3) do %>
+                                        <%= child3.title %>
+                                      <% end %>
+                                      <!-- child 4 -->
+                                      <ul>
+                                        <% child3.children.each do |child4| %>
+                                          <li>
+                                            <%= link_to task_path(child4) do %>
+                                              <%= child4.title %>
+                                            <% end %>
+                                          </li>
+                                        <% end %>
+                                      </ul>
+                                      <!-- end child 4 -->
+                                    </li>
+                                  <% end %>
+                                </ul>
+                                <!-- end child 3 -->
+                              </li>
+                            <% end %>
+                          </ul>
+                          <!-- end child 2 -->
+                        </li>
+                      <% end %>
+                    </ul>
+                  </li>
+                  <!-- end child 1 -->
+                <% end %>
+              <% end %>
+            </ul>
+          </li>
+          <!-- end root -->
+          </ul>
+      </div>
     </div>
     <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
     <%= link_to '編集', edit_mission_path(@mission),  :class => 'btn btn-default' %>
   </div>
 </div>
+
+<style>
+.jOrgChart .node {
+  background: #eee;
+  padding: 10px;
+  width: 120px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.jOrgChart .line {
+  width: 2px;
+  border-color: #eee;
+}
+
+.jOrgChart .down {
+  width: 2px;
+  background: #eee;
+}
+</style>
+
+<script>
+jQuery(document).ready(function() {
+    $("#TreeSource").jOrgChart({
+      "chartElement": "#Tree",
+      "dragAndDrop": true
+    })
+})
+</script>
