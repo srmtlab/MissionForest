@@ -23,7 +23,7 @@
 
   <div class="form-group">
     <label for="description">親タスク</label>
-    <%= f.number_field :parend_id, class: "form-control" %>
+    <%= f.collection_select :parend_id, Task.all, :id, :title, {}, {class: "form-control"} %>
   </div>
 
   <div class="actions">
