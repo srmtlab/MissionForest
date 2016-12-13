@@ -3,8 +3,19 @@
     <div class="page-header">
       <h2><%= @mission.title %></h2>
     </div>
-    <div class="well">
-      <p><%= @mission.description %></p>
+    <div class="btn-group" role="group" style="margin-bottom: 20px">
+      <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
+      <%= link_to 'ミッションを編集', edit_mission_path(@mission),  :class => 'btn btn-default' %>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <span>ミッション概要</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p><%= @mission.description %></p>
+      </div>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
@@ -78,8 +89,6 @@
           </ul>
       </div>
     </div>
-    <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
-    <%= link_to '編集', edit_mission_path(@mission),  :class => 'btn btn-default' %>
   </div>
 </div>
 
