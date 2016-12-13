@@ -6,7 +6,7 @@
     <div class="btn-group" role="group" style="margin-bottom: 20px">
       <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
       <%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn btn-default' %>
-      <%= link_to 'ミッションを削除', mission_path(@mission), :method => :delete, :class => 'btn btn-default' %>
+      <%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">

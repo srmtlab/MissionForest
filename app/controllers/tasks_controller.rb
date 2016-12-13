@@ -15,13 +15,13 @@ class TasksController < ApplicationController
   # GET /tasks/new
   def new
     @task = Task.new
+    @task.parend_id = 0
   end
 
   # GET /tasks/1/new
   def new_child
     @task = Task.new
-    @task.parend_id = params[:id]
-    return @task
+    @task.mission = Task.find(params[:id]).mission
   end
 
   # GET /tasks/1/edit
