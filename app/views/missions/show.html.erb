@@ -4,9 +4,9 @@
       <h2><%= @mission.title %></h2>
     </div>
     <div class="btn-group" role="group" style="margin-bottom: 20px">
-      <%= link_to 'タスクを追加', new_task_path, :class => 'btn btn-default' %>
-      <%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn btn-default' %>
-      <%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
+      <%= link_to 'タスクを追加', tasks_new_path(@mission.id), :class => 'btn btn-default' %>
+      <%= link_to 'ミッションを編集', missions_edit_path(@mission.id), :class => 'btn btn-default' %>
+      <%= link_to "ミッションを削除", missions_destroy_path(@mission.id), method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -35,34 +35,34 @@
                 <% if task.parend_id == 0 then %>
                   <!-- child 1 -->
                   <li>
-                    <%= link_to task_path(task) do %>
+                    <%= link_to tasks_show_path(task.id) do %>
                       <%= task.title %>
                     <% end %>
                     <ul>
                       <% task.children.each do |child1| %>
                         <li>
-                          <%= link_to task_path(child1) do %>
+                          <%= link_to tasks_show_path(child1.id) do %>
                             <%= child1.title %>
                           <% end %>
                           <!-- child 2 -->
                           <ul>
                             <% child1.children.each do |child2| %>
                               <li>
-                                <%= link_to task_path(child2) do %>
+                                <%= link_to tasks_show_path(child2.id) do %>
                                   <%= child2.title %>
                                 <% end %>
                                 <!-- child 3 -->
                                 <ul>
                                   <% child2.children.each do |child3| %>
                                     <li>
-                                      <%= link_to task_path(child3) do %>
+                                      <%= link_to tasks_show_path(child3.id) do %>
                                         <%= child3.title %>
                                       <% end %>
                                       <!-- child 4 -->
                                       <ul>
                                         <% child3.children.each do |child4| %>
                                           <li>
-                                            <%= link_to task_path(child4) do %>
+                                            <%= link_to tasks_show_path(child4.id) do %>
                                               <%= child4.title %>
                                             <% end %>
                                           </li>

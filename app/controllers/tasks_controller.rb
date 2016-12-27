@@ -15,6 +15,7 @@ class TasksController < ApplicationController
   # GET /tasks/new
   def new
     @task = Task.new
+    @task.mission_id = params[:mission_id]
     @task.parend_id = 0
   end
 
@@ -32,11 +33,11 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_params)
     @task.user = current_user
-    @task.mission = current_user.missions.last
+    @task.mission_id = params[:mission_id]
     @task.parend_id = 0
 
     if @task.save
-      redirect_to @task, notice: 'Task was successfully created.'
+      redirect_to tasks_show_path(@task.id), notice: 'Task was successfully created.'
     else
       render :new
     end
@@ -50,7 +51,7 @@ class TasksController < ApplicationController
     @task.parend_id = params[:id]
 
     if @task.save
-      redirect_to @task, notice: 'Task was successfully created.'
+      redirect_to tasks_show_path(@task.id), notice: 'Task was successfully created.'
     else
       render :new
     end
@@ -59,7 +60,7 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1
   def update
     if @task.update(task_params)
-      redirect_to @task, notice: 'Task was successfully updated.'
+      redirect_to tasks_index_path, notice: 'Task was successfully updated.'
     else
       render :edit
     end
@@ -79,6 +80,6 @@ class TasksController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def task_params
-      params[:task].permit(:title, :description, :parend_id)
+      params[:task].permit(:title, :description, :mission_id, :parend_id)
     end
 end

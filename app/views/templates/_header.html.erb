@@ -10,7 +10,7 @@
       <ul class="nav navbar-nav">
         <li><%= link_to 'ミッション一覧', root_path, :class => 'navbar-link' %></li>
         <% if user_signed_in? %>
-          <li><%= link_to 'ミッション作成', new_mission_path, :class => 'navbar-link' %></li>
+          <li><%= link_to 'ミッション作成', missions_new_path, :class => 'navbar-link' %></li>
         <% end %>
       </ul>
       <ul class="nav navbar-nav navbar-right">
