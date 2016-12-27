@@ -21,6 +21,12 @@
     <%= f.text_area :description, class: "form-control" %>
   </div>
 
+  <div class="form-group input-group date datepicker">
+    <label for="description">締め切り</label>
+    <%= f.text_field :deadline_at, class: "form-control" %>
+    <span class="input-group-addon">
+  </div>
+
   <div class="form-group">
     <label for="description">親タスク</label>
     <%= f.collection_select :parend_id, Task.where("mission_id = ?", @task.mission.id), :id, :title, {}, {class: "form-control"} %>

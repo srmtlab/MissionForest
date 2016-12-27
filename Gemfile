@@ -14,6 +14,8 @@ gem "jquery-rails"
 # View
 gem 'kaminari'
 gem 'meta-tags'
+gem 'momentjs-rails'
+gem 'bootstrap3-datetimepicker-rails'
 
 # Security
 gem 'devise'

@@ -2,6 +2,7 @@
  *= require_tree .
  *= require_directory .
  *= require_self
+ *= require bootstrap-datetimepicker
  */
 
  /**************************************
