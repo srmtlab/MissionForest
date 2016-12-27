@@ -48,6 +48,7 @@ class TasksController < ApplicationController
   def create_child
     @task = Task.new(task_params)
     @task.user = current_user
+    @task.mission_id = Task.find(task_params[:parend_id]).mission.id
 
     if @task.save
       redirect_to missions_show_path(@task.mission.id), notice: 'Task was successfully created.'
