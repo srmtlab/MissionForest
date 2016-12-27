@@ -23,6 +23,7 @@ class TasksController < ApplicationController
   def new_child
     @task = Task.new
     @task.mission = Task.find(params[:id]).mission
+    @task.parend_id = params[:id]
   end
 
   # GET /tasks/1/edit
@@ -47,8 +48,6 @@ class TasksController < ApplicationController
   def create_child
     @task = Task.new(task_params)
     @task.user = current_user
-    @task.mission = current_user.missions.last
-    @task.parend_id = params[:id]
 
     if @task.save
       redirect_to tasks_show_path(@task.id), notice: 'Task was successfully created.'
