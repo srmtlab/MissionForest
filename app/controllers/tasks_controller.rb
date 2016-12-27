@@ -38,7 +38,7 @@ class TasksController < ApplicationController
     @task.parend_id = 0
 
     if @task.save
-      redirect_to tasks_show_path(@task.id), notice: 'Task was successfully created.'
+      redirect_to missions_show_path(@task.mission.id), notice: 'Task was successfully created.'
     else
       render :new
     end
@@ -50,7 +50,7 @@ class TasksController < ApplicationController
     @task.user = current_user
 
     if @task.save
-      redirect_to tasks_show_path(@task.id), notice: 'Task was successfully created.'
+      redirect_to missions_show_path(@task.mission.id), notice: 'Task was successfully created.'
     else
       render :new
     end
