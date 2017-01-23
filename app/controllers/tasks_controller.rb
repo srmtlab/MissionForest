@@ -9,21 +9,21 @@ class TasksController < ApplicationController
   # GET /tasks/1
   def show
     @task = Task.find(params[:id])
-    @children = Task.where("parend_id = ?", @task.id)
+    @children = Task.where("parent_id = ?", @task.id)
   end
 
   # GET /tasks/new
   def new
     @task = Task.new
     @task.mission_id = params[:mission_id]
-    @task.parend_id = 0
+    @task.parent_id = 0
   end
 
   # GET /tasks/1/new
   def new_child
     @task = Task.new
     @task.mission = Task.find(params[:id]).mission
-    @task.parend_id = params[:id]
+    @task.parent_id = params[:id]
   end
 
   # GET /tasks/1/edit
@@ -35,7 +35,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     @task.user = current_user
     @task.mission = Mission.find(params[:mission_id])
-    @task.parend_id = 0
+    @task.parent_id = 0
 
     if @task.save
       redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
@@ -48,7 +48,7 @@ class TasksController < ApplicationController
   def create_child
     @task = Task.new(task_params)
     @task.user = current_user
-    @task.mission_id = Task.find(task_params[:parend_id]).mission.id
+    @task.mission_id = Task.find(task_params[:parent_id]).mission.id
 
     if @task.save
       redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
@@ -78,6 +78,6 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params[:task].permit(:title, :description, :mission_id, :parend_id, :deadline_at)
+      params[:task].permit(:title, :description, :mission_id, :parent_id, :deadline_at)
     end
 end

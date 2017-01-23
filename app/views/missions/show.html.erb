@@ -32,7 +32,7 @@
             <%= @mission.title %>
             <ul>
               <% @mission.tasks.each do |task| %>
-                <% if task.parend_id == 0 then %>
+                <% if task.parent_id == 0 then %>
                   <!-- child 1 -->
                   <li>
                     <%= link_to task_path(task) do %>

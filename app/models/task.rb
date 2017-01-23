@@ -5,7 +5,7 @@ class Task < ActiveRecord::Base
   enum status: [:todo, :doing, :done]
 
   def children
-    Task.where("parend_id = ?", self.id)
+    Task.where("parent_id = ?", self.id)
   end
 
   def self.localized_statuses
