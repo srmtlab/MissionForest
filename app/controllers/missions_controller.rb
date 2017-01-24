@@ -26,7 +26,7 @@ class MissionsController < ApplicationController
     @mission.user = current_user
 
     if @mission.save
-      redirect_to missions_show_path(@mission.id), notice: 'Mission was successfully created.'
+      redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
     else
       render :new
     end
@@ -35,7 +35,7 @@ class MissionsController < ApplicationController
   # PATCH/PUT /missions/1
   def update
     if @mission.update(mission_params)
-      redirect_to missions_show_path(@mission.id), notice: 'Mission was successfully updated.'
+      redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
     else
       render :edit
     end
@@ -44,16 +44,14 @@ class MissionsController < ApplicationController
   # DELETE /missions/1
   def destroy
     @mission.destroy
-    redirect_to missions_index_path, notice: 'Mission was successfully destroyed.'
+    redirect_to missions_path, notice: 'ミッションが削除されました'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_mission
       @mission = Mission.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
     def mission_params
       params[:mission].permit(:title, :description)
     end

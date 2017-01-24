@@ -9,21 +9,21 @@ class TasksController < ApplicationController
   # GET /tasks/1
   def show
     @task = Task.find(params[:id])
-    @children = Task.where("parend_id = ?", @task.id)
+    @children = Task.where("parent_id = ?", @task.id)
   end
 
   # GET /tasks/new
   def new
     @task = Task.new
     @task.mission_id = params[:mission_id]
-    @task.parend_id = 0
+    @task.parent_id = 0
   end
 
   # GET /tasks/1/new
   def new_child
     @task = Task.new
     @task.mission = Task.find(params[:id]).mission
-    @task.parend_id = params[:id]
+    @task.parent_id = params[:id]
   end
 
   # GET /tasks/1/edit
@@ -34,11 +34,11 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_params)
     @task.user = current_user
-    @task.mission_id = params[:mission_id]
-    @task.parend_id = 0
+    @task.mission = Mission.find(params[:mission_id])
+    @task.parent_id = 0
 
     if @task.save
-      redirect_to missions_show_path(@task.mission.id), notice: 'Task was successfully created.'
+      redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
     else
       render :new
     end
@@ -48,10 +48,10 @@ class TasksController < ApplicationController
   def create_child
     @task = Task.new(task_params)
     @task.user = current_user
-    @task.mission_id = Task.find(task_params[:parend_id]).mission.id
+    @task.mission_id = Task.find(task_params[:parent_id]).mission.id
 
     if @task.save
-      redirect_to missions_show_path(@task.mission.id), notice: 'Task was successfully created.'
+      redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
     else
       render :new
     end
@@ -60,7 +60,7 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1
   def update
     if @task.update(task_params)
-      redirect_to tasks_index_path, notice: 'Task was successfully updated.'
+      redirect_to mission_path(@task.mission), notice: 'タスクが更新されました'
     else
       render :edit
     end
@@ -69,17 +69,15 @@ class TasksController < ApplicationController
   # DELETE /tasks/1
   def destroy
     @task.destroy
-    redirect_to tasks_url, notice: 'Task was successfully destroyed.'
+    redirect_to mission_path(@task.mission), notice: 'タスクが削除されました'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_task
       @task = Task.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
     def task_params
-      params[:task].permit(:title, :description, :mission_id, :parend_id, :deadline_at)
+      params[:task].permit(:title, :description, :mission_id, :parent_id, :deadline_at)
     end
 end

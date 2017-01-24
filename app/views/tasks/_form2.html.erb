@@ -28,8 +28,13 @@
   </div>
 
   <div class="form-group">
+    <label for="description">状況</label>
+    <%= f.select :status, Task.localized_statuses, {},class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <label for="description">親タスク</label>
-    <%= f.collection_select :parend_id, Task.where("mission_id = ?", @task.mission.id), :id, :title, {}, {class: "form-control"} %>
+    <%= f.collection_select :parent_id, Task.where("mission_id = ?", @task.mission.id), :id, :title, {}, {class: "form-control"} %>
   </div>
 
   <div class="actions">

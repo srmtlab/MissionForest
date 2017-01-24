@@ -7,6 +7,9 @@ gem 'rails', '4.2.6'
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'pg'
 
+# LOD
+gem 'stardog-rb'
+
 # Asset
 gem 'uglifier', '>= 1.3.0'
 gem "jquery-rails"
