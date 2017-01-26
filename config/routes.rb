@@ -10,4 +10,7 @@ Rails.application.routes.draw do
 
   get 'missions/:mission_id/tasks/new' => 'tasks#new', as: :mission_task_new
   post 'missions/:mission_id/tasks/create' => 'tasks#create', as: :mission_task_create
+
+  # api
+  get 'api/missions/:id/tasks' => 'missions#show_tasks'
 end

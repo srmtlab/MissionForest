@@ -11,6 +11,16 @@ class MissionsController < ApplicationController
     @mission = Mission.find(params[:id])
   end
 
+  def show_tasks
+    mission = Mission.find(params[:id])
+    datasource = {
+      'id': 0,
+      'name': mission.title,
+      'children': []
+    }
+    render :json => datasource
+  end
+
   # GET /missions/new
   def new
     @mission = Mission.new

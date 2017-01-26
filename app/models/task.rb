@@ -1,6 +1,7 @@
 class Task < ActiveRecord::Base
   belongs_to :user
   belongs_to :mission
+  has_many :skils
 
   enum status: [:todo, :doing, :done]
 

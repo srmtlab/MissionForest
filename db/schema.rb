@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123081931) do
+ActiveRecord::Schema.define(version: 20170126154708) do
 
   create_table "missions", force: :cascade do |t|
     t.integer  "user_id",     limit: 4
@@ -19,9 +19,21 @@ ActiveRecord::Schema.define(version: 20170123081931) do
     t.text     "description", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "hierarchy",   limit: 65535
   end
 
   add_index "missions", ["user_id"], name: "index_missions_on_user_id", using: :btree
+
+  create_table "skils", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "task_id",    limit: 4
+    t.string   "name",       limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "skils", ["task_id"], name: "index_skils_on_task_id", using: :btree
+  add_index "skils", ["user_id"], name: "index_skils_on_user_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "user_id",     limit: 4
@@ -30,7 +42,6 @@ ActiveRecord::Schema.define(version: 20170123081931) do
     t.text     "description", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "parent_id",   limit: 4
     t.datetime "deadline_at"
     t.integer  "status",      limit: 4,     default: 0
   end

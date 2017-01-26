@@ -19,107 +19,50 @@
       </div>
     </div>
     <div class="panel panel-info">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <span>ミッションツリー</span>
-        </h3>
-      </div>
-      <div class="panel-body">
-        <div id="Tree"></div>
-        <ul id="TreeSource" style="display: none">
-          <!-- root -->
-          <li>
-            <%= @mission.title %>
-            <ul>
-              <% @mission.tasks.each do |task| %>
-                <% if task.parent_id == 0 then %>
-                  <!-- child 1 -->
-                  <li>
-                    <%= link_to task_path(task) do %>
-                      <%= task.title %>
-                    <% end %>
-                    <ul>
-                      <% task.children.each do |child1| %>
-                        <li>
-                          <%= link_to task_path(child1) do %>
-                            <%= child1.title %>
-                          <% end %>
-                          <!-- child 2 -->
-                          <ul>
-                            <% child1.children.each do |child2| %>
-                              <li>
-                                <%= link_to task_path(child2) do %>
-                                  <%= child2.title %>
-                                <% end %>
-                                <!-- child 3 -->
-                                <ul>
-                                  <% child2.children.each do |child3| %>
-                                    <li>
-                                      <%= link_to task_path(child3) do %>
-                                        <%= child3.title %>
-                                      <% end %>
-                                      <!-- child 4 -->
-                                      <ul>
-                                        <% child3.children.each do |child4| %>
-                                          <li>
-                                            <%= link_to task_path(child4) do %>
-                                              <%= child4.title %>
-                                            <% end %>
-                                          </li>
-                                        <% end %>
-                                      </ul>
-                                      <!-- end child 4 -->
-                                    </li>
-                                  <% end %>
-                                </ul>
-                                <!-- end child 3 -->
-                              </li>
-                            <% end %>
-                          </ul>
-                          <!-- end child 2 -->
-                        </li>
-                      <% end %>
-                    </ul>
-                  </li>
-                  <!-- end child 1 -->
-                <% end %>
-              <% end %>
-            </ul>
-          </li>
-          <!-- end root -->
-          </ul>
+      <div class="panel-body tree">
+        <div id="chart-container"></div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-.jOrgChart .node {
-  background: #eee;
-  padding: 6px;
-  width: 120px;
+#chart-container {
+  height: 600px;
+}
+
+.tree {
+  background: #E2E4E6;
+}
+
+.orgchart {
+  display: block;
+  background-image: none;
+}
+
+.orgchart .node .title {
   height: 100px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  overflow: hidden;
-}
-
-.jOrgChart .line {
-  width: 2px;
-  border-color: #eee;
-}
-
-.jOrgChart .down {
-  width: 2px;
-  background: #eee;
+  padding: 8px;
+  white-space: normal;
+  font-size: 15px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  color: black;
 }
 </style>
 
 <script>
-jQuery(document).ready(function() {
-    $("#TreeSource").jOrgChart({
-      "chartElement": "#Tree",
-      "dragAndDrop": true
-    })
+$('#chart-container').orgchart({
+  'data' : '/api/missions/<%= @mission.id %>/tasks',
+  'pan': true,
+  'draggable': true
 })
+.on('touchmove', function(event) {
+  event.preventDefault()
+})
+
+// var hierarchy = $('#chart-container').orgchart('getHierarchy');
+// console.log(JSON.stringify(hierarchy, null, 2))
 </script>
