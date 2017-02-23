@@ -21,12 +21,67 @@
     <div class="panel panel-info">
       <div class="panel-body tree">
         <div id="chart-container"></div>
+        <input type="hidden" id="selected-node">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DetailTask -->
+<div class="modal fade" id="DetailTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="DetailTaskTitle" class="modal-title" id="myModalLabel"></h4>
+      </div>
+      <div class="modal-body">
+        <p id="DetailTaskBody"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AddTask -->
+<div class="modal fade" id="AddTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">子タスクの追加</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">タスク名</label>
+            <input id="AddTaskTitle" type="text" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">概要</label>
+            <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+        <button type="button" id="AddChild" class="btn btn-primary">追加する</button>
       </div>
     </div>
   </div>
 </div>
 
 <style>
+.oc-export-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  top: initial;
+  background: rgba(0,0,0,.15);
+}
+
 #chart-container {
   height: 600px;
 }
@@ -51,18 +106,88 @@
   cursor: pointer;
   color: black;
 }
+
+.orgchart .node .title:hover {
+  background-color: #EDEFF0;
+  border-bottom-color: #D6DADC;
+}
+
+.orgchart .node:hover {
+  background-color: transparent;
+}
+
+.orgchart .node.focused {
+  background-color: transparent;
+}
 </style>
 
 <script>
-$('#chart-container').orgchart({
+var options = {
   'data' : '/api/missions/<%= @mission.id %>/tasks',
   'pan': true,
-  'draggable': true
-})
+  'draggable': true,
+  'exportButton': true,
+  'exportFilename': '<%= @mission.title %>',
+  'createNode': function($node, data) {
+  }
+}
+
+$('#chart-container').orgchart(options)
 .on('touchmove', function(event) {
   event.preventDefault()
 })
+.on('click', '.node', function() {
+  var $this = $(this)
+  $('#selected-node').val($this.find('.title').text()).data('node', $this)
+  $('#AddTask').modal('show')
+  $('#AddTaskTitle').val('')
+  $('#AddTaskDescription').val('')
+})
+.on('click', '.orgchart', function(event) {
+  if (!$(event.target).closest('.node').length) {
+    $('#selected-node').val('')
+  }
+})
 
-// var hierarchy = $('#chart-container').orgchart('getHierarchy');
-// console.log(JSON.stringify(hierarchy, null, 2))
+$("#AddChild").click(function(){
+  $.ajax({
+    type: 'POST',
+    url: '/api/missions/<%= @mission.id %>/task',
+    data: {
+      task: {
+        title: $('#AddTaskTitle').val(),
+        description: $('#AddTaskDescription').val()
+      }
+    },
+    success: function(data) {
+      var $chartContainer = $('#chart-container')
+      var $node = $('#selected-node').data('node')
+      var hasChild = $node.parent().attr('colspan') > 0 ? true : false
+      if (!hasChild) {
+        $chartContainer.orgchart('addChildren', $node, {
+            'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [] }]
+          }, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 })
+        )
+      } else {
+        $chartContainer.orgchart('addSiblings', $node.closest('tr').siblings('.nodes').find('.node:first'), {
+          'siblings': [{ 'name': data.task.title, 'relationship': '110', 'id': data.task.id, 'children': [] }]
+        })
+      }
+
+      var hierarchy = $('#chart-container').orgchart('getHierarchy')
+      $.ajax({
+        type: 'POST',
+        url: '/api/missions/<%= @mission.id %>/hierarchy',
+        data: {
+          mission: {
+            hierarchy: JSON.stringify(hierarchy, null, 2)
+          }
+        },
+        success: function(data) {
+          console.log(JSON.stringify(hierarchy, null, 2))
+        }
+      })
+    }
+  })
+})
 </script>

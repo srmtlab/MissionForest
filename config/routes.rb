@@ -13,4 +13,6 @@ Rails.application.routes.draw do
 
   # api
   get 'api/missions/:id/tasks' => 'missions#show_tasks'
+  post 'api/missions/:id/hierarchy' => 'missions#update_hierarchy'
+  post 'api/missions/:id/task' => 'tasks#new_task'
 end

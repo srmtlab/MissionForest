@@ -30,6 +30,17 @@ class TasksController < ApplicationController
   def edit
   end
 
+  # POST /api/missions/1/task
+  def new_task
+    task = Task.new(task_params)
+    task.user = current_user
+    task.mission_id = params[:id]
+
+    if task.save
+      render :json => { task: task }
+    end
+  end
+
   # POST /tasks
   def create
     @task = Task.new(task_params)

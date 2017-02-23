@@ -5,4 +5,6 @@ class User < ActiveRecord::Base
   has_many :missions
   has_many :tasks
   has_many :skils
+  has_many :comments
+  has_many :attachments
 end

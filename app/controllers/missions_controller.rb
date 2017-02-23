@@ -11,14 +11,20 @@ class MissionsController < ApplicationController
     @mission = Mission.find(params[:id])
   end
 
+  # GET /api/missions/1/tasks
   def show_tasks
     mission = Mission.find(params[:id])
-    datasource = {
-      'id': 0,
-      'name': mission.title,
-      'children': []
-    }
-    render :json => datasource
+    hierarchy = mission.hierarchy
+    render :json => hierarchy
+  end
+
+  # POST /api/missions/1/hierarchy
+  def update_hierarchy
+    mission = Mission.find(params[:id])
+    mission.hierarchy = mission_params[:hierarchy]
+    if mission.save
+      render :json => { mission: mission }
+    end
   end
 
   # GET /missions/new
@@ -34,6 +40,10 @@ class MissionsController < ApplicationController
   def create
     @mission = Mission.new(mission_params)
     @mission.user = current_user
+    @mission.hierarchy = {
+      'id': '0',
+      'children': []
+    }
 
     if @mission.save
       redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
@@ -63,6 +73,6 @@ class MissionsController < ApplicationController
     end
 
     def mission_params
-      params[:mission].permit(:title, :description)
+      params[:mission].permit(:title, :description, :hierarchy)
     end
 end

@@ -1,4 +1,11 @@
 /**************************************
+*	Common
+*************************************/
+h1, h2, h3 {
+  color: white;
+}
+
+/**************************************
 *	Header
 *************************************/
 .header {
@@ -7,14 +14,14 @@
   border: none;
 }
 
-.navbar-default .navbar-brand {
+.header.navbar-default .navbar-brand {
     color: white;
 }
 
-.navbar-default .navbar-nav > li > a {
+.header.navbar-default .navbar-nav > li > a {
   color: white;
 }
 
-h1, h2, h3 {
-  color: white;
+.header.navbar-default .navbar-text {
+    color: white;
 }
