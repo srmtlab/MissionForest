@@ -63,6 +63,29 @@
             <label for="exampleInputPassword1">概要</label>
             <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
           </div>
+          <div class="form-group input-group date datepicker">
+            <label for="description">締め切り</label>
+            <input id="AddTaskDeadline" class="form-control"></input>
+            <span class="input-group-addon">
+          </div>
+          <div class="form-group">
+            <label for="description">状況</label>
+            <select id="AddTaskStatus" class="form-control">
+              <option value="todo">未着手</option>
+              <option value="doing">進行中</option>
+              <option value="done">完了</option>
+              <option value="cancel">取りやめ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="description">公開範囲</label>
+            <select id="AddTaskPermission" class="form-control">
+              <option value="1">個人的思想</option>
+              <option value="2">組織内限定</option>
+              <option value="3">外部公開</option>
+              <option value="4">LOD</option>
+            </select>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
