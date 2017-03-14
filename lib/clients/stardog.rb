@@ -8,7 +8,7 @@ include Stardog
 module Clients
   class Stardog
 
-    def initialize(user="admin", password="admin", database="NagoyaSightseeing")
+    def initialize(user="admin", password="admin", database="MissionForest")
       @stardog = stardog("http://localhost:5820/",
         :user => user,
         :password => password,

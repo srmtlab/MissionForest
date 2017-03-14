@@ -1,3 +1,27 @@
-.page-header {
-  margin-top: 20px;
+/**************************************
+*	Common
+*************************************/
+h1, h2, h3 {
+  color: white;
+}
+
+/**************************************
+*	Header
+*************************************/
+.header {
+  background: rgba(0,0,0,.15);
+  box-shadow: 0 1px 1px rgba(0,0,0,.1);
+  border: none;
+}
+
+.header.navbar-default .navbar-brand {
+    color: white;
+}
+
+.header.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+
+.header.navbar-default .navbar-text {
+    color: white;
 }
