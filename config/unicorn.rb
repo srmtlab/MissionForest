@@ -2,6 +2,9 @@ worker_processes 2 # 500MB(max memory) / 130MB(avg pros memory)
 timeout 30
 preload_app true
 
+rails_root = File.expand_path('../../', __FILE__)
+ENV['BUNDLE_GEMFILE'] = rails_root + "/Gemfile"
+
 before_fork do |server, worker|
   Signal.trap 'TERM' do
     puts 'Unicorn master intercepting TERM and sending myself QUIT instead'

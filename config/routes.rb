@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root 'missions#index'
 
-  devise_for :users
+  devise_for :users, :controllers => {
+    :registrations => 'users/registrations'
+  }
   resources :missions
   resources :tasks
 

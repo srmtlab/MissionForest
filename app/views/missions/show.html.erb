@@ -146,7 +146,7 @@
 
 <script>
 var options = {
-  'data' : '/api/missions/<%= @mission.id %>/tasks',
+  'data' : '/MissionForest/api/missions/<%= @mission.id %>/tasks',
   'pan': true,
   'draggable': true,
   'exportButton': true,
@@ -175,7 +175,7 @@ $('#chart-container').orgchart(options)
 $("#AddChild").click(function(){
   $.ajax({
     type: 'POST',
-    url: '/api/missions/<%= @mission.id %>/task',
+    url: '/MissionForest/api/missions/<%= @mission.id %>/task',
     data: {
       task: {
         title: $('#AddTaskTitle').val(),
@@ -198,9 +198,10 @@ $("#AddChild").click(function(){
       }
 
       var hierarchy = $('#chart-container').orgchart('getHierarchy')
+      console.log(hierarchy)
       $.ajax({
         type: 'POST',
-        url: '/api/missions/<%= @mission.id %>/hierarchy',
+        url: '/MissionForest/api/missions/<%= @mission.id %>/hierarchy',
         data: {
           mission: {
             hierarchy: JSON.stringify(hierarchy, null, 2)

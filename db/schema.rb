@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170127055638) do
+ActiveRecord::Schema.define(version: 20170419041609) do
 
   create_table "attachments", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20170127055638) do
     t.datetime "updated_at"
     t.datetime "deadline_at"
     t.integer  "status",      limit: 4,     default: 0
+    t.integer  "parent_id",   limit: 4
   end
 
   add_index "tasks", ["mission_id"], name: "index_tasks_on_mission_id", using: :btree

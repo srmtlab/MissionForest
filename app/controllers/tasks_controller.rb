@@ -1,3 +1,4 @@
+# coding: utf-8
 class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
 
@@ -16,7 +17,6 @@ class TasksController < ApplicationController
   def new
     @task = Task.new
     @task.mission_id = params[:mission_id]
-    @task.parent_id = 0
   end
 
   # GET /tasks/1/new
@@ -46,7 +46,6 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     @task.user = current_user
     @task.mission = Mission.find(params[:mission_id])
-    @task.parent_id = 0
 
     if @task.save
       redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
