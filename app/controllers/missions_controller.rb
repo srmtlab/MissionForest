@@ -1,4 +1,5 @@
 # coding: utf-8
+# coding: utf-8
 class MissionsController < ApplicationController
   before_action :set_mission, only: [:show, :edit, :update, :destroy]
   
@@ -29,18 +30,16 @@ class MissionsController < ApplicationController
     hierarchy = mission.hierarchy
     if hierarchy.nil? then
       task = Task.find_by(mission_id: params[:id])
-      if task.nil? then
-        render :json => "{}"
-      else
-        hierarchy = {}
-        hierarchy["id"] = task.id
-        hierarchy["children"] = []
-        mission.hierarchy = hierarchy
-        mission.save
-        hierarchy["name"] = task.title
-        render :json =>hierarchy
-      end
+      hierarchy = {}
+      hierarchy["id"] = task.id
+      hierarchy["children"] = []
+      input_hierarchy = hierarchy.to_json
+      mission.hierarchy = input_hierarchy
+      mission.save
+      hierarchy["name"] = task.title
+      render :json => hierarchy
     else
+      hierarchy = JSON.parse(hierarchy)
       get_name(hierarchy)
       render :json => hierarchy
     end
@@ -71,8 +70,12 @@ class MissionsController < ApplicationController
     @mission.user = current_user
     if @mission.save
       @mission.tasks.create(root_task_params)
-      @mission.tasks.user = current_user
-      redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
+      @mission.tasks[0].user = current_user
+      if @mission.tasks[0].save
+        redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
+      else
+        render :new
+      end
     else
       render :new
     end
@@ -81,7 +84,15 @@ class MissionsController < ApplicationController
   # PATCH/PUT /missions/1
   def update
     if @mission.update(mission_params)
-      redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
+      hierarchy = @mission.hierarchy
+      hierarchy = JSON.parse(hierarchy)
+      task_id = hierarchy["id"]
+      @task = Task.find(task_id)
+      if @task.update(root_task_params)
+        redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
+      else
+        render :edit
+      end
     else
       render :edit
     end

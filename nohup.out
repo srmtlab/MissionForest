@@ -1176,3 +1176,9 @@ Options:
 17:52:00 web.1  | I, [2017-04-20T17:52:00.795865 #18495]  INFO -- : reaped #<Process::Status: pid 19590 exit 0> worker=0
 17:52:00 web.1  | I, [2017-04-20T17:52:00.796085 #18495]  INFO -- : master complete
 17:52:00 web.1  | exited with code 0
+14:50:47 web.1  | started with pid 11611
+14:50:47 web.1  | I, [2017-04-24T14:50:47.435116 #11611]  INFO -- : Refreshing Gem list
+14:50:48 web.1  | I, [2017-04-24T14:50:48.470339 #11611]  INFO -- : listening on addr=0.0.0.0:8080 fd=11
+14:50:48 web.1  | I, [2017-04-24T14:50:48.475549 #11614]  INFO -- : worker=0 ready
+14:50:48 web.1  | I, [2017-04-24T14:50:48.476492 #11611]  INFO -- : master process ready
+14:50:48 web.1  | I, [2017-04-24T14:50:48.477246 #11617]  INFO -- : worker=1 ready
