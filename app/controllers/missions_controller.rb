@@ -19,6 +19,9 @@ class MissionsController < ApplicationController
       task_id = hash["id"]
       task = Task.find(task_id)
       hash["name"] = task.title
+      hash["description"] = task.description
+      hash["deadline_at"] = task.deadline_at
+      hash["status"] = task.status
       if ! hash["children"].nil? then
         hash["children"].each do |child|
           get_name(child)
@@ -37,6 +40,9 @@ class MissionsController < ApplicationController
       mission.hierarchy = input_hierarchy
       mission.save
       hierarchy["name"] = task.title
+      hierarchy["description"] = task.description
+      hierarchy["deadline_at"] = task.deadline_at
+      hierarchy["status"] = task.status
       render :json => hierarchy
     else
       hierarchy = JSON.parse(hierarchy)

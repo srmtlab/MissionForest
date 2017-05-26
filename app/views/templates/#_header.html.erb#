@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default header">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <%= link_to '🌳 MissionForest', root_path, :class => 'navbar-brand' %>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><%= link_to 'ミッション一覧', root_path, :class => 'navbar-link' %></li>
+        <% if user_signed_in? %>
+          <li><%= link_to 'ミッション作成', new_mission_path, :class => 'navbar-link' %></li>
+        <% end %>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if user_signed_in? %>
+          <li><p class="navbar-text">ようこそ！<%= current_user.name %>さん</p></li>
+        <li><%= link_to 'プロフィール編集', edit_user_registration_path, :class => 'navbar-link' %></li>
+          <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %></li>
+        <% else %>
+          <li><%= link_to "ユーザー登録", new_user_registration_path, :class => 'navbar-link'  %></li>
+          <li><%= link_to "ログイン", new_user_session_path, :class => 'navbar-link'  %></li>
+        <% end %>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
