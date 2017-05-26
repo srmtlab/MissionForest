@@ -50,7 +50,7 @@ class MissionsController < ApplicationController
       render :json => hierarchy
     end
   end
-
+  
   # POST /api/missions/1/hierarchy
   def update_hierarchy
     mission = Mission.find(params[:id])
