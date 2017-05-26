@@ -67,6 +67,24 @@ class TasksController < ApplicationController
     end
   end
 
+  # PUT api/tasks/1/update
+  def update_child
+    @task = Task.find(params[:id])
+   
+    if @task.update(task_params)
+      render :json => { task: @task }
+    end
+  end
+
+  # DELETE api/tasks/1/delete
+  def delete_child
+    @task = Task.find(params[:id])
+   
+    if @task.delete
+      render :json => { task: @task }
+    end
+  end
+  
   # PATCH/PUT /tasks/1
   def update
     if @task.update(task_params)
