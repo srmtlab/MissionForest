@@ -1,3 +1,5 @@
+config/
+
 ra-*.html
 .rspec
 /log
