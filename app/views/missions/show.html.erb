@@ -182,6 +182,7 @@
   background-image: none;
 }
 
+/*
 .orgchart .node .title {
   height: 100px;
   padding: 8px;
@@ -192,6 +193,45 @@
   border-radius: 3px;
   cursor: pointer;
   color: black;
+}
+*/
+
+.orgchart .node .title {
+  height: 80px;
+  padding: 8px;
+  white-space: normal;
+  font-size: 15px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  color: black;
+}
+
+.orgchart .node .add-button {
+  height: 20px;
+  white-space: normal;
+  font-size: 12px;
+  background-color: #800000;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0 0 3px 3px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.orgchart .node .delete-button {
+  position: absolute;
+  top : -5px;
+  right : -5px;
+  height: 20px;
+  width: 20px;
+  white-space: normal;
+  font-size: 12px;
+  background-color: #808080;
+  border-bottom: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #fff;
 }
 
 .orgchart .node .description {
@@ -228,6 +268,8 @@ var options = {
   'exportButton': true,
   'exportFilename': '<%= @mission.title %>',
   'createNode': function($node, data) {
+    $node.append('<div class="add-button">+</div>')
+    $node.append('<div class="delete-button">X</div>')
     $node.append('<div class="description">' + data["description"] + '</div>')
     $node.append('<div class="deadline_at">' + data["deadline_at"] + '</div>')
     $node.append('<div class="status">' + data["status"] + '</div>')
@@ -238,9 +280,9 @@ $('#chart-container').orgchart(options)
 .on('touchmove', function(event) {
   event.preventDefault()
 })
-.on('click', '.node', function() {
+.on('click', '.node .title', function() {
   var deadline,
-    $this = $(this)
+    $this = $(this).parent();
 
   $('#selected-node').val($this.find('.title').text()).data('node', $this)
   $('#DetailTask').modal('show')
@@ -252,6 +294,22 @@ $('#chart-container').orgchart(options)
     $('#DetailTaskDeadline').val($this.children('div .deadline_at').text())
   }
   $('#DetailTaskStatus').val($this.children('div .status').text())
+})
+.on('click', '.node .add-button', function() {
+  var $this = $(this).parent();
+
+  $('#selected-node').val($this.find('.title').text()).data('node', $this)
+  $('#AddTask').modal('show')
+  $('#AddTaskTitle').val('')
+  $('#AddTaskDescription').val('')
+})
+.on('click', '.node .delete-button', function() {
+  var $this = $(this).parent();
+
+  $('#selected-node').val($this.find('.title').text()).data('node', $this)
+  $('#ConfirmDelete').modal('show')
+  $('#DeleteTaskID').val($this.attr('id'));
+  $('#DeleteTaskTitle').text($this.find('.title').text())
 })
 .on('click', '.orgchart', function(event) {
   if (!$(event.target).closest('.node').length) {
