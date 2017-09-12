@@ -1,9 +1,14 @@
 Rails.application.routes.draw do
+  get 'users/index'
+
+  get 'users/show'
+
   root 'missions#index'
 
   devise_for :users, :controllers => {
     :registrations => 'users/registrations'
   }
+  resources :users, :only => [:index, :show]
   resources :missions
   resources :tasks
 
@@ -15,7 +20,7 @@ Rails.application.routes.draw do
 
   # api
   get 'api/missions/:id/tasks' => 'missions#show_tasks'
-  post 'api/missions/:id/hierarchy' => 'missions#update_hierarchy'
+  get 'api/missions/:mission_id/participation/:user_id' => 'missions#participation_user'
   post 'api/missions/:id/task' => 'tasks#new_task'
   put 'api/tasks/:id/update' => 'tasks#update_child'
   delete 'api/tasks/:id/delete' => 'tasks#delete_child'

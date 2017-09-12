@@ -7,4 +7,5 @@ class User < ActiveRecord::Base
   has_many :skils
   has_many :comments
   has_many :attachments
+  has_many :participations
 end
