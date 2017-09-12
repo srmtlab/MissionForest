@@ -2,17 +2,17 @@ class MissionsLoyalty < ApplicationLoyalty
 
   def show?
     # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
-    True
+    true
   end
   
   def show_tasks?
     # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
-    True
+    true
   end
   
   def participation_user?
     # user == record.user
-    True
+    true
   end
 
   def new?
