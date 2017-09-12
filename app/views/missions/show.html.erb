@@ -427,6 +427,7 @@ $("#AddChild").click(function(){
       task: {
         title: $('#AddTaskTitle').val(),
         description: $('#AddTaskDescription').val(),
+        sub_task_of: $('#selected-node').data('node')[0].id,
         deadline_at: $('#AddTaskDeadline').val(),
         status: $('#AddTaskStatus').val()
       }
@@ -445,21 +446,6 @@ $("#AddChild").click(function(){
           'siblings': [{ 'name': data.task.title, 'relationship': '110', 'id': data.task.id, 'children': [] }]
         })
       }
-
-      var hierarchy = $('#chart-container').orgchart('getHierarchy')
-      console.log(hierarchy)
-      $.ajax({
-        type: 'POST',
-        url: '/MissionForest/api/missions/<%= @mission.id %>/hierarchy',
-        data: {
-          mission: {
-            hierarchy: JSON.stringify(hierarchy, null, 2)
-          }
-        },
-        success: function(data) {
-          console.log(JSON.stringify(hierarchy, null, 2))
-        }
-      })
     }
   })
 })

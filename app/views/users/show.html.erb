@@ -1,4 +1,10 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
+
+<%# = link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
+
+<h1><%= @user.name %></h1>
+<% @user.missions.each do |mission| %>
+<td><%= link_to mission.title, mission %></td>
+<% end %>

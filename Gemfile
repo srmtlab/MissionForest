@@ -23,6 +23,7 @@ gem 'bootstrap3-datetimepicker-rails'
 # Security
 gem 'devise'
 gem 'bcrypt', '~> 3.1.7'
+gem 'banken'
 
 group :development, :test do
   gem 'byebug'
