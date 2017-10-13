@@ -63,7 +63,7 @@
           <div class="form-group">
             <label for="description">公開範囲</label>
             <select id="DetailTaskPermission" class="form-control">
-              <option value="1">個人的思想</option>
+              <option value="1">個人的構想</option>
               <option value="2">組織内限定</option>
               <option value="3">外部公開</option>
               <option value="4">LOD</option>
@@ -144,7 +144,7 @@
           <div class="form-group">
             <label for="description">公開範囲</label>
             <select id="AddTaskPermission" class="form-control">
-              <option value="1">個人的思想</option>
+              <option value="1">個人的構想</option>
               <option value="2">組織内限定</option>
               <option value="3">外部公開</option>
               <option value="4">LOD</option>
@@ -420,16 +420,21 @@ $("#ChangeDetail").click(function(){
 $("#AddChild").click(function(){
   console.log($('#AddTaskDeadline').val())
   console.log($('#AddTaskStatus').val())
+  var description = $('#AddTaskDescription').val()
+  var deadline_at = $('#AddTaskDeadline').val()
+  var status = $('#AddTaskStatus').val()
+//  var permission = $('#AddTaskPermission').val()
+
   $.ajax({
     type: 'POST',
     url: '/MissionForest/api/missions/<%= @mission.id %>/task',
     data: {
       task: {
         title: $('#AddTaskTitle').val(),
-        description: $('#AddTaskDescription').val(),
+        description: description,
         sub_task_of: $('#selected-node').data('node')[0].id,
-        deadline_at: $('#AddTaskDeadline').val(),
-        status: $('#AddTaskStatus').val()
+        deadline_at: deadline_at,
+        status: status
       }
     },
     success: function(data) {
@@ -438,7 +443,7 @@ $("#AddChild").click(function(){
       var hasChild = $node.parent().attr('colspan') > 0 ? true : false
       if (!hasChild) {
         $chartContainer.orgchart('addChildren', $node, {
-            'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [] }]
+            'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [], 'description':description, 'deadline_at':deadline_at, 'status':status }]
           }, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 })
         )
       } else {
