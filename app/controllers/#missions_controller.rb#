@@ -94,16 +94,10 @@ class MissionsController < ApplicationController
     @mission = Mission.new(mission_params)
     @mission.user = current_user
     if @mission.save
-      @task = Task.new(root_task_params)
-      @task.user = current_user
-      @task.mission = @mission
-      @task.direct_mission = @mission
-      @mission.tasks[0] = @task
-      #@mission.tasks.create(root_task_params)
-      #@mission.tasks[0].user = current_user
-      #@mission.tasks[0].direct_mission = @mission
-      #if @mission.tasks[0].save
-      if @task.save
+      @mission.tasks.create(root_task_params)
+      @mission.tasks[0].user = current_user
+      @mission.tasks[0].direct_mission = @mission
+      if @mission.tasks[0].save
         redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
       else
         render :new

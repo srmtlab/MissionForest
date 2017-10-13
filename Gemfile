@@ -8,7 +8,9 @@ gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'pg'
 
 # LOD
-gem 'stardog-rb'
+# gem 'stardog-rb'
+gem 'httpclient'
+
 
 # Asset
 gem 'uglifier', '>= 1.3.0'

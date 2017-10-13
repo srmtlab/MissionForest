@@ -1,5 +1,7 @@
 # coding: utf-8
 class Task < ActiveRecord::Base
+  include Virtuoso
+  
   belongs_to :user
   belongs_to :mission
   has_many :skils
@@ -21,4 +23,93 @@ class Task < ActiveRecord::Base
   def self.localized_statuses
     ["未着手", "進行中", "完了"]
   end
+
+=begin
+  def save
+    super
+    save2virtuoso(self)
+    return true
+  end
+
+  def destroy
+    deletefromvirtuoso(self)
+    super
+  end
+
+  def update
+    deletefromvirtuoso(self)
+    super
+    save2virtuoso(self)
+  end
+    
+  
+
+  private
+  def save2virtuoso(task)
+    id = 'mf-task:' + sprintf("%010d", task.id)
+    user_id = 'mf-user:' + sprintf("%010d", task.user_id)
+    title = '"' + task.title + '"' + '@jp'
+    description = '"' + task.description + '"' + '@jp'
+    created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
+    updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
+    mission_id = 'mf-mission:' +  sprintf("%010d", task.mission_id)
+
+    case task.status
+    when 'todo' then
+      status = '"未着手"@jp'
+    when 'doing' then
+      status = '"進行中@jp"'
+    when 'done'
+      status = '"完了@jp"'
+    end
+
+    
+    insertquery = <<-EOS
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix foaf: <http://xmlns.com/foaf/0.1/>
+      prefix dct: <http://purl.org/dc/terms/>
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
+      prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
+      prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      INSERT DATA {
+      GRAPH <http://localhost:8890/MissionForest/>{
+      EOS
+
+    insertquery += id + ' rdf:type mf:Task ;'
+    insertquery += 'dct:creator ' + user_id + ' ;'
+    insertquery += 'dct:modified '+ updated_at + ' ;'
+    insertquery += 'dct:description '+ description + ' ;'
+    insertquery += 'dct:dateSubmitted '+ created_at + ' ;'
+    insertquery += 'mf:status '+ status + ' ;'
+    insertquery += 'mf:mission '+ mission_id + ' ;'
+    insertquery += 'dct:title '+ title + '.'
+    insertquery += '}}'
+    
+    clireturn = auth_query(insertquery)
+  end
+
+  def deletefromvirtuoso(task)
+    id = 'mf-task:' + sprintf("%010d", mission.id)
+
+    deletequery = <<-EOS
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
+
+      DELETE {
+             GRAPH <http://localhost:8890/MissionForest/>{
+      EOS
+    deletequery += id + ' ?q ?o'
+    deletequery += <<-EOS
+             }
+      }
+      WHERE {
+             GRAPH <http://localhost:8890/MissionForest/>{
+      EOS
+    deletequery += id + ' ?q ?o'
+    deletequery += '}}'
+    
+    clireturn = auth_query(deletequery)
+  end
+=end
 end
