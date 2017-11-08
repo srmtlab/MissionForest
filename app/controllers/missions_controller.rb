@@ -1,5 +1,4 @@
 # coding: utf-8
-# coding: utf-8
 class MissionsController < ApplicationController
   before_action :set_mission, only: [:show, :edit, :update, :destroy]
   
@@ -105,6 +104,26 @@ class MissionsController < ApplicationController
       #if @mission.tasks[0].save
       if @task.save
         redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
+      else
+        render :new
+      end
+    else
+      render :new
+    end
+  end
+
+  # POST /api/missions/create
+  def api_create
+    @mission = Mission.new(mission_params)
+    @mission.user = User.find(25)
+    if @mission.save
+      @task = Task.new(root_task_params)
+      @task.user = User.find(25)
+      @task.mission = @mission
+      @task.direct_mission = @mission
+      @mission.tasks[0] = @task
+      if @task.save
+        render :json => {'mission_id' => @mission.id}
       else
         render :new
       end
