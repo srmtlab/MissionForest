@@ -24,4 +24,5 @@ Rails.application.routes.draw do
   post 'api/missions/:id/task' => 'tasks#new_task'
   put 'api/tasks/:id/update' => 'tasks#update_child'
   delete 'api/tasks/:id/delete' => 'tasks#delete_child'
+  get 'api/missions/create' => 'missions#api_create'
 end
