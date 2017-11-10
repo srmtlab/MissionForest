@@ -114,21 +114,25 @@ class MissionsController < ApplicationController
 
   # POST /api/missions/create
   def api_create
-    @mission = Mission.new(mission_params)
-    @mission.user = User.find(25)
-    if @mission.save
-      @task = Task.new(root_task_params)
-      @task.user = User.find(25)
-      @task.mission = @mission
-      @task.direct_mission = @mission
-      @mission.tasks[0] = @task
-      if @task.save
-        render :json => {'mission_id' => @mission.id}
+    if params[:isdebug] == 'True'
+      render :json => {'mission_id' => 10}
+    else
+      @mission = Mission.new(mission_params)
+      @mission.user = User.find(25)
+      if @mission.save
+        @task = Task.new(root_task_params)
+        @task.user = User.find(25)
+        @task.mission = @mission
+        @task.direct_mission = @mission
+        @mission.tasks[0] = @task
+        if @task.save
+          render :json => {'mission_id' => @mission.id}
+        else
+          render :new
+        end
       else
         render :new
       end
-    else
-      render :new
     end
   end
 
@@ -189,7 +193,7 @@ class MissionsController < ApplicationController
   end
   
   def mission_params
-    params[:mission].permit(:title, :description, :hierarchy)
+    params[:mission].permit(:title, :description)
   end
   
   def root_task_params
