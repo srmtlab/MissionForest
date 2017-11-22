@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726093923) do
+ActiveRecord::Schema.define(version: 20171120053712) do
 
   create_table "attachments", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -99,8 +99,10 @@ ActiveRecord::Schema.define(version: 20170726093923) do
     t.datetime "updated_at",                                      null: false
     t.string   "name",                   limit: 255
     t.integer  "participation_id",       limit: 4
+    t.string   "authentication_token",   limit: 255
   end
 
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["participation_id"], name: "index_users_on_participation_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
