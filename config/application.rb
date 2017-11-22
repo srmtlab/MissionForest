@@ -13,5 +13,8 @@ module MissionForest
     config.active_record.default_timezone = :local
     config.active_record.raise_in_transactional_callbacks = true
     config.autoload_paths += %W(#{config.root}/lib)
+    config.to_prepare do
+      DeviseController.respond_to :html, :json
+    end
   end
 end
