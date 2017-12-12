@@ -143,14 +143,7 @@ class MissionsController < ApplicationController
     authorize! @mission
     
     if @mission.update(mission_params)
-      hierarchy = JSON.parse(hierarchy)
-      task_id = hierarchy["id"]
-      @task = Task.find(task_id)
-      if @task.update(root_task_params)
-        redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
-      else
-        render :edit
-      end
+      redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
     else
       render :edit
     end
