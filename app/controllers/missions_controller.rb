@@ -143,7 +143,6 @@ class MissionsController < ApplicationController
     authorize! @mission
     
     if @mission.update(mission_params)
-      hierarchy = @mission.hierarchy
       hierarchy = JSON.parse(hierarchy)
       task_id = hierarchy["id"]
       @task = Task.find(task_id)
