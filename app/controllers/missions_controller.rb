@@ -117,6 +117,7 @@ class MissionsController < ApplicationController
     if params[:isdebug] == 'True'
       render :json => {'mission_id' => 10}
     else
+      authorize!
       @mission = Mission.new(mission_params)
       # @mission.user = User.find(25)
       @mission.user = current_user

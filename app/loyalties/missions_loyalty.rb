@@ -27,6 +27,10 @@ class MissionsLoyalty < ApplicationLoyalty
     user != nil
   end
 
+  def api_create?
+    user != nil
+  end
+
   def update?
     user == record.user
   end
