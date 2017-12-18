@@ -63,10 +63,10 @@
           <div class="form-group">
             <label for="description">公開範囲</label>
             <select id="DetailTaskNotify" class="form-control">
-              <option value="1">個人的構想</option>
-              <option value="2">組織内限定</option>
-              <option value="3">外部公開</option>
-              <option value="4">LOD</option>
+              <option value="own">個人的構想</option>
+              <option value="organize">組織内限定</option>
+              <option value="publish">外部公開</option>
+              <option value="lod">LOD</option>
             </select>
           </div>
         </form>
@@ -144,10 +144,10 @@
           <div class="form-group">
             <label for="description">公開範囲</label>
             <select id="AddTaskNotify" class="form-control">
-              <option value="1">個人的構想</option>
-              <option value="2">組織内限定</option>
-              <option value="3">外部公開</option>
-              <option value="4">LOD</option>
+              <option value="own">個人的構想</option>
+              <option value="organize">組織内限定</option>
+              <option value="publish">外部公開</option>
+              <option value="lod">LOD</option>
             </select>
           </div>
         </form>
@@ -407,14 +407,14 @@ $("#ChangeDetail").click(function(){
     },
     success: function(data) {
       var title, description, deadline_at,
-        status, $container
+        status, notify, $container
 
 		id = data['task']['id']
 		title = data['task']['title']
 		description = data['task']['description']
 		deadline_at = data['task']['deadline_at']
 		status = data['task']['status']
-		status = data['task']['notify']
+		notify = data['task']['notify']
 
 		$container = $('#chart-container').find('#' + id)
 		$container.find('.title').text(title)
