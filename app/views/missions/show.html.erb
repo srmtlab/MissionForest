@@ -1,6 +1,6 @@
 <div class="main">
-  <div class="container">
-    <div class="page-header">
+	<div class="container">
+		<div class="page-header">
       <h2><%= @mission.title %></h2>
     </div>
     <div class="btn-group" role="group" style="margin-bottom: 20px">
@@ -62,7 +62,7 @@
           </div>
           <div class="form-group">
             <label for="description">公開範囲</label>
-            <select id="DetailTaskPermission" class="form-control">
+            <select id="DetailTaskNotify" class="form-control">
               <option value="1">個人的構想</option>
               <option value="2">組織内限定</option>
               <option value="3">外部公開</option>
@@ -143,7 +143,7 @@
           </div>
           <div class="form-group">
             <label for="description">公開範囲</label>
-            <select id="AddTaskPermission" class="form-control">
+            <select id="AddTaskNotify" class="form-control">
               <option value="1">個人的構想</option>
               <option value="2">組織内限定</option>
               <option value="3">外部公開</option>
@@ -268,11 +268,12 @@ var options = {
   'exportButton': true,
   'exportFilename': '<%= @mission.title %>',
   'createNode': function($node, data) {
-    $node.append('<div class="add-button">+</div>')
-    $node.append('<div class="delete-button">X</div>')
-    $node.append('<div class="description">' + data["description"] + '</div>')
-    $node.append('<div class="deadline_at">' + data["deadline_at"] + '</div>')
-    $node.append('<div class="status">' + data["status"] + '</div>')
+      $node.append('<div class="add-button">+</div>')
+      $node.append('<div class="delete-button">X</div>')
+      $node.append('<div class="description">' + data["description"] + '</div>')
+      $node.append('<div class="deadline_at">' + data["deadline_at"] + '</div>')
+      $node.append('<div class="status">' + data["status"] + '</div>')
+      $node.append('<div class="notify">' + data["notify"] + '</div>')
   }
 }
 
@@ -293,7 +294,8 @@ $('#chart-container').orgchart(options)
   if (deadline !== 'null') {
     $('#DetailTaskDeadline').val($this.children('div .deadline_at').text())
   }
-  $('#DetailTaskStatus').val($this.children('div .status').text())
+	 $('#DetailTaskStatus').val($this.children('div .status').text())
+	 $('#DetailTaskNotify').val($this.children('div .notify').text())
 })
 .on('click', '.node .add-button', function() {
   var $this = $(this).parent();
@@ -392,66 +394,71 @@ $("#ChangeDetail").click(function(){
     url: '/MissionForest/api/tasks/' + id + '/update',
     data: {
       task: {
-        title: $('#DetailTaskTitle').val(),
-        description: $('#DetailTaskDescription').val(),
-        deadline_at: $('#DetailTaskDeadline').val(),
-        status: $('#DetailTaskStatus').val()
+          title: $('#DetailTaskTitle').val(),
+          description: $('#DetailTaskDescription').val(),
+          deadline_at: $('#DetailTaskDeadline').val(),
+          status: $('#DetailTaskStatus').val()
+          notify: $('#DetailTaskNotify').val()
       }
     },
     success: function(data) {
       var title, description, deadline_at,
         status, $container
 
-      id = data['task']['id']
-      title = data['task']['title']
-      description = data['task']['description']
-      deadline_at = data['task']['deadline_at']
-      status = data['task']['status']
+		id = data['task']['id']
+		title = data['task']['title']
+		description = data['task']['description']
+		deadline_at = data['task']['deadline_at']
+		status = data['task']['status']
+		status = data['task']['notify']
 
-      $container = $('#chart-container').find('#' + id)
-      $container.find('.title').text(title)
-      $container.find('.description').text(description)
-      $container.find('.deadline_at').text(deadline_at)
-      $container.find('.status').text(status)
+		$container = $('#chart-container').find('#' + id)
+		$container.find('.title').text(title)
+		$container.find('.description').text(description)
+		$container.find('.deadline_at').text(deadline_at)
+		$container.find('.status').text(status)
+		$container.find('.notify').text(notify)
     }
   })
 })
+ 
+ $("#AddChild").click(function(){
+	 console.log($('#AddTaskDeadline').val())
+	 console.log($('#AddTaskStatus').val())
+	 var description = $('#AddTaskDescription').val()
+	 var deadline_at = $('#AddTaskDeadline').val()
+	 var status = $('#AddTaskStatus').val()
+	 var notify = $('#AddTaskNotify').val()
 
-$("#AddChild").click(function(){
-  console.log($('#AddTaskDeadline').val())
-  console.log($('#AddTaskStatus').val())
-  var description = $('#AddTaskDescription').val()
-  var deadline_at = $('#AddTaskDeadline').val()
-  var status = $('#AddTaskStatus').val()
-//  var permission = $('#AddTaskPermission').val()
 
   $.ajax({
     type: 'POST',
     url: '/MissionForest/api/missions/<%= @mission.id %>/task',
     data: {
       task: {
-        title: $('#AddTaskTitle').val(),
-        description: description,
-        sub_task_of: $('#selected-node').data('node')[0].id,
-        deadline_at: deadline_at,
-        status: status
+          title: $('#AddTaskTitle').val(),
+          description: description,
+          sub_task_of: $('#selected-node').data('node')[0].id,
+          deadline_at: deadline_at,
+          status: status,
+          notify: notify
       }
     },
     success: function(data) {
       var $chartContainer = $('#chart-container')
       var $node = $('#selected-node').data('node')
       var hasChild = $node.parent().attr('colspan') > 0 ? true : false
-      if (!hasChild) {
-        $chartContainer.orgchart('addChildren', $node, {
-            'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [], 'description':description, 'deadline_at':deadline_at, 'status':status }]
-          }, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 })
-        )
-      } else {
-        $chartContainer.orgchart('addSiblings', $node.closest('tr').siblings('.nodes').find('.node:first'), {
-          'siblings': [{ 'name': data.task.title, 'relationship': '110', 'id': data.task.id, 'children': [] }]
-        })
-      }
+		if (!hasChild) {
+			$chartContainer.orgchart('addChildren', $node, {
+				'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [], 'description':description, 'deadline_at':deadline_at, 'status':status, 'notify':notify }]
+			}, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 })
+			)
+		} else {
+			$chartContainer.orgchart('addSiblings', $node.closest('tr').siblings('.nodes').find('.node:first'), {
+				'siblings': [{ 'name': data.task.title, 'relationship': '110', 'id': data.task.id, 'children': [] }]
+			})
+		}
     }
   })
-})
+ })
 </script>
