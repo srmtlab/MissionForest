@@ -4,8 +4,18 @@ class MissionsController < ApplicationController
   
   # GET /missions
   def index
-    @missions = Mission.order(created_at: :desc).all
+    #@missions = Mission.order(created_at: :desc).all
     #@missions = Mission.all
+    @missions = []
+    Mission.order(created_at: :desc).all.each do |mission|
+      root_task = mission.root_task
+      notify = root_task.notify
+      if (notify == 'own' or notify == 'organize') and root_task.user.id != current_user.try(:id)
+          next
+      end
+      @missions.push(mission)
+    end
+    #@missions = Mission.order(created_at: :desc).all
   end
 
   # GET /missions/1
