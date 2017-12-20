@@ -17,42 +17,6 @@ class MissionsController < ApplicationController
 
   # GET /api/missions/1/tasks
   def show_tasks
-    #def get_name(hash)
-    #  task_id = hash["id"]
-    #  @task = Task.find(task_id)
-    #  hash["name"] = @task.title
-    #  hash["description"] = @task.description
-    #  hash["deadline_at"] = @task.deadline_at
-    #  hash["status"] = @task.status
-    #  if ! hash["children"].nil? then
-    #    hash["children"].each do |child|
-    #      get_name(child)
-    #    end
-    #  end
-    #end
-    #
-    #@mission = Mission.find(params[:id])
-    #authorize! @mission
-    #
-    #hierarchy = @mission.hierarchy
-    #if hierarchy.nil? then
-    #  @task = Task.find_by(mission_id: params[:id])
-    #  hierarchy = {}
-    #  hierarchy["id"] = @task.id
-    #  hierarchy["children"] = []
-    #  input_hierarchy = hierarchy.to_json
-    #  @mission.hierarchy = input_hierarchy
-    #  @mission.save
-    #  hierarchy["name"] = @task.title
-    #  hierarchy["description"] = @task.description
-    #  hierarchy["deadline_at"] = @task.deadline_at
-    #  hierarchy["status"] = @task.status
-    #  render :json => hierarchy
-    #else
-    #  hierarchy = JSON.parse(hierarchy)
-    #  get_name(hierarchy)
-    #  render :json => hierarchy
-    #end
     @mission = Mission.find(params[:id])
     authorize! @mission
     hierarchy = get_hierarchy(@mission)
@@ -162,24 +126,41 @@ class MissionsController < ApplicationController
   def get_hierarchy(mission)
     def generate_tree(task)
       tree = {}
+
+      
+      notify = task.notify
+      if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
+        return nil
+      end
+      tree["notify"] = notify
+      
+      
       tree["id"] = task.id
       tree["name"] = task.title
       tree["description"] = task.description
       tree["deadline_at"] = task.deadline_at
       tree["status"] = task.status
+
       
       if ! task.subtasks[0].nil? then
         tree["children"] = []
         task.subtasks.each do |child|
-          tree["children"].push(generate_tree(child))
+          childtree = generate_tree(child)
+          
+          if ! childtree.nil? then
+            tree["children"].push(childtree)
+          end
         end
+        
+        #if tree["children"] == []
+        #  tree.delete("children")
+        #end
       end
       return tree
     end
 
     task = mission.root_task
     tree = generate_tree(task)
-
     return tree
   end
   

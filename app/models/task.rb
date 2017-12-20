@@ -25,7 +25,7 @@ class Task < ActiveRecord::Base
     ["未着手", "進行中", "完了"]
   end
 
-  def self.localized_notify
+  def self.localized_notifies
     ["個人的構想", "組織内限定", "外部公開", "LOD"]
   end
 
