@@ -101,6 +101,9 @@ class MissionsController < ApplicationController
         @task.user = current_user
         @task.mission = @mission
         @task.direct_mission = @mission
+        if params[:issecret] != 'True'
+          @task.notify = :lod
+        end
         @mission.tasks[0] = @task
         if @task.save
           render :json => {'mission_id' => @mission.id}
@@ -136,7 +139,6 @@ class MissionsController < ApplicationController
   def get_hierarchy(mission)
     def generate_tree(task)
       tree = {}
-
       
       notify = task.notify
       if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
@@ -161,10 +163,6 @@ class MissionsController < ApplicationController
             tree["children"].push(childtree)
           end
         end
-        
-        #if tree["children"] == []
-        #  tree.delete("children")
-        #end
       end
       return tree
     end

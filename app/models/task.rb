@@ -29,21 +29,20 @@ class Task < ActiveRecord::Base
     ["個人的構想", "組織内限定", "外部公開", "LOD"]
   end
 
-=begin
-  def save
-    super
+
+  def save(*args)
+    super(*args)
     save2virtuoso(self)
-    return true
   end
 
-  def destroy
+  def destroy(*args)
     deletefromvirtuoso(self)
-    super
+    super(*args)
   end
 
-  def update
+  def update(*args)
     deletefromvirtuoso(self)
-    super
+    super(*args)
     save2virtuoso(self)
   end
     
@@ -51,6 +50,13 @@ class Task < ActiveRecord::Base
 
   private
   def save2virtuoso(task)
+    if task.notify != 'lod'
+      return true
+    end
+    if task.direct_mission_id != nil
+      Mission.find(task.direct_mission_id).root_task_update()
+    end
+    
     id = 'mf-task:' + sprintf("%010d", task.id)
     user_id = 'mf-user:' + sprintf("%010d", task.user_id)
     title = '"' + task.title + '"' + '@jp'
@@ -93,6 +99,7 @@ class Task < ActiveRecord::Base
     insertquery += '}}'
     
     clireturn = auth_query(insertquery)
+    return true
   end
 
   def deletefromvirtuoso(task)
@@ -115,6 +122,6 @@ class Task < ActiveRecord::Base
     deletequery += '}}'
     
     clireturn = auth_query(deletequery)
+    return true
   end
-=end
 end

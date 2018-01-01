@@ -34,6 +34,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">タスクの編集</h4>
+		<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
       </div>
       <div class="modal-body">
         <form>
@@ -66,7 +67,7 @@
               <option value="own">個人的構想</option>
               <option value="organize">組織内限定</option>
               <option value="publish">外部公開</option>
-              <option value="lod">LOD</option>
+              <option value="lod">LOD (CC BY)</option>
             </select>
           </div>
         </form>
@@ -147,7 +148,7 @@
               <option value="own">個人的構想</option>
               <option value="organize">組織内限定</option>
               <option value="publish">外部公開</option>
-              <option value="lod">LOD</option>
+              <option value="lod">LOD (CC BY)</option>
             </select>
           </div>
         </form>
@@ -161,6 +162,15 @@
 </div>
 
 <style>
+ .ccby-license{
+	 height : 15px;
+	 width : 80px;
+	 display : none;
+ }
+ .ccby-active{
+	 display : block !important;
+ }
+ 
 .oc-export-btn {
   position: absolute;
   right: 10px;
@@ -300,6 +310,12 @@ $('#chart-container').orgchart(options)
   }
 	 $('#DetailTaskStatus').val($this.children('div .status').text())
 	 $('#DetailTaskNotify').val($this.children('div .notify').text())
+	 if ($this.children('div .notify').text() == 'lod'){
+		 $('.ccby-license').addClass('ccby-active');
+	 }
+	 else {
+		 $('.ccby-license').removeClass('ccby-active');
+	 }
 })
 .on('click', '.node .add-button', function() {
   var $this = $(this).parent();

@@ -10,27 +10,35 @@ class Mission < ActiveRecord::Base
   has_one :root_task, class_name: "Task",
           foreign_key: :direct_mission_id
 
-=begin
-  def save
-    super
+
+  def save(*args)
+    super(*args)
     save2virtuoso(self)
-    return true
   end
 
-  def destroy
+  def destroy(*args)
     deletefromvirtuoso(self)
-    super
+    super(*args)
   end
 
-  def update
+  def update(*args)
     deletefromvirtuoso(self)
-    super
+    super(*args)
+    save2virtuoso(self)
+  end
+
+  def root_task_update
+    deletefromvirtuoso(self)
     save2virtuoso(self)
   end
 
 
   private
   def save2virtuoso(mission)
+    if mission.root_task.notify != 'lod'
+      return true
+    end
+    
     id = 'mf-mission:' + sprintf("%010d", mission.id)
     user_id = 'mf-user:' + sprintf("%010d", mission.user_id)
     title = '"' + mission.title + '"' + '@jp'
@@ -61,6 +69,7 @@ class Mission < ActiveRecord::Base
     insertquery += '}}'
     
     clireturn = auth_query(insertquery)
+    return true
   end
 
   def deletefromvirtuoso(mission)
@@ -83,6 +92,6 @@ class Mission < ActiveRecord::Base
     deletequery += '}}'
     
     clireturn = auth_query(deletequery)
+    return true
   end
-=end
 end
