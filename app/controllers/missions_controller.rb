@@ -8,6 +8,8 @@ class MissionsController < ApplicationController
     #@missions = Mission.all
     @missions = []
     Mission.order(created_at: :desc).all.each do |mission|
+      puts(mission.id)
+      puts(mission.root_task)
       root_task = mission.root_task
       notify = root_task.notify
       if (notify == 'own' or notify == 'organize') and root_task.user.id != current_user.try(:id)

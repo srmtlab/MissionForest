@@ -35,6 +35,9 @@ class Mission < ActiveRecord::Base
 
   private
   def save2virtuoso(mission)
+    if mission.root_task == nil
+      return true
+    end
     if mission.root_task.notify != 'lod'
       return true
     end
