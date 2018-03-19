@@ -85,7 +85,7 @@ class Task < ActiveRecord::Base
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       INSERT DATA {
-      GRAPH <http://localhost:8890/MissionForest/>{
+      GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
 
     insertquery += id + ' rdf:type mf:Task ;'
@@ -109,14 +109,14 @@ class Task < ActiveRecord::Base
       prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
 
       DELETE {
-             GRAPH <http://localhost:8890/MissionForest/>{
+             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
              }
       }
       WHERE {
-             GRAPH <http://localhost:8890/MissionForest/>{
+             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
     deletequery += '}}'
