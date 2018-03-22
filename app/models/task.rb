@@ -44,6 +44,10 @@ class Task < ActiveRecord::Base
     deletefromvirtuoso(self)
     super(*args)
     save2virtuoso(self)
+    
+    if self.direct_mission_id != nil
+      Mission.find(self.direct_mission_id).root_task_update()
+    end
   end
     
   
@@ -52,9 +56,6 @@ class Task < ActiveRecord::Base
   def save2virtuoso(task)
     if task.notify != 'lod'
       return true
-    end
-    if task.direct_mission_id != nil
-      Mission.find(task.direct_mission_id).root_task_update()
     end
     
     id = 'mf-task:' + sprintf("%010d", task.id)
