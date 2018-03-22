@@ -121,7 +121,6 @@ class Task < ActiveRecord::Base
       EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
-             }
       }
       WHERE {
       EOS
