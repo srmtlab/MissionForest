@@ -74,7 +74,6 @@ class Task < ActiveRecord::Base
       status = '"完了@jp"'
     end
 
-    insertquery = ''
     """
     insertquery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
@@ -88,7 +87,7 @@ class Task < ActiveRecord::Base
       EOS
     """
     
-    insertquery += 'INSERT DATA'
+    insertquery = 'INSERT DATA '
     insertquery += '{ GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/> {'
 
     
@@ -102,6 +101,7 @@ class Task < ActiveRecord::Base
     insertquery += 'dct:title '+ title + '.'
     
 
+    insertquery += '}'
     insertquery += '}'
 
     
