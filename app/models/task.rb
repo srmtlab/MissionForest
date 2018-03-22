@@ -104,8 +104,8 @@ class Task < ActiveRecord::Base
 
     
     clireturn = auth_query(insertquery)
-    puts 'clireturn'
-    puts clireturn.body
+#    puts 'clireturn'
+#    puts clireturn.body
 
     return true
   end
@@ -130,6 +130,9 @@ class Task < ActiveRecord::Base
     deletequery += '}}'
     
     clireturn = auth_query(deletequery)
+    puts 'clireturn'
+    puts clireturn.body
+
     return true
   end
 end
