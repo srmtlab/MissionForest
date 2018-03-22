@@ -128,10 +128,6 @@ class Task < ActiveRecord::Base
     deletequery += '}'
     
     clireturn = auth_query(deletequery)
-    puts deletequery
-    puts 'clireturn'
-    puts clireturn.body
-
     return true
   end
 end
