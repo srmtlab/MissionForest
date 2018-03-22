@@ -111,7 +111,7 @@ class Task < ActiveRecord::Base
   end
 
   def deletefromvirtuoso(task)
-    id = 'mf-task:' + sprintf("%010d", mission.id)
+    id = 'mf-task:' + sprintf("%010d", task.id)
 
     deletequery = <<-EOS
       prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
