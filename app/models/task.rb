@@ -84,10 +84,11 @@ class Task < ActiveRecord::Base
       prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
       EOS
     
     
-    insertquery = 'INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>'
+    insertquery += 'INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>'
     insertquery += '{'
     
     insertquery += id + ' rdf:type mf:Task ;'
