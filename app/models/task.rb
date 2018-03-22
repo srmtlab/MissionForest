@@ -101,7 +101,7 @@ class Task < ActiveRecord::Base
     clireturn = auth_query(insertquery)
     puts 'clireturn'
     response = JSON.parse(clireturn.body)
-    puts response
+    puts JSON.generate(response)
 
     return true
   end
