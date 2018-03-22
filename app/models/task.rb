@@ -74,7 +74,7 @@ class Task < ActiveRecord::Base
       status = '"完了@jp"'
     end
 
-    """
+    
     insertquery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
@@ -85,11 +85,10 @@ class Task < ActiveRecord::Base
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       EOS
-    """
     
-    insertquery = 'INSERT DATA '
-    insertquery += '{ GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/> {'
-
+    
+    insertquery = 'INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>'
+    insertquery += '{'
     
     insertquery += id + ' rdf:type mf:Task ;'
     insertquery += 'dct:creator ' + user_id + ' ;'
@@ -100,8 +99,6 @@ class Task < ActiveRecord::Base
     insertquery += 'mf:mission '+ mission_id + ' ;'
     insertquery += 'dct:title '+ title + '.'
     
-
-    insertquery += '}'
     insertquery += '}'
 
     
