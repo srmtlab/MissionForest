@@ -30,4 +30,86 @@ class User < ActiveRecord::Base
   def delete_authentication_token
     self.update(authentication_token: nil)
   end
+
+  
+
+  def save(*args)
+    super(*args)
+    save2virtuoso(self)
+  end
+
+  def destroy(*args)
+    deletefromvirtuoso(self)
+    super(*args)
+  end
+
+  def update(*args)
+    deletefromvirtuoso(self)
+    super(*args)
+    save2virtuoso(self)
+  end
+
+
+
+private
+  def save2virtuoso(user)
+    
+    id = 'mf-user:' + sprintf("%010d", user.id)
+    mail = '<mailto:' + user.email + '>'
+    name = '"' + user.name + '"' + '@jp'
+
+    
+    insertquery = <<-EOS
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix foaf: <http://xmlns.com/foaf/0.1/>
+      prefix dct: <http://purl.org/dc/terms/>
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
+      prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
+      prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+      EOS
+    
+    
+    insertquery += 'INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>'
+    insertquery += '{'
+    
+    insertquery += id + ' rdf:type mf:User ;'
+    insertquery += 'foaf:mail ' + mail + ' ;'
+    insertquery += 'foaf:name '+ name + ' .'
+    
+    insertquery += '}'
+
+    
+    clireturn = auth_query(insertquery)
+#    puts 'clireturn'
+#    puts clireturn.body
+
+    return true
+  end
+
+  def deletefromvirtuoso(task)
+    id = 'mf-user:' + sprintf("%010d", user.id)
+
+    deletequery = <<-EOS
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
+      
+      WITH <http://lod.srmt.nitech.ac.jp/MissionForest/>
+      DELETE {
+      EOS
+    deletequery += id + ' ?q ?o'
+    deletequery += <<-EOS
+      }
+      WHERE {
+      EOS
+    deletequery += id + ' ?q ?o'
+    deletequery += '}'
+    
+    clireturn = auth_query(deletequery)
+
+    return true
+  end
+
+  
 end

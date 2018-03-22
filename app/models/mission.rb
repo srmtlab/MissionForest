@@ -56,8 +56,9 @@ class Mission < ActiveRecord::Base
       prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      INSERT DATA {
-      GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
+      
+      INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>
+      {
       EOS
 
     insertquery += id + ' rdf:type mf:Mission ;'
@@ -66,7 +67,7 @@ class Mission < ActiveRecord::Base
     insertquery += 'dct:description '+ description + ' ;'
     insertquery += 'dct:dateSubmitted '+ created_at + ' ;'
     insertquery += 'dct:title '+ title + '.'
-    insertquery += '}}'
+    insertquery += '}'
     
     clireturn = auth_query(insertquery)
     return true
@@ -78,18 +79,16 @@ class Mission < ActiveRecord::Base
     deletequery = <<-EOS
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
 
+      WITH <http://lod.srmt.nitech.ac.jp/MissionForest/>
       DELETE {
-             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
-             }
       }
       WHERE {
-             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
-    deletequery += '}}'
+    deletequery += '}'
     
     clireturn = auth_query(deletequery)
     return true
