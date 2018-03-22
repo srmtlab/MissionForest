@@ -50,7 +50,8 @@ class Task < ActiveRecord::Base
 
   private
   def save2virtuoso(task)
-    print task.notify
+    puts 'task.notify'
+    puts task.notify
     if task.notify != 'lod'
       return true
     end
@@ -100,7 +101,8 @@ class Task < ActiveRecord::Base
     insertquery += '}}'
     
     clireturn = auth_query(insertquery)
-    print clireturn
+    puts 'clireturn'
+    puts clireturn
     return true
   end
 
