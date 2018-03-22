@@ -74,7 +74,7 @@ class Task < ActiveRecord::Base
       status = '"完了@jp"'
     end
 
-    
+    """
     insertquery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
@@ -87,7 +87,19 @@ class Task < ActiveRecord::Base
       INSERT DATA 
       { GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/> {
       EOS
+    """
 
+    insertquery = <<-EOS
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix foaf: <http://xmlns.com/foaf/0.1/>
+      prefix dct: <http://purl.org/dc/terms/>
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
+      prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
+      prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      INSERT DATA {
+      EOS
     insertquery += id + ' rdf:type mf:Task ;'
     insertquery += 'dct:creator ' + user_id + ' ;'
     insertquery += 'dct:modified '+ updated_at + ' ;'
@@ -96,7 +108,7 @@ class Task < ActiveRecord::Base
     insertquery += 'mf:status '+ status + ' ;'
     insertquery += 'mf:mission '+ mission_id + ' ;'
     insertquery += 'dct:title '+ title + '.'
-    insertquery += '}}'
+    insertquery += '}'
     
     clireturn = auth_query(insertquery)
     puts 'clireturn'
