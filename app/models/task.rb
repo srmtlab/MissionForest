@@ -115,19 +115,18 @@ class Task < ActiveRecord::Base
 
     deletequery = <<-EOS
       prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
-
+      
+      WITH <http://lod.srmt.nitech.ac.jp/MissionForest/>
       DELETE {
-             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
              }
       }
       WHERE {
-             GRAPH <http://lod.srmt.nitech.ac.jp/MissionForest/>{
       EOS
     deletequery += id + ' ?q ?o'
-    deletequery += '}}'
+    deletequery += '}'
     
     clireturn = auth_query(deletequery)
     puts 'clireturn'
