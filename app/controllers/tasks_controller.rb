@@ -32,6 +32,7 @@ class TasksController < ApplicationController
 
   # POST /api/missions/1/task
   def new_task
+    authorize! @task
     task = Task.new(task_params)
     task.user = current_user
     task.mission_id = params[:id]
