@@ -29,7 +29,7 @@ class Task < ActiveRecord::Base
     ["個人的構想", "組織内限定", "外部公開", "LOD"]
   end
 
-
+  
   def save(*args)
     super(*args)
     save2virtuoso(self)
@@ -49,9 +49,9 @@ class Task < ActiveRecord::Base
       Mission.find(self.direct_mission_id).root_task_update()
     end
   end
-    
   
 
+  
   private
   def save2virtuoso(task)
     if task.notify != 'lod'
