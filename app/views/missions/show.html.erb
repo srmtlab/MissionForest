@@ -470,7 +470,7 @@ $("#ChangeDetail").click(function(){
       var hasChild = $node.parent().attr('colspan') > 0 ? true : false
 		if (!hasChild) {
 			$chartContainer.orgchart('addChildren', $node, {
-				'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [], 'description':description, 'deadline_at':deadline_at, 'status':status, 'notify':notify }]
+				'children': [{ 'name': data.task.title, 'relationship': '100', 'id': data.task.id, 'children': [], 'description':data.task.description, 'deadline_at':data.task.deadline_at, 'status':data.task.status, 'notify':data.task.notify }]
 			}, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 })
 			)
 		} else {
