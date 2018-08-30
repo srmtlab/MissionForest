@@ -140,7 +140,6 @@ class MissionsController < ApplicationController
       if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
         return nil
       end
-      tree["notify"] = notify
       
       
       tree["id"] = task.id
@@ -148,6 +147,7 @@ class MissionsController < ApplicationController
       tree["description"] = task.description
       tree["deadline_at"] = task.deadline_at
       tree["status"] = task.status
+      tree["notify"] = notify
 
       
       if ! task.subtasks[0].nil? then
