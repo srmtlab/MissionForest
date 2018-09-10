@@ -14,7 +14,9 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :attachments
   has_many :participations
-
+  has_many :groups, through: :group_users
+  has_many :group_users
+  
   # 認証トークンが無い場合は作成
   def ensure_authentication_token
     self.authentication_token || generate_authentication_token
