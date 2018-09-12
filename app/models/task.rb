@@ -4,16 +4,9 @@ class Task < ActiveRecord::Base
   
   belongs_to :user
   belongs_to :mission
-  has_many :skils
-  has_many :comments
-  has_many :attachments
 
   enum status: [:todo, :doing, :done]
   enum notify: [:own, :organize, :publish, :lod]
-
-  #def children
-  #  Task.where("parent_id = ?", self.id)
-  #end
 
   has_many :subtasks, class_name: "Task",
            foreign_key: "sub_task_of"
