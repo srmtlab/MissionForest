@@ -11,29 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171218045216) do
+ActiveRecord::Schema.define(version: 20180912085719) do
 
-  create_table "attachments", force: :cascade do |t|
+  create_table "group_users", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
-    t.integer  "task_id",    limit: 4
-    t.string   "url",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "group_id",   limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
-  add_index "attachments", ["task_id"], name: "index_attachments_on_task_id", using: :btree
-  add_index "attachments", ["user_id"], name: "index_attachments_on_user_id", using: :btree
+  add_index "group_users", ["group_id"], name: "index_group_users_on_group_id", using: :btree
+  add_index "group_users", ["user_id"], name: "index_group_users_on_user_id", using: :btree
 
-  create_table "comments", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "task_id",    limit: 4
-    t.text     "body",       limit: 65535
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "groups", force: :cascade do |t|
+    t.string   "name",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
-
-  add_index "comments", ["task_id"], name: "index_comments_on_task_id", using: :btree
-  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "missions", force: :cascade do |t|
     t.integer  "user_id",     limit: 4
@@ -55,17 +49,6 @@ ActiveRecord::Schema.define(version: 20171218045216) do
 
   add_index "participations", ["mission_id"], name: "index_participations_on_mission_id", using: :btree
   add_index "participations", ["user_id"], name: "index_participations_on_user_id", using: :btree
-
-  create_table "skils", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "task_id",    limit: 4
-    t.string   "name",       limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "skils", ["task_id"], name: "index_skils_on_task_id", using: :btree
-  add_index "skils", ["user_id"], name: "index_skils_on_user_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "user_id",           limit: 4
@@ -108,6 +91,8 @@ ActiveRecord::Schema.define(version: 20171218045216) do
   add_index "users", ["participation_id"], name: "index_users_on_participation_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "group_users", "groups"
+  add_foreign_key "group_users", "users"
   add_foreign_key "participations", "missions"
   add_foreign_key "participations", "users"
   add_foreign_key "users", "participations"
