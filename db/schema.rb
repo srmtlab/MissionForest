@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180912091946) do
+ActiveRecord::Schema.define(version: 20180917104214) do
 
   create_table "mission_admins", force: :cascade do |t|
     t.integer  "mission_id", limit: 4
@@ -47,6 +47,16 @@ ActiveRecord::Schema.define(version: 20180912091946) do
 
   add_index "participations", ["mission_id"], name: "index_participations_on_mission_id", using: :btree
   add_index "participations", ["user_id"], name: "index_participations_on_user_id", using: :btree
+
+  create_table "task_participants", force: :cascade do |t|
+    t.integer  "task_id",    limit: 4
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "task_participants", ["task_id"], name: "index_task_participants_on_task_id", using: :btree
+  add_index "task_participants", ["user_id"], name: "index_task_participants_on_user_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "user_id",           limit: 4
@@ -91,5 +101,7 @@ ActiveRecord::Schema.define(version: 20180912091946) do
 
   add_foreign_key "participations", "missions"
   add_foreign_key "participations", "users"
+  add_foreign_key "task_participants", "tasks"
+  add_foreign_key "task_participants", "users"
   add_foreign_key "users", "participations"
 end

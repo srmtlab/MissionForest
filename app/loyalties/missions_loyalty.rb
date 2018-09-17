@@ -39,6 +39,18 @@ class MissionsLoyalty < ApplicationLoyalty
     user == record.user
   end
 
+  def add_admin?
+    user == record.user
+  end
+
+  def add_admin_update?
+    user == record.user
+  end
+
+  def api_delete_admin?
+    user == record.user
+  end
+
   def add_participant?
     user == record.user
   end

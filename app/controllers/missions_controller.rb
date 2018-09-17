@@ -31,8 +31,11 @@ class MissionsController < ApplicationController
   def show_tasks
     @mission = Mission.find(params[:id])
     authorize! @mission
+    all_tasks = @mission.tasks
     hierarchy = get_hierarchy(@mission)
-    render :json => hierarchy
+    taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+    #    render :json => hierarchy
+    render :json => taskjson
   end
 
 
@@ -130,6 +133,44 @@ class MissionsController < ApplicationController
     @mission.destroy
     redirect_to missions_path, notice: 'ミッションが削除されました'
   end
+
+  # GET /missions/1/add_admin
+  def add_admin
+    @mission = Mission.find(params[:id])
+    authorize! @mission
+  end
+
+  # PATCHPUT /missions/1/add_admin_update
+  def add_admin_update
+    @mission = Mission.find(params[:id])
+    authorize! @mission
+
+    user_name = params[:admin]
+    
+    user = User.find_by(name: user_name)
+    @mission.admins.push(user)
+    
+    if @mission.save
+      redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'
+    else
+      render :mission_add_admin
+    end
+  end
+
+  # DELETE /api/missions/1/delete_admin/1
+  def api_delete_admin
+    @mission = Mission.find(params[:id])
+    authorize! @mission
+
+    @mission.admins.delete(params[:user_id])
+
+    if @mission.save
+      render :json => {'mission_id' => @mission.id, 'admin_id' => params[:user_id]}
+    end
+  end
+
+
+  
 
   # GET /missions/1/add_participant
   def add_participant
