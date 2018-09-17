@@ -14,6 +14,12 @@ class Task < ActiveRecord::Base
   belongs_to :parenttask, class_name: "Task"
   belongs_to :direct_mission, class_name: "Mission"
 
+  has_many :participants,
+	       through: :task_participant,
+           source: :user
+  has_many :task_participant
+  accepts_nested_attributes_for :task_participant
+
   def self.localized_statuses
     ["未着手", "進行中", "完了"]
   end

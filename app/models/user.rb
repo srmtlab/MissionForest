@@ -18,6 +18,11 @@ class User < ActiveRecord::Base
           through: :mission_admin
   has_many :mission_admin
 
+  has_many :participate_tasks, class_name: "Task",
+	   through: :task_participant,
+           source: :users
+  has_many :task_participant
+
 
   # 認証トークンが無い場合は作成
   def ensure_authentication_token

@@ -10,7 +10,7 @@ class Mission < ActiveRecord::Base
           foreign_key: :direct_mission_id
 
   has_many :participants,
-	   through: :mission_participant,
+	       through: :mission_participant,
            source: :user
   has_many :mission_participant
   accepts_nested_attributes_for :mission_participant
