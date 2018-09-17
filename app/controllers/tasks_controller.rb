@@ -77,18 +77,27 @@ class TasksController < ApplicationController
   # PUT api/tasks/1/update
   def update_child
     task = Task.find(params[:id])
+    mission_id = task.mission_id
    
-    if task.update(task_params)
-      render :json => { task: task }
-    end
+    task.update(task_params)
+    mission = Mission.find(mission_id)
+    all_tasks = mission.tasks
+    hierarchy = get_hierarchy(mission)
+    taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+    render :json => { task: task, task_data: taskjson }
   end
 
   # DELETE api/tasks/1/delete
   def delete_child
     task = Task.find(params[:id])
+    mission_id = task.mission_id
    
-    if task.delete
-      render :json => { task: task }
+    if task.destroy
+      mission = Mission.find(mission_id)
+      all_tasks = mission.tasks
+      hierarchy = get_hierarchy(mission)
+      taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+      render :json => { task: task , task_data: taskjson}
     end
   end
   

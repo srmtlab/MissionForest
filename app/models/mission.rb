@@ -3,7 +3,7 @@ class Mission < ActiveRecord::Base
   
   
   belongs_to :user
-  has_many :tasks
+  has_many :tasks, :dependent => :destroy
   accepts_nested_attributes_for :tasks
 
   has_one :root_task, class_name: "Task",
