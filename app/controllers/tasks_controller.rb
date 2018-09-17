@@ -36,9 +36,15 @@ class TasksController < ApplicationController
     task = Task.new(task_params)
     task.user = current_user
     task.mission_id = params[:id]
-
+    
+    
+    
     if task.save
-      render :json => { task: task }
+      mission = Mission.find(task.mission_id)
+      all_tasks = mission.tasks
+      hierarchy = get_hierarchy(mission)
+      taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+      render :json => { task: task, task_data: taskjson }
     end
   end
 
@@ -102,11 +108,47 @@ class TasksController < ApplicationController
   end
 
   private
-    def set_task
-      @task = Task.find(params[:id])
+  def get_hierarchy(mission)
+    def generate_tree(task)
+      tree = {}
+      
+      notify = task.notify
+      if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
+        return nil
+      end
+      
+      
+      tree["id"] = task.id
+      tree["name"] = task.title
+      tree["description"] = task.description
+      tree["deadline_at"] = task.deadline_at
+      tree["status"] = task.status
+      tree["notify"] = notify
+
+      
+      if ! task.subtasks[0].nil? then
+        tree["children"] = []
+        task.subtasks.each do |child|
+          childtree = generate_tree(child)
+          
+          if ! childtree.nil? then
+            tree["children"].push(childtree)
+          end
+        end
+      end
+      return tree
     end
 
-    def task_params
-      params[:task].permit(:title, :description, :mission_id, :sub_task_of, :deadline_at, :status, :notify)
-    end
+    task = mission.root_task
+    tree = generate_tree(task)
+    return tree
+  end
+  
+  def set_task
+    @task = Task.find(params[:id])
+  end
+  
+  def task_params
+    params[:task].permit(:title, :description, :mission_id, :sub_task_of, :deadline_at, :status, :notify)
+  end
 end
