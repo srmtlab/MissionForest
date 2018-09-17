@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  delete 'api/missions/:id/delete_participant/:user_id' => 'missions#api_delete_participant'
+  
+  put 'missions/:id/add_participant_update' => 'missions#add_participant_update', as: :mission_add_participant_update
+  
+  get 'missions/:id/add_participant' => 'missions#add_participant', as: :mission_add_participant
+
   get 'users/index'
 
   get 'users/show'

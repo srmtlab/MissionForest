@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   has_many :missions
   
   has_many :participate_missions, class_name: "Mission",
-	  through: :mission_participant
+	   through: :mission_participant,
+           source: :users
   has_many :mission_participant
 
   has_many :admin_of_missions, class_name: "Mission",
