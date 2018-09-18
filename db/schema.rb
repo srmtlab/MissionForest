@@ -37,17 +37,6 @@ ActiveRecord::Schema.define(version: 20180917104214) do
 
   add_index "missions", ["user_id"], name: "index_missions_on_user_id", using: :btree
 
-  create_table "participations", force: :cascade do |t|
-    t.integer  "authority",  limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "user_id",    limit: 4
-    t.integer  "mission_id", limit: 4
-  end
-
-  add_index "participations", ["mission_id"], name: "index_participations_on_mission_id", using: :btree
-  add_index "participations", ["user_id"], name: "index_participations_on_user_id", using: :btree
-
   create_table "task_participants", force: :cascade do |t|
     t.integer  "task_id",    limit: 4
     t.integer  "user_id",    limit: 4
@@ -99,9 +88,6 @@ ActiveRecord::Schema.define(version: 20180917104214) do
   add_index "users", ["participation_id"], name: "index_users_on_participation_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "participations", "missions"
-  add_foreign_key "participations", "users"
   add_foreign_key "task_participants", "tasks"
   add_foreign_key "task_participants", "users"
-  add_foreign_key "users", "participations"
 end
