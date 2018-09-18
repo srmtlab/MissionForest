@@ -5,7 +5,6 @@ gem 'rails', '4.2.6'
 
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
-gem 'pg'
 
 # LOD
 # gem 'stardog-rb'
