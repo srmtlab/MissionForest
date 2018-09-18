@@ -5,7 +5,7 @@ module Virtuoso
     uri = 'http://localhost:8890/sparql-auth'
     client = HTTPClient.new
     user = 'dba'
-    password = 'srmt1ab'
+    password = 'dba'
     client.set_auth('http://localhost:8890/', user, password)
     clireturn = client.get(uri, :query => {:query => sparqlquery, :format => 'application/sparql-results+json'})
 

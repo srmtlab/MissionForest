@@ -4,11 +4,20 @@
       <h2><%= @mission.title %></h2>
     </div>
     <div class="btn-group" role="group" style="margin-bottom: 20px">
-		<%= link_to 'タスクを追加', mission_task_new_path(@mission), :class => 'btn btn-default' %>
-		<%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn btn-default' %>
-		<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
-		<%= link_to '参加者を追加', mission_add_participant_path(@mission), :class => 'btn btn-default' %>
-		<%= link_to '管理者を追加', mission_add_admin_path(@mission), :class => 'btn btn-default' %>
+		<% if user_signed_in? %>
+			<!-- <%= link_to 'タスクを追加', mission_task_new_path(@mission), :class => 'btn btn-default' %> -->
+			
+			<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
+				<%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn btn-default' %>
+				<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
+				<%= link_to '参加者を追加', mission_add_participant_path(@mission), :class => 'btn btn-default' %>
+				<%= link_to '管理者を追加', mission_add_admin_path(@mission), :class => 'btn btn-default' %>
+			<% end %>
+				
+			<% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
+				<%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-default' %>
+			<% end %>
+		<% end %>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -29,7 +38,12 @@
 		</div>
 		<div class="panel-body">
 			<% @mission.admins.each do |admin| %>
-				<p admin_id="<%= admin.id %>"><span class="delete_admin" admin_id="<%= admin.id %>">X</span><%= admin.name %></p>
+				<p admin_id="<%= admin.id %>">
+					<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
+						<span class="delete_admin" admin_id="<%= admin.id %>">X</span>
+					<% end %>
+					<%= admin.name %>
+				</p>
 			<% end %>
 		</div>
     </div>
@@ -43,7 +57,12 @@
       </div>
       <div class="panel-body">
         <% @mission.participants.each do |participant| %>
-			<p participant_id="<%= participant.id %>"><span class="delete_participant" participant_id="<%= participant.id %>">X</span><%= participant.name %></p>
+			<p participant_id="<%= participant.id %>">
+				<% if @mission.admins.include?(current_user) || @mission.user == current_user || current_user == participant %>
+					<span class="delete_mission_participant" participant_id="<%= participant.id %>">X</span>
+				<% end %>
+				<%= participant.name %>
+			</p>
 	<% end %>
       </div>
     </div>
@@ -101,13 +120,18 @@
             </select>
           </div>
         </form>
+		<h4>参加者</h4>
+		<ul id="TaskParticipants"></ul>
       </div>
+	  <% if user_signed_in? %>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-        <button type="button" id="ToAddChild" class="btn btn-default" data-dismiss="modal">子タスクを追加する</button>
-        <button type="button" id="ToDeleteTask" class="btn btn-danger" data-dismiss="modal">タスクを削除する</button>
-        <button type="button" id="ChangeDetail" class="btn btn-primary" data-dismiss="modal">詳細を変更する</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+		  <button type="button" id="ToParticipate" class="btn btn-primary" data-dismiss="modal">タスクへ参加</button>
+        <button type="button" id="ToAddChild" class="btn btn-default" data-dismiss="modal">子タスクを追加</button>
+        <button type="button" id="ToDeleteTask" class="btn btn-danger" data-dismiss="modal">削除</button>
+        <button type="button" id="ChangeDetail" class="btn btn-primary" data-dismiss="modal">変更</button>
       </div>
+	  <% end %>
     </div>
   </div>
 </div>
@@ -182,10 +206,12 @@
           </div>
         </form>
       </div>
+	  <% if user_signed_in? %>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
         <button type="button" id="AddChild" class="btn btn-primary" data-dismiss="modal">追加する</button>
       </div>
+	  <% end %>
     </div>
   </div>
 </div>
@@ -317,7 +343,16 @@
 	 cursor: pointer;
  }
  
- .delete_participant {
+ .delete_mission_participant {
+	 padding : 0 4px;
+	 border-radius: 3px;
+	 margin-right : 5px;
+	 background-color: #808080;
+	 color: #ffffff;
+	 cursor: pointer;
+ }
+
+ .delete_task_participant {
 	 padding : 0 4px;
 	 border-radius: 3px;
 	 margin-right : 5px;
@@ -328,6 +363,8 @@
 </style>
 
 <script>
+
+ 
  class TaskDatabase {
 	 constructor(api){
 		 let task_data = {}
@@ -352,6 +389,7 @@
 		 return null;
 	 }
 
+	 <% if user_signed_in? %>
 	 update_task_detail(task_id, title, description,
 						deadline_at, status, notify){
 		 let task_detail = this.get_task_detail(task_id)
@@ -384,7 +422,9 @@
 			 }
 		 })
 	 }
+	 <% end %>
 
+	 <% if user_signed_in? %>
 	 add_new_task(parent_task_id, title, description,
 				  deadline_at, status, notify){
 		 let task_detail = {};
@@ -419,7 +459,9 @@
 			 }
 		 })
 	 }
+	  <% end %>
 
+	 <% if user_signed_in? %>
 	 delete_task(task_id){
 		 $.ajax({
 			 type: 'DELETE',
@@ -435,6 +477,28 @@
 			 }
 		 })
 	 }
+	 <% end %>
+
+	 <% if user_signed_in? %>
+	 participate_to_task(task_id){
+		 let user_id = <%= current_user.id %>;
+		 
+		 $.ajax({
+			 type: 'PUT',
+			 url: '/MissionForest/api/tasks/' + task_id + '/add_participant',
+			 data: {
+				 'id' : task_id,
+				 'user_id' : user_id
+			 },
+			 success: function(data) {
+				 tasks.update_hierarchy(data.task_data.hierarchy);
+				 tasks.update_all_tasks(data.task_data.all_tasks);
+
+				 oc.init({'data': data.task_data.hierarchy});
+			 }
+		 })
+	 }
+	 <% end %>
 
 	 get_tasks_hierarchy(){
 		 return this.hierarchy;
@@ -448,7 +512,7 @@
 		 this.selected_id = task_id
 	 }
 
-	 get_selected_task_id(task_id){
+	 get_selected_task_id(){
 		 return this.selected_id;
 	 }
 
@@ -481,12 +545,11 @@
  }
 
 
+
  let tasks = new TaskDatabase('/MissionForest/api/missions/<%= @mission.id %>/tasks')
- //setTimeout("tasks.add_new_task(1520, 'hoge', 'fuga', null, 'todo', 'lod')", 3000);
- console.log(tasks.get_all_tasks());
+ console.log(tasks.get_all_tasks())
  
  var options = {
-	 //  'data' : '/MissionForest/api/missions/<%= @mission.id %>/tasks',
 	 'data' : tasks.get_tasks_hierarchy(),
 	 'pan': true,
 	 'draggable': true,
@@ -514,9 +577,7 @@
 									   $this = $(this).parent();
 								   
 								   task_data = tasks.get_task_detail($(this).parent().attr('id'));
-								   console.log(task_data.title);
-								   
-								   
+								   								   
 								   $('#selected-node').val(task_data.title).data('node', $this)
 								   $('#DetailTask').modal('show')
 								   $('#DetailTaskID').val(task_data.id)
@@ -533,6 +594,20 @@
 								   }
 								   else {
 									   $('.ccby-license').removeClass('ccby-active');
+								   }
+
+								   $('#TaskParticipants').empty()
+								   for (participant of task_data.participants){
+									   <% if user_signed_in? %>
+									   if (participant.id === <%= current_user.id %>){
+										   $('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
+									   }
+									   else {
+										   $('#TaskParticipants').append('<li>' + participant.name + '</li>');
+									   }
+									   <% else %>
+									   $('#TaskParticipants').append('<li>' + participant.name + '</li>');
+									   <% end %>
 								   }
 							   })
 							   .on('click', '.add-button', function() {
@@ -558,7 +633,8 @@
 								   $('#DeleteTaskID').val(task_data.id);
 								   $('#DeleteTaskTitle').text(task_data.title);
 							   })
- 
+
+ <% if user_signed_in? %>
  $("#ToAddChild").click(function(){
   $('#AddTask').modal('show')
   $('#AddTaskTitle').val('')
@@ -597,12 +673,17 @@ $("#ToDeleteTask").click(function(){
 		 status = $('#AddTaskStatus').val(),
 		 notify = $('#AddTaskNotify').val()
 
-	 console.log(deadline_at);
 	 
 	 tasks.add_new_task(parent_task_id, title, description,
 				  deadline_at, status, notify)
  })
 
+ $("#ToParticipate").click(function(){
+	 task_id = tasks.get_selected_task_id()
+	 tasks.participate_to_task(task_id)
+ });
+
+ 
  $(".delete_admin").click(function(){
 	 var mission_id = <%= @mission.id %>
 		 var admin_id = $(this).attr('admin_id');
@@ -616,7 +697,7 @@ $("#ToDeleteTask").click(function(){
  });
  
 
- $(".delete_participant").click(function(){
+ $(".delete_mission_participant").click(function(){
 	 let mission_id = <%= @mission.id %>,
 		 participant_id = $(this).attr('participant_id');
 
@@ -627,5 +708,24 @@ $("#ToDeleteTask").click(function(){
 			 $('p[participant_id=' + participant_id + ']').remove();
 		 }});
  });
-	 
+
+
+ $(document)
+	 .on('click', '.delete_task_participant', function() {
+		 let task_id = tasks.get_selected_task_id(),
+			 participant_id = $(this).attr('participant_id');
+		 
+		 $.ajax({
+			 type: 'DELETE',
+			 url: '/MissionForest/api/tasks/' + task_id + '/delete_participant/' + participant_id,
+			 success: function(data){
+				 $('span[participant_id=' + participant_id + ']').parent().remove();
+
+				 tasks.update_hierarchy(data.task_data.hierarchy);
+				 tasks.update_all_tasks(data.task_data.all_tasks);
+			 }});
+	 });
+ 
+
+ <% end %>
 </script>

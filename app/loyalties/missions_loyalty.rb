@@ -20,7 +20,7 @@ class MissionsLoyalty < ApplicationLoyalty
   end
   
   def edit?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def create?
@@ -32,34 +32,34 @@ class MissionsLoyalty < ApplicationLoyalty
   end
 
   def update?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def destroy?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def add_admin?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def add_admin_update?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def api_delete_admin?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def add_participant?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def add_participant_update?
-    user == record.user
+    user == record.user || record.admins.include?(user)
   end
 
   def api_delete_participant?
-    user == record.user
+    user == record.user || record.admins.include?(user) || record.participants.include?(user)
   end
 end
