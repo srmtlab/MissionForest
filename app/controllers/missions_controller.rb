@@ -8,8 +8,6 @@ class MissionsController < ApplicationController
     #@missions = Mission.all
     @missions = []
     Mission.order(created_at: :desc).all.each do |mission|
-      puts(mission.id)
-      puts(mission.root_task)
       root_task = mission.root_task
       notify = root_task.notify
       if (notify == 'own' or notify == 'organize') and root_task.user.id != current_user.try(:id)
@@ -31,7 +29,7 @@ class MissionsController < ApplicationController
   def show_tasks
     @mission = Mission.find(params[:id])
     authorize! @mission
-    all_tasks = @mission.tasks
+    all_tasks = get_all_tasks(@mission)
     hierarchy = get_hierarchy(@mission)
     taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
     #    render :json => hierarchy
@@ -169,16 +167,13 @@ class MissionsController < ApplicationController
     end
   end
 
-
-  
-
   # GET /missions/1/add_participant
   def add_participant
     @mission = Mission.find(params[:id])
     authorize! @mission
   end
 
-  # PATCHPUT /missions/1/add_participant_update
+  # PUT /missions/1/add_participant_update
   def add_participant_update
     @mission = Mission.find(params[:id])
     authorize! @mission
@@ -190,6 +185,19 @@ class MissionsController < ApplicationController
     
     if @mission.save
       redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'
+    else
+      render :mission_add_participant
+    end
+  end
+
+  # GET /missions/1/add_participant_me
+  def add_participant_me
+    @mission = Mission.find(params[:id])
+    user = current_user
+    @mission.participants.push(user)
+    
+    if @mission.save
+      redirect_to mission_path(@mission), notice: user.name + 'さんが参加しました'
     else
       render :mission_add_participant
     end
@@ -207,7 +215,27 @@ class MissionsController < ApplicationController
     end
   end
 
+  
   private
+  def get_all_tasks(mission)
+    tasks = []
+    mission.tasks.each do |task|
+      task_detail = {}
+      task_detail['id'] = task.id
+      task_detail['mission_id'] = task.mission_id
+      task_detail['notify'] = task.notify
+      task_detail['status'] = task.status
+      task_detail['sub_task_of'] = task.sub_task_of
+      task_detail['title'] = task.title
+      task_detail['user_id'] = task.user_id
+      task_detail['description'] = task.description
+      task_detail['deadline_at'] = task.deadline_at
+      task_detail['participants'] = task.participants
+      tasks.push(task_detail)
+    end
+    return tasks
+  end
+  
   def get_hierarchy(mission)
     def generate_tree(task)
       tree = {}

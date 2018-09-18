@@ -81,7 +81,7 @@ class TasksController < ApplicationController
    
     task.update(task_params)
     mission = Mission.find(mission_id)
-    all_tasks = mission.tasks
+    all_tasks = get_all_tasks(mission)
     hierarchy = get_hierarchy(mission)
     taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
     render :json => { task: task, task_data: taskjson }
@@ -94,7 +94,7 @@ class TasksController < ApplicationController
    
     if task.destroy
       mission = Mission.find(mission_id)
-      all_tasks = mission.tasks
+      all_tasks = get_all_tasks(mission)
       hierarchy = get_hierarchy(mission)
       taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
       render :json => { task: task , task_data: taskjson}
@@ -116,7 +116,79 @@ class TasksController < ApplicationController
     redirect_to mission_path(@task.mission), notice: 'タスクが削除されました'
   end
 
+  # PUT api/tasks/1/add-participant
+  def add_participant
+    task = Task.find(params[:id])
+    user = User.find(params[:user_id])
+
+    ancestor_list = get_ancestors(task)
+    
+    ancestor_list.each do |anctask|
+      anctask.participants.push(user)
+      anctask.save
+    end
+
+    if task.save
+      mission_id = task.mission_id
+      mission = Mission.find(mission_id)
+      all_tasks = get_all_tasks(mission)
+      hierarchy = get_hierarchy(mission)
+      taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+      render :json => { task: task , task_data: taskjson}
+    end
+  end
+
+
+  # DELETE /api/tasks/1/delete_participant/1
+  def api_delete_participant
+    @task = Task.find(params[:id])
+    authorize! @task
+
+    @task.participants.delete(params[:user_id])
+
+    if @task.save
+      mission_id = @task.mission_id
+      mission = Mission.find(mission_id)
+      all_tasks = get_all_tasks(mission)
+      hierarchy = get_hierarchy(mission)
+      taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
+      render :json => {task_id: @task.id, participant_id: params[:user_id], task_data: taskjson}
+    end
+  end
+  
   private
+  def get_ancestors(task)
+    def ancestor(nexttask)
+      if nexttask.sub_task_of.present? then
+        ancestors_list = ancestor(Task.find(nexttask.sub_task_of))
+      else
+        ancestors_list = []
+      end
+      ancestors_list.push(nexttask)
+      return ancestors_list
+    end
+    return ancestor(task)
+  end
+  
+  def get_all_tasks(mission)
+    tasks = []
+    mission.tasks.each do |task|
+      task_detail = {}
+      task_detail['id'] = task.id
+      task_detail['mission_id'] = task.mission_id
+      task_detail['notify'] = task.notify
+      task_detail['status'] = task.status
+      task_detail['sub_task_of'] = task.sub_task_of
+      task_detail['title'] = task.title
+      task_detail['user_id'] = task.user_id
+      task_detail['description'] = task.description
+      task_detail['deadline_at'] = task.deadline_at
+      task_detail['participants'] = task.participants
+      tasks.push(task_detail)
+    end
+    return tasks
+  end
+  
   def get_hierarchy(mission)
     def generate_tree(task)
       tree = {}
