@@ -396,7 +396,7 @@
 		 task_detail.notify = notify;
 		 task_detail.mission_id = <%= @mission.id %>;
 		 task_detail.sub_task_of = parent_task_id;
-		 task_detail.user_id = <%= current_user.id %>;
+		 //task_detail.user_id = <= current_user.id >;
 
 		 $.ajax({
 			 type: 'POST',
