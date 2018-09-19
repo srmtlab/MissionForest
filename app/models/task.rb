@@ -28,7 +28,6 @@ class Task < ActiveRecord::Base
   def self.localized_notifies
     ["個人的構想", "組織内限定", "外部公開", "LOD"]
   end
-
   
   def save(*args)
     super(*args)

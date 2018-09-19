@@ -36,12 +36,11 @@ class TasksController < ApplicationController
     task = Task.new(task_params)
     task.user = current_user
     task.mission_id = params[:id]
-    
-    
+    add_participant_to_ancestor_tasks(task, current_user)
     
     if task.save
       mission = Mission.find(task.mission_id)
-      all_tasks = mission.tasks
+      all_tasks = get_all_tasks(mission)
       hierarchy = get_hierarchy(mission)
       taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
       render :json => { task: task, task_data: taskjson }
@@ -66,6 +65,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     @task.user = current_user
     @task.mission_id = Task.find(task_params[:parent_id]).mission.id
+    @task.participants.push(current_user)
 
     if @task.save
       redirect_to mission_path(@task.mission), notice: 'タスクが作成されました'
@@ -121,12 +121,7 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     user = User.find(params[:user_id])
 
-    ancestor_list = get_ancestors(task)
-    
-    ancestor_list.each do |anctask|
-      anctask.participants.push(user)
-      anctask.save
-    end
+    add_participant_to_ancestor_tasks(task, user)
 
     if task.save
       mission_id = task.mission_id
@@ -157,6 +152,16 @@ class TasksController < ApplicationController
   end
   
   private
+  def add_participant_to_ancestor_tasks(task, user)
+    anc_list = get_ancestors(task)
+    anc_list.each do |anc|
+      if not anc.participants.include?(user)
+        anc.participants.push(user)
+        anc.save
+      end
+    end
+  end
+  
   def get_ancestors(task)
     def ancestor(nexttask)
       if nexttask.sub_task_of.present? then

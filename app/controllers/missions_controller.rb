@@ -69,6 +69,8 @@ class MissionsController < ApplicationController
     authorize!
     @mission = Mission.new(mission_params)
     @mission.user = current_user
+    @mission.participants.push(current_user)
+    @mission.admins.push(current_user)
     if @mission.save
       @task = Task.new(root_task_params)
       @task.user = current_user
@@ -97,6 +99,8 @@ class MissionsController < ApplicationController
       authorize!
       @mission = Mission.new(mission_params)
       @mission.user = current_user
+      @mission.participants.push(current_user)
+      @mission.admins.push(current_user)
       if @mission.save
         @task = Task.new(root_task_params)
         @task.user = current_user
@@ -146,7 +150,13 @@ class MissionsController < ApplicationController
     user_name = params[:admin]
     
     user = User.find_by(name: user_name)
-    @mission.admins.push(user)
+    if not @mission.admins.include?(user)
+      @mission.admins.push(user)
+    end
+    if not @mission.participants.include?(user)
+      @mission.participants.push(user)
+    end
+
     
     if @mission.save
       redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'
@@ -181,7 +191,10 @@ class MissionsController < ApplicationController
     user_name = params[:participant]
     
     user = User.find_by(name: user_name)
-    @mission.participants.push(user)
+    
+    if not @mission.participants.include?(user)
+      @mission.participants.push(user)
+    end
     
     if @mission.save
       redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'

@@ -20,7 +20,7 @@ class Mission < ActiveRecord::Base
            source: :user
   has_many :mission_admin
   accepts_nested_attributes_for :mission_admin
-
+  
   def save(*args)
     super(*args)
     save2virtuoso(self)

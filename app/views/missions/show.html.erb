@@ -455,6 +455,8 @@
 				 tasks.update_hierarchy(data.task_data.hierarchy);
 				 tasks.update_all_tasks(data.task_data.all_tasks);
 
+				 console.log(tasks.get_all_tasks())
+
 				 oc.init({'data': data.task_data.hierarchy});
 			 }
 		 })
@@ -597,6 +599,7 @@
 								   }
 
 								   $('#TaskParticipants').empty()
+								   console.log(task_data.participants)
 								   for (participant of task_data.participants){
 									   <% if user_signed_in? %>
 									   if (participant.id === <%= current_user.id %>){
