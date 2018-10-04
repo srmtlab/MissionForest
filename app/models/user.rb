@@ -63,7 +63,8 @@ class User < ActiveRecord::Base
 
 
 private
-  def save2virtuoso(user)
+  def save2virtuoso(thisuser)
+    user = User.find_by(email: thisuser.email)
     
     id = 'mf-user:' + sprintf("%010d", user.id)
     mail = '<mailto:' + user.email + '>'
