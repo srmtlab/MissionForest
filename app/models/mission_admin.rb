@@ -1,4 +1,4 @@
-class MissionAdmin < ActiveRecord::Base
+class MissionAdmin < ApplicationRecord
   belongs_to :mission
   belongs_to :user
 end

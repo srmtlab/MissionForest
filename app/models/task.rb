@@ -1,5 +1,5 @@
 # coding: utf-8
-class Task < ActiveRecord::Base
+class Task < ApplicationRecord
   include Virtuoso
   
   belongs_to :user
@@ -12,13 +12,13 @@ class Task < ActiveRecord::Base
            :dependent => :destroy,
            foreign_key: "sub_task_of"
 
-  belongs_to :parenttask, class_name: "Task"
-  belongs_to :direct_mission, class_name: "Mission"
+  belongs_to :parenttask, class_name: "Task", optional: true
+  belongs_to :direct_mission, class_name: "Mission", optional: true
 
+  has_many :task_participant
   has_many :participants,
 	       through: :task_participant,
-           source: :user
-  has_many :task_participant
+         source: :user
   accepts_nested_attributes_for :task_participant
 
   def self.localized_statuses

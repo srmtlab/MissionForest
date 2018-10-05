@@ -72,16 +72,16 @@ class MissionsController < ApplicationController
     @mission.participants.push(current_user)
     @mission.admins.push(current_user)
     if @mission.save
-      @task = Task.new(root_task_params)
-      @task.user = current_user
-      @task.mission = @mission
-      @task.direct_mission = @mission
-      @mission.tasks[0] = @task
-      #@mission.tasks.create(root_task_params)
-      #@mission.tasks[0].user = current_user
-      #@mission.tasks[0].direct_mission = @mission
-      #if @mission.tasks[0].save
-      if @task.save
+      task = Task.new
+      task.title = @mission.title
+      task.description = @mission.description
+      task.user = current_user
+      task.mission = @mission
+      task.direct_mission = @mission
+      @mission.tasks.push(task)
+      @mission.root_task = task
+      @mission.save
+      if task.save
         redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
       else
         render :new
@@ -102,15 +102,15 @@ class MissionsController < ApplicationController
       @mission.participants.push(current_user)
       @mission.admins.push(current_user)
       if @mission.save
-        @task = Task.new(root_task_params)
-        @task.user = current_user
-        @task.mission = @mission
-        @task.direct_mission = @mission
+        task = Task.new(root_task_params)
+        task.user = current_user
+        task.mission = @mission
+        task.direct_mission = @mission
         if params[:issecret] != 'True'
-          @task.notify = :lod
+          task.notify = :lod
         end
-        @mission.tasks[0] = @task
-        if @task.save
+        @mission.tasks.push(task)
+        if task.save
           render :json => {'mission_id' => @mission.id}
         end
       end

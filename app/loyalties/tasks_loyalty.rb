@@ -5,6 +5,6 @@ class TasksLoyalty < ApplicationLoyalty
   end
 
   def api_delete_participant?
-    user == record.user
+    record.include?(user)
   end
 end

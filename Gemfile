@@ -1,7 +1,7 @@
 ruby '2.3.1'
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.6'
+gem 'rails', '5.1.2'
 
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
@@ -39,5 +39,6 @@ end
 
 group :unicorn do
   gem 'unicorn', '~> 4.9.0'
+  gem 'listen'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end

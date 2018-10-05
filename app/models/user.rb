@@ -1,5 +1,5 @@
 # coding: utf-8
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Virtuoso
   
   devise :database_authenticatable, :registerable,
@@ -63,8 +63,9 @@ class User < ActiveRecord::Base
 
 
 private
-  def save2virtuoso(user)
-    
+  def save2virtuoso(thisuser)
+    user = User.find_by(email: thisuser.email)
+        
     id = 'mf-user:' + sprintf("%010d", user.id)
     mail = '<mailto:' + user.email + '>'
     name = '"' + user.name + '"' + '@jp'
