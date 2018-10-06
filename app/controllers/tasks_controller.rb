@@ -137,7 +137,7 @@ class TasksController < ApplicationController
   # DELETE /api/tasks/1/delete_participant/1
   def api_delete_participant
     @task = Task.find(params[:id])
-    authorize! @task
+    authorize! @task.participants
 
     @task.participants.delete(params[:user_id])
 

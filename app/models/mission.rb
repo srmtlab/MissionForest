@@ -1,4 +1,4 @@
-class Mission < ActiveRecord::Base
+class Mission < ApplicationRecord
   include Virtuoso
   
   
@@ -9,16 +9,16 @@ class Mission < ActiveRecord::Base
   has_one :root_task, class_name: "Task",
           foreign_key: :direct_mission_id
 
+  has_many :mission_participant
   has_many :participants,
 	       through: :mission_participant,
            source: :user
-  has_many :mission_participant
   accepts_nested_attributes_for :mission_participant
 
+  has_many :mission_admin
   has_many :admins,
            through: :mission_admin,
            source: :user
-  has_many :mission_admin
   accepts_nested_attributes_for :mission_admin
   
   def save(*args)

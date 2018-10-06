@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get 'missions/:id/add_participant_me' => 'missions#add_participant_me', as: :mission_add_me
   delete 'api/tasks/:id/delete_participant/:user_id' => 'tasks#api_delete_participant'
 
@@ -46,4 +47,5 @@ Rails.application.routes.draw do
   put 'api/tasks/:id/update' => 'tasks#update_child'
   delete 'api/tasks/:id/delete' => 'tasks#delete_child'
   post 'api/missions/create' => 'missions#api_create'
+
 end

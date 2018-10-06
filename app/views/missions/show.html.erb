@@ -599,7 +599,6 @@
 								   }
 
 								   $('#TaskParticipants').empty()
-								   console.log(task_data.participants)
 								   for (participant of task_data.participants){
 									   <% if user_signed_in? %>
 									   if (participant.id === <%= current_user.id %>){

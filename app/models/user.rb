@@ -1,5 +1,5 @@
 # coding: utf-8
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Virtuoso
   
   devise :database_authenticatable, :registerable,
