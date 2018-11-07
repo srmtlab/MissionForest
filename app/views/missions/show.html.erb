@@ -2,6 +2,7 @@
 	<div class="container">
 		<div class="page-header">
       <h2><%= @mission.title %></h2>
+			<h4>#<span id="mission_id"><%= @mission.id %></span></h4>
     </div>
     <div class="btn-group" role="group" style="margin-bottom: 20px">
 		<% if user_signed_in? %>
@@ -502,29 +503,61 @@
 	 }
 	 <% end %>
 
-	 get_tasks_hierarchy(){
-		 return this.hierarchy;
-	 }
+		 get_tasks_hierarchy(){
+				 return this.hierarchy;
+		 }
+		 
+		 get_all_tasks(){
+				 return this.all_tasks;
+		 }
+		 
+		 set_selected_task_id(task_id){
+				 this.selected_id = task_id
+		 }
+		 
+		 get_selected_task_id(){
+				 return this.selected_id;
+		 }
 
-	 get_all_tasks(){
-		 return this.all_tasks;
-	 }
-
-	 set_selected_task_id(task_id){
-		 this.selected_id = task_id
-	 }
-
-	 get_selected_task_id(){
-		 return this.selected_id;
-	 }
-
-	 update_hierarchy(hierarchy){
-		 this.hierarchy = hierarchy;
-	 }
+		 update_hierarchy(hierarchy){
+				 this.hierarchy = hierarchy;
+		 }
 	 
-	 update_all_tasks(all_tasks){
-		 this.all_tasks = all_tasks;
-	 }
+		 update_all_tasks(all_tasks){
+				 this.all_tasks = all_tasks;
+		 }
+
+		 drop_hierarchy(){
+				 let taskdb = this;
+				 let user_id = <%= current_user.id %>;
+				 
+				 function recursion(tree, taskdb){
+						 const id = tree['id'];
+						 const detail = taskdb.get_task_detail(id);
+						 tree['name'] = detail['title'];
+						 
+						 if (tree['children'] === undefined){
+								 return;
+						 }
+						 for (let child of tree['children']){
+								 recursion(child, taskdb);
+						 }
+				 }
+				 
+				 let hierarchy = oc.getHierarchy();
+				 recursion(hierarchy, taskdb);
+
+				 $.ajax({
+						 type: 'PUT',
+						 url: '/MissionForest/api/missions/<%= @mission.id %>/update_hierarchy',
+						 data: {
+								 tree : hierarchy,
+								 user_id : user_id
+						 }
+				 })
+				 
+				 App.mission.change_tasktree(hierarchy);
+		 }
  }
 
  function date_format2rails(datestring){
@@ -548,28 +581,31 @@
 
 
 
- let tasks = new TaskDatabase('/MissionForest/api/missions/<%= @mission.id %>/tasks')
+ tasks = new TaskDatabase('/MissionForest/api/missions/<%= @mission.id %>/tasks')
  console.log(tasks.get_all_tasks())
  
- var options = {
-	 'data' : tasks.get_tasks_hierarchy(),
-	 'pan': true,
-	 'draggable': true,
-	 'exportButton': true,
-	 'exportFilename': '<%= @mission.title %>',
-	 'createNode': function($node, data) {
-      $node.append('<div class="add-button">+</div>')
-      $node.append('<div class="delete-button">X</div>')
-      $node.append('<div class="description">' + data["description"] + '</div>')
-      $node.append('<div class="deadline_at">' + data["deadline_at"] + '</div>')
-      $node.append('<div class="status">' + data["status"] + '</div>')
-      $node.append('<div class="notify">' + data["notify"] + '</div>')
-  }
-}
+ const options = {
+		 'data' : tasks.get_tasks_hierarchy(),
+		 'pan': true,
+		 'draggable': true,
+		 'exportButton': true,
+		 'exportFilename': '<%= @mission.title %>',
+		 'createNode': function($node, data) {
+				 $node.append('<div class="add-button">+</div>')
+				 $node.append('<div class="delete-button">X</div>')
+		 }
+ }
 
  
- var oc = $('#chart-container').orgchart(options)
+ let oc = $('#chart-container').orgchart(options)
 
+ oc.$chart.on('nodedrop.orgchart', function(event) {
+		 console.log('drop');
+		 setTimeout('tasks.drop_hierarchy()', 100);
+ });
+
+
+ 
  $(document)
 							   .on('click', '.node', function() {
 	 tasks.set_selected_task_id($(this).attr('id'));
