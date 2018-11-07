@@ -527,6 +527,7 @@
 				 this.all_tasks = all_tasks;
 		 }
 
+		<% if user_signed_in? %>
 		 drop_hierarchy(){
 				 let taskdb = this;
 				 let user_id = <%= current_user.id %>;
@@ -558,6 +559,7 @@
 				 
 				 App.mission.change_tasktree(hierarchy);
 		 }
+		<% end %>
  }
 
  function date_format2rails(datestring){

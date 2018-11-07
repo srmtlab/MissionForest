@@ -42,3 +42,192 @@
 17:29:49 web.1  | I, [2018-10-30T17:29:49.482365 #757]  INFO -- : worker=0 ready
 17:29:49 web.1  | I, [2018-10-30T17:29:49.483746 #748]  INFO -- : master process ready
 17:29:49 web.1  | I, [2018-10-30T17:29:49.484608 #760]  INFO -- : worker=1 ready
+00:17:28 web.1  | 
+00:17:28 web.1  | NoMethodError: undefined method `original_exception' for #<ActionView::Template::Error:0x00560e900bf988>
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:16:in `block in render_exception_with_web_console'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `tap'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `render_exception_with_web_console'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:69:in `rescue in call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:58:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:20:in `block in call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `catch'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:36:in `call_app'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `block in call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `block in tagged'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:26:in `tagged'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `tagged'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/sprockets-rails-3.2.1/lib/sprockets/rails/quiet_assets.rb:13:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/request_id.rb:25:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/method_override.rb:22:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/runtime.rb:22:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/executor.rb:12:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/static.rb:125:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/sendfile.rb:111:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/engine.rb:522:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:68:in `block in call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `each'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `call'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:580:in `process_client'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:674:in `worker_loop'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:529:in `spawn_missing_workers'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:140:in `start'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/bin/unicorn_rails:209:in `<top (required)>'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `load'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `<top (required)>'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `load'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `kernel_load'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:28:in `run'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:424:in `exec'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor.rb:387:in `dispatch'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:27:in `dispatch'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:18:in `start'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:30:in `block in <top (required)>'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/friendly_errors.rb:124:in `with_friendly_errors'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:22:in `<top (required)>'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `load'
+00:17:28 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `<main>'
+00:17:34 web.1  | 
+00:17:34 web.1  | NoMethodError: undefined method `original_exception' for #<ActionView::Template::Error:0x00560e8b64b2f8>
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:16:in `block in render_exception_with_web_console'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `tap'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `render_exception_with_web_console'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:69:in `rescue in call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:58:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:20:in `block in call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `catch'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:36:in `call_app'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `block in call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `block in tagged'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:26:in `tagged'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `tagged'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/sprockets-rails-3.2.1/lib/sprockets/rails/quiet_assets.rb:13:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/request_id.rb:25:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/method_override.rb:22:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/runtime.rb:22:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/executor.rb:12:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/static.rb:125:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/sendfile.rb:111:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/engine.rb:522:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:68:in `block in call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `each'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `call'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:580:in `process_client'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:674:in `worker_loop'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:529:in `spawn_missing_workers'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:140:in `start'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/bin/unicorn_rails:209:in `<top (required)>'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `load'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `<top (required)>'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `load'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `kernel_load'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:28:in `run'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:424:in `exec'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor.rb:387:in `dispatch'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:27:in `dispatch'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:18:in `start'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:30:in `block in <top (required)>'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/friendly_errors.rb:124:in `with_friendly_errors'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:22:in `<top (required)>'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `load'
+00:17:34 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `<main>'
+00:18:08 system | SIGTERM received, starting shutdown
+00:18:08 system | sending SIGTERM to all processes
+00:18:08 web.1  | Unicorn master intercepting TERM and sending myself QUIT instead
+00:18:09 web.1  | I, [2018-11-08T00:18:09.057012 #748]  INFO -- : reaped #<Process::Status: pid 757 exit 0> worker=0
+00:18:09 web.1  | I, [2018-11-08T00:18:09.057190 #748]  INFO -- : reaped #<Process::Status: pid 760 exit 0> worker=1
+00:18:09 web.1  | I, [2018-11-08T00:18:09.057466 #748]  INFO -- : master complete
+00:18:09 web.1  | exited with code 0
+00:18:19 web.1  | started with pid 3973
+00:18:19 web.1  | I, [2018-11-08T00:18:19.423366 #3973]  INFO -- : Refreshing Gem list
+00:18:20 web.1  | I, [2018-11-08T00:18:20.600823 #3973]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+00:18:20 web.1  | I, [2018-11-08T00:18:20.605821 #3982]  INFO -- : worker=0 ready
+00:18:20 web.1  | I, [2018-11-08T00:18:20.607375 #3973]  INFO -- : master process ready
+00:18:20 web.1  | I, [2018-11-08T00:18:20.608357 #3985]  INFO -- : worker=1 ready
+00:20:59 system | SIGTERM received, starting shutdown
+00:20:59 system | sending SIGTERM to all processes
+00:20:59 web.1  | Unicorn master intercepting TERM and sending myself QUIT instead
+00:20:59 web.1  | I, [2018-11-08T00:20:59.483526 #3973]  INFO -- : reaped #<Process::Status: pid 3982 exit 0> worker=0
+00:20:59 web.1  | I, [2018-11-08T00:20:59.483671 #3973]  INFO -- : reaped #<Process::Status: pid 3985 exit 0> worker=1
+00:20:59 web.1  | I, [2018-11-08T00:20:59.484242 #3973]  INFO -- : master complete
+00:20:59 web.1  | exited with code 0
+00:21:07 web.1  | started with pid 4079
+00:21:07 web.1  | I, [2018-11-08T00:21:07.479321 #4079]  INFO -- : Refreshing Gem list
+00:21:08 web.1  | I, [2018-11-08T00:21:08.653558 #4079]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+00:21:08 web.1  | I, [2018-11-08T00:21:08.659239 #4088]  INFO -- : worker=0 ready
+00:21:08 web.1  | I, [2018-11-08T00:21:08.659868 #4079]  INFO -- : master process ready
+00:21:08 web.1  | I, [2018-11-08T00:21:08.660795 #4091]  INFO -- : worker=1 ready
+00:21:16 web.1  | 
+00:21:16 web.1  | NoMethodError: undefined method `original_exception' for #<ActionView::Template::Error:0x00558eaa11ae48>
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:16:in `block in render_exception_with_web_console'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `tap'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/extensions.rb:3:in `render_exception_with_web_console'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:69:in `rescue in call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/debug_exceptions.rb:58:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:20:in `block in call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `catch'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/web-console-2.3.0/lib/web_console/middleware.rb:18:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:36:in `call_app'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `block in call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `block in tagged'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:26:in `tagged'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/tagged_logging.rb:69:in `tagged'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/rack/logger.rb:24:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/sprockets-rails-3.2.1/lib/sprockets/rails/quiet_assets.rb:13:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/request_id.rb:25:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/method_override.rb:22:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/runtime.rb:22:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/activesupport-5.1.2/lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/executor.rb:12:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/actionpack-5.1.2/lib/action_dispatch/middleware/static.rb:125:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/sendfile.rb:111:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/railties-5.1.2/lib/rails/engine.rb:522:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:68:in `block in call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `each'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rack-2.0.5/lib/rack/urlmap.rb:53:in `call'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:580:in `process_client'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:674:in `worker_loop'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:529:in `spawn_missing_workers'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/lib/unicorn/http_server.rb:140:in `start'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/unicorn-4.9.0/bin/unicorn_rails:209:in `<top (required)>'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `load'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/unicorn_rails:22:in `<top (required)>'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `load'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:74:in `kernel_load'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli/exec.rb:28:in `run'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:424:in `exec'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor.rb:387:in `dispatch'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:27:in `dispatch'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/cli.rb:18:in `start'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:30:in `block in <top (required)>'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/lib/bundler/friendly_errors.rb:124:in `with_friendly_errors'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.16.6/exe/bundle:22:in `<top (required)>'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `load'
+00:21:16 web.1  | 	from /home/m-watanabe/.rbenv/versions/2.4.1/bin/bundle:22:in `<main>'
+00:22:04 system | SIGTERM received, starting shutdown
+00:22:04 system | sending SIGTERM to all processes
+00:22:04 web.1  | Unicorn master intercepting TERM and sending myself QUIT instead
+00:22:04 web.1  | I, [2018-11-08T00:22:04.525503 #4079]  INFO -- : reaped #<Process::Status: pid 4088 exit 0> worker=0
+00:22:04 web.1  | I, [2018-11-08T00:22:04.525670 #4079]  INFO -- : reaped #<Process::Status: pid 4091 exit 0> worker=1
+00:22:04 web.1  | I, [2018-11-08T00:22:04.526731 #4079]  INFO -- : master complete
+00:22:04 web.1  | exited with code 0
