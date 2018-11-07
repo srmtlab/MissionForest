@@ -1,0 +1,44 @@
+17:55:27 web.1  | started with pid 1243
+17:55:27 web.1  | I, [2018-10-06T17:55:27.383338 #1243]  INFO -- : Refreshing Gem list
+17:55:28 web.1  | I, [2018-10-06T17:55:28.547442 #1243]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+17:55:28 web.1  | I, [2018-10-06T17:55:28.552246 #1252]  INFO -- : worker=0 ready
+17:55:28 web.1  | I, [2018-10-06T17:55:28.552837 #1243]  INFO -- : master process ready
+17:55:28 web.1  | I, [2018-10-06T17:55:28.553699 #1255]  INFO -- : worker=1 ready
+17:55:31 system | SIGINT received, starting shutdown
+17:55:31 web.1  | I, [2018-10-06T17:55:31.289107 #1243]  INFO -- : reaped #<Process::Status: pid 1252 exit 0> worker=0
+17:55:31 web.1  | I, [2018-10-06T17:55:31.289285 #1243]  INFO -- : reaped #<Process::Status: pid 1255 exit 0> worker=1
+17:55:31 web.1  | I, [2018-10-06T17:55:31.289896 #1243]  INFO -- : master complete
+17:55:31 system | sending SIGTERM to all processes
+17:55:31 web.1  | exited with code 0
+17:55:34 web.1  | started with pid 1289
+17:55:34 web.1  | I, [2018-10-06T17:55:34.211202 #1289]  INFO -- : Refreshing Gem list
+17:55:35 web.1  | I, [2018-10-06T17:55:35.372193 #1289]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+17:55:35 web.1  | I, [2018-10-06T17:55:35.377048 #1300]  INFO -- : worker=0 ready
+17:55:35 web.1  | I, [2018-10-06T17:55:35.378522 #1289]  INFO -- : master process ready
+17:55:35 web.1  | I, [2018-10-06T17:55:35.379442 #1303]  INFO -- : worker=1 ready
+17:25:03 system | SIGTERM received, starting shutdown
+17:25:04 system | sending SIGTERM to all processes
+17:25:04 web.1  | Unicorn master intercepting TERM and sending myself QUIT instead
+17:25:04 web.1  | I, [2018-10-30T17:25:04.456260 #1289]  INFO -- : reaped #<Process::Status: pid 1300 exit 0> worker=0
+17:25:04 web.1  | I, [2018-10-30T17:25:04.456399 #1289]  INFO -- : reaped #<Process::Status: pid 1303 exit 0> worker=1
+17:25:04 web.1  | I, [2018-10-30T17:25:04.456705 #1289]  INFO -- : master complete
+17:25:04 web.1  | exited with code 0
+17:25:13 web.1  | started with pid 569
+17:25:13 web.1  | I, [2018-10-30T17:25:13.172541 #569]  INFO -- : Refreshing Gem list
+17:25:14 web.1  | I, [2018-10-30T17:25:14.337999 #569]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+17:25:14 web.1  | I, [2018-10-30T17:25:14.342877 #578]  INFO -- : worker=0 ready
+17:25:14 web.1  | I, [2018-10-30T17:25:14.344317 #569]  INFO -- : master process ready
+17:25:14 web.1  | I, [2018-10-30T17:25:14.345174 #581]  INFO -- : worker=1 ready
+17:29:44 system | SIGTERM received, starting shutdown
+17:29:45 system | sending SIGTERM to all processes
+17:29:45 web.1  | Unicorn master intercepting TERM and sending myself QUIT instead
+17:29:45 web.1  | I, [2018-10-30T17:29:45.246742 #569]  INFO -- : reaped #<Process::Status: pid 578 exit 0> worker=0
+17:29:45 web.1  | I, [2018-10-30T17:29:45.246878 #569]  INFO -- : reaped #<Process::Status: pid 581 exit 0> worker=1
+17:29:45 web.1  | I, [2018-10-30T17:29:45.247288 #569]  INFO -- : master complete
+17:29:45 web.1  | exited with code 0
+17:29:48 web.1  | started with pid 748
+17:29:48 web.1  | I, [2018-10-30T17:29:48.309031 #748]  INFO -- : Refreshing Gem list
+17:29:49 web.1  | I, [2018-10-30T17:29:49.477571 #748]  INFO -- : listening on addr=0.0.0.0:8080 fd=12
+17:29:49 web.1  | I, [2018-10-30T17:29:49.482365 #757]  INFO -- : worker=0 ready
+17:29:49 web.1  | I, [2018-10-30T17:29:49.483746 #748]  INFO -- : master process ready
+17:29:49 web.1  | I, [2018-10-30T17:29:49.484608 #760]  INFO -- : worker=1 ready

@@ -9,13 +9,13 @@ class Task < ApplicationRecord
   enum notify: [:own, :organize, :publish, :lod]
 
   has_many :subtasks, class_name: "Task",
-           :dependent => :destroy,
+	dependent: :destroy,
            foreign_key: "sub_task_of"
 
   belongs_to :parenttask, class_name: "Task", optional: true
   belongs_to :direct_mission, class_name: "Mission", optional: true
 
-  has_many :task_participant
+  has_many :task_participant, dependent: :destroy
   has_many :participants,
 	       through: :task_participant,
          source: :user
