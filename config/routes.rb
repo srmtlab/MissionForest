@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  put 'api/missions/:id/update_hierarchy' => 'missions#update_hierarchy'
-  
   get 'missions/:id/add_participant_me' => 'missions#add_participant_me', as: :mission_add_me
   delete 'api/tasks/:id/delete_participant/:user_id' => 'tasks#api_delete_participant'
 

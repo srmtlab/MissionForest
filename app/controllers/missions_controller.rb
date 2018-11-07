@@ -36,39 +36,6 @@ class MissionsController < ApplicationController
     render :json => taskjson
   end
 
-  # PUT /api/missions/1/update_hierarchy
-  def update_hierarchy
-    def tree2pcrelation(tree)
-      def recursion(tree, pcrelation)
-        parent = tree['id']
-
-        if ! tree['children'].nil? then
-          tree['children'].each do |child|
-            pair = []
-            pair.push(parent)
-            pair.push(child[1]['id'])
-            pcrelation.push(pair)
-            recursion(child[1], pcrelation)
-          end
-        end
-      end
-      
-      pcrelation = []
-      recursion(tree, pcrelation)
-      
-      return pcrelation
-    end
-    authorize!
-
-    pcrelation = tree2pcrelation(params[:tree].to_unsafe_h)
-    
-    pcrelation.each do |pair|
-      task = Task.find(pair[1])
-      task.sub_task_of = pair[0].to_i
-      task.save!
-    end
-  end
-
 
   # DELETE /api/missions/1/participant/2
   def participation_user

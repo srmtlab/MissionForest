@@ -9,10 +9,6 @@ class MissionsLoyalty < ApplicationLoyalty
     # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
     true
   end
-
-  def update_hierarchy?
-    true
-  end
   
   def participation_user?
     # user == record.user
