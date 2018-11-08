@@ -420,6 +420,10 @@
 				 tasks.update_all_tasks(data.task_data.all_tasks);
 
 				 oc.init({'data': data.task_data.hierarchy});
+oc.$chart.on('nodedrop.orgchart', function(event) {
+                 console.log('drop');
+                 setTimeout('tasks.drop_hierarchy()', 100);
+ });
 			 }
 		 })
 	 }
@@ -459,6 +463,10 @@
 				 console.log(tasks.get_all_tasks())
 
 				 oc.init({'data': data.task_data.hierarchy});
+oc.$chart.on('nodedrop.orgchart', function(event) {
+                 console.log('drop');
+                 setTimeout('tasks.drop_hierarchy()', 100);
+ });
 			 }
 		 })
 	 }
@@ -477,6 +485,10 @@
 				 tasks.update_all_tasks(data.task_data.all_tasks);
 				 
 				 oc.init({'data': data.task_data.hierarchy});
+oc.$chart.on('nodedrop.orgchart', function(event) {
+                 console.log('drop');
+                 setTimeout('tasks.drop_hierarchy()', 100);
+ });
 			 }
 		 })
 	 }
@@ -498,6 +510,10 @@
 				 tasks.update_all_tasks(data.task_data.all_tasks);
 
 				 oc.init({'data': data.task_data.hierarchy});
+oc.$chart.on('nodedrop.orgchart', function(event) {
+                 console.log('drop');
+                 setTimeout('tasks.drop_hierarchy()', 100);
+ });
 			 }
 		 })
 	 }

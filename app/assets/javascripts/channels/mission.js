@@ -21,7 +21,17 @@ $(function(){
 								// Called when there's incoming data on the websocket for this channel
 								console.log(data)
 								tasks.update_hierarchy(data)
-								oc.init({'data':tasks.get_tasks_hierarchy()})
+						    oc.init({'data':tasks.get_tasks_hierarchy()})
+
+						    oc.$chart.on('nodedrop.orgchart', function(event) {
+							console.log('drop');
+							setTimeout('tasks.drop_hierarchy()', 100);
+						    });
+						    });                                                       |                 console.log('drop');
+						});                                                                                       |                 setTimeout('tasks.drop_hierarchy()', 100);
+		       
+
+						    
 						},
 						
 						change_tasktree: function(tree){
