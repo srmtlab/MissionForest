@@ -1,4 +1,4 @@
-worker_processes 2 # 500MB(max memory) / 130MB(avg pros memory)
+worker_processes 1 # 500MB(max memory) / 130MB(avg pros memory)
 timeout 30
 preload_app true
 
