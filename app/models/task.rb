@@ -5,11 +5,11 @@ class Task < ApplicationRecord
   belongs_to :user
   belongs_to :mission
 
-  enum status: [:todo, :doing, :done]
+  enum status: [:todo, :doing, :done, :cancel]
   enum notify: [:own, :organize, :publish, :lod]
 
   has_many :subtasks, class_name: "Task",
-	dependent: :destroy,
+	         dependent: :destroy,
            foreign_key: "sub_task_of"
 
   belongs_to :parenttask, class_name: "Task", optional: true
