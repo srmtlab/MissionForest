@@ -27,11 +27,6 @@ $(function(){
 							console.log('drop');
 							setTimeout('tasks.drop_hierarchy()', 100);
 						    });
-						    });                                                       |                 console.log('drop');
-						});                                                                                       |                 setTimeout('tasks.drop_hierarchy()', 100);
-		       
-
-						    
 						},
 						
 						change_tasktree: function(tree){
