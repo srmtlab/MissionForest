@@ -365,6 +365,10 @@
 	 color: #ffffff;
 	 cursor: pointer;
  }
+
+ .target_task{
+	 filter: drop-shadow(0 0 30px rgba(255,255,0,1));
+ }
 </style>
 
 <script>
@@ -626,6 +630,16 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 		 setTimeout('tasks.drop_hierarchy()', 100);
  });
 
+
+ if (location.search !== '') {
+		 let task = location.search;
+		 task = task.replace( '?taskid=' , '' );
+
+		 $('#' + task).addClass("target_task");
+
+ }
+
+ 
 
  
  $(document)

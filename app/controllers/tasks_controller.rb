@@ -9,8 +9,12 @@ class TasksController < ApplicationController
 
   # GET /tasks/1
   def show
-    @task = Task.find(params[:id])
-    @children = Task.where("parent_id = ?", @task.id)
+    task = Task.find(params[:id])
+    mission = task.mission
+    mission_id = mission.id.to_s
+    task_id = task.id.to_s
+    url = "/MissionForest/missions/" + mission_id + "?taskid=" + task_id
+    redirect_to(url, :status => :found)
   end
 
   # GET /tasks/new
