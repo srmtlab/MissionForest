@@ -85,6 +85,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">タスクの編集</h4>
+				<h5>#<span id="DetailTaskID"></span></h5>
 		<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
       </div>
       <div class="modal-body">
@@ -121,8 +122,11 @@
             </select>
           </div>
         </form>
-		<h4>参加者</h4>
-		<ul id="TaskParticipants"></ul>
+				<h4>参加者</h4>
+				<ul id="TaskParticipants"></ul>
+				<hr>
+				<h4>タグ</h4>
+				<ul id="TaskTags"></ul>
       </div>
 	  <% if user_signed_in? %>
       <div class="modal-footer">
@@ -625,71 +629,103 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 
  
  $(document)
-							   .on('click', '.node', function() {
-	 tasks.set_selected_task_id($(this).attr('id'));
- })
-							   .on('click', '.title', function() {
-								   var deadline,
-									   $this = $(this).parent();
-								   
-								   task_data = tasks.get_task_detail($(this).parent().attr('id'));
-								   								   
-								   $('#selected-node').val(task_data.title).data('node', $this)
-								   $('#DetailTask').modal('show')
-								   $('#DetailTaskID').val(task_data.id)
-								   $('#DetailTaskTitle').val(task_data.title)
-								   $('#DetailTaskDescription').val(task_data.description)
-								   deadline = task_data.deadline_at
-								   if (deadline !== 'null') {
-									   $('#DetailTaskDeadline').val(task_data.deadline_at)
-								   }
-								   $('#DetailTaskStatus').val(task_data.status)
-								   $('#DetailTaskNotify').val(task_data.notify)
-								   if (task_data.notify == 'lod'){
-									   $('.ccby-license').addClass('ccby-active');
-								   }
-								   else {
-									   $('.ccby-license').removeClass('ccby-active');
-								   }
+		 .on('click', '.node', function() {
+				 tasks.set_selected_task_id($(this).attr('id'));
+		 })
+		 .on('click', '.title', function() {
+				 var deadline,
+						 $this = $(this).parent();
+				 
+				 let task_data = tasks.get_task_detail($(this).parent().attr('id'));
 
-								   $('#TaskParticipants').empty()
-								   for (participant of task_data.participants){
-									   <% if user_signed_in? %>
-									   if (participant.id === <%= current_user.id %>){
-										   $('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
-									   }
-									   else {
-										   $('#TaskParticipants').append('<li>' + participant.name + '</li>');
-									   }
-									   <% else %>
-									   $('#TaskParticipants').append('<li>' + participant.name + '</li>');
-									   <% end %>
-								   }
-							   })
-							   .on('click', '.add-button', function() {
-								   var $this = $(this).parent();
-								   
-								   task_data = tasks.get_task_detail($(this).parent().attr('id'));
-								   
-								   $('#selected-node').val(task_data.title).data('node', $this)
-								   $('#AddTask').modal('show')
-								   $('#AddTaskTitle').val('')
-								   $('#AddTaskDescription').val('')
-							   })
-							   .on('click', '.delete-button', function() {
-								   var $this = $(this).parent();
+				 $('#selected-node').val(task_data.title).data('node', $this)
+				 $('#DetailTask').modal('show')
+				 $('#DetailTaskID').text(task_data.id)
+				 $('#DetailTaskTitle').val(task_data.title)
+				 $('#DetailTaskDescription').val(task_data.description)
+				 deadline = task_data.deadline_at
+				 if (deadline !== 'null') {
+						 $('#DetailTaskDeadline').val(task_data.deadline_at)
+				 }
+				 $('#DetailTaskStatus').val(task_data.status)
+				 $('#DetailTaskNotify').val(task_data.notify)
+				 if (task_data.notify == 'lod'){
+						 $('.ccby-license').addClass('ccby-active');
+				 }
+				 else {
+						 $('.ccby-license').removeClass('ccby-active');
+				 }
+				 
+				 $('#TaskParticipants').empty()
+				 for (participant of task_data.participants){
+						 <% if user_signed_in? %>
+						 if (participant.id === <%= current_user.id %>){
+								 $('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
+						 }
+						 else {
+								 $('#TaskParticipants').append('<li>' + participant.name + '</li>');
+						 }
+						 <% else %>
+						 $('#TaskParticipants').append('<li>' + participant.name + '</li>');
+						 <% end %>
+				 }
 
-								   console.log($(this).parent().attr('id'));
-								   task_data = tasks.get_task_detail($(this).parent().attr('id'));
-								   console.log(task_data);
-								   console.log(tasks.get_all_tasks());
-								   
-								   $('#selected-node').val(task_data.title).data('node', $this)
-								   $('#ConfirmDelete').modal('show')
-								   $('#DeleteTaskID').val(task_data.id);
-								   $('#DeleteTaskTitle').text(task_data.title);
-							   })
+				 
+				 {
+						 $('#TaskTags').empty();
+						 
+						 let task_id = task_data.id;
+						 let query = 'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>'
+											 + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
+											 + ''
+											 + 'select ?tags where{'
+											 + '  ?annotate tags:target mf-task:' + task_id + ' ;'
+											 + '  tags:body ?tags.'
+											 + '}'
 
+						 $.ajax({
+								 type: 'GET',
+								 url: 'http://192.168.33.10:8890/sparql/',
+								 data: {
+										 'query' : query,
+										 'format' : 'application/sparql-results+json',
+										 'default-graph-uri' : 'http://lod.srmt.nitech.ac.jp/tags/annotate/'
+								 },
+								 success: function(data) {
+										 console.log(data);
+										 for ( let x of data['results']['bindings'] ){
+												 let tag_name = x['tags']['value'];
+												 $('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
+										 }
+										 
+								 }
+						 });
+				 }
+		 })
+		 .on('click', '.add-button', function() {
+				 var $this = $(this).parent();
+				 
+				 task_data = tasks.get_task_detail($(this).parent().attr('id'));
+				 
+				 $('#selected-node').val(task_data.title).data('node', $this)
+				 $('#AddTask').modal('show')
+				 $('#AddTaskTitle').val('')
+				 $('#AddTaskDescription').val('')
+		 })
+		 .on('click', '.delete-button', function() {
+				 var $this = $(this).parent();
+				 
+				 console.log($(this).parent().attr('id'));
+				 task_data = tasks.get_task_detail($(this).parent().attr('id'));
+				 console.log(task_data);
+				 console.log(tasks.get_all_tasks());
+				 
+				 $('#selected-node').val(task_data.title).data('node', $this)
+				 $('#ConfirmDelete').modal('show')
+				 $('#DeleteTaskID').val(task_data.id);
+				 $('#DeleteTaskTitle').text(task_data.title);
+		 })
+ 
  <% if user_signed_in? %>
  $("#ToAddChild").click(function(){
   $('#AddTask').modal('show')
