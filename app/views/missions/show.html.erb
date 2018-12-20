@@ -685,11 +685,11 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 
 						 $.ajax({
 								 type: 'GET',
-								 url: 'http://192.168.33.10:8890/sparql/',
+								 url: 'http://lod.srmt.nitech.ac.jp/sparql/',
 								 data: {
 										 'query' : query,
 										 'format' : 'application/sparql-results+json',
-										 'default-graph-uri' : 'http://lod.srmt.nitech.ac.jp/tags/annotate/'
+										 'default-graph-uri' : 'http://tag.srmt.nitech.ac.jp/tags/annotate/'
 								 },
 								 success: function(data) {
 										 console.log(data);
