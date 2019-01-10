@@ -13,7 +13,7 @@ class TasksController < ApplicationController
     mission = task.mission
     mission_id = mission.id.to_s
     task_id = task.id.to_s
-    url = "/MissionForest/missions/" + mission_id + "?taskid=" + task_id
+    url = "/missions/" + mission_id + "?taskid=" + task_id
     redirect_to(url, :status => :found)
   end
 
