@@ -51,9 +51,10 @@ class Mission < ApplicationRecord
     if mission.root_task.notify != 'lod'
       return true
     end
-    
-    id = 'mf-mission:' + sprintf("%010d", mission.id)
-    user_id = 'mf-user:' + sprintf("%010d", mission.user_id)
+
+
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id + '>'
+    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + mission.user_id + '>'
     title = '"' + mission.title + '"' + '@jp'
     description = '"' + mission.description + '"' + '@jp'
     created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
@@ -61,25 +62,25 @@ class Mission < ApplicationRecord
 
     
     insertquery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
-      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
       prefix foaf: <http://xmlns.com/foaf/0.1/>
       prefix dct: <http://purl.org/dc/terms/>
-      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
-      prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
+      prefix mf: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/ontology#>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       
-      INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>
+      INSERT INTO <http://mf.srmt.nitech.ac.jp/>
       {
       EOS
 
-    insertquery += id + ' rdf:type mf:Mission ;'
-    insertquery += 'dct:creator ' + user_id + ' ;'
-    insertquery += 'dct:modified '+ updated_at + ' ;'
-    insertquery += 'dct:description '+ description + ' ;'
-    insertquery += 'dct:dateSubmitted '+ created_at + ' ;'
-    insertquery += 'dct:title '+ title + '.'
+    insertquery += id + ' rdf:type mf:Mission .'
+    insertquery += id + ' dct:creator ' + user_id + ' .'
+    insertquery += id + ' dct:modified '+ updated_at + ' .'
+    insertquery += id + ' dct:description '+ description + ' .'
+    insertquery += id + ' dct:dateSubmitted '+ created_at + ' .'
+    insertquery += id + ' dct:title '+ title + ' .'
     insertquery += '}'
     
     clireturn = auth_query(insertquery)
@@ -87,12 +88,12 @@ class Mission < ApplicationRecord
   end
 
   def deletefromvirtuoso(mission)
-    id = 'mf-mission:' + sprintf("%010d", mission.id)
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id + '>'
 
     deletequery = <<-EOS
-      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
 
-      WITH <http://lod.srmt.nitech.ac.jp/MissionForest/>
+      WITH <http://mf.srmt.nitech.ac.jp/>
       DELETE {
       EOS
     deletequery += id + ' ?q ?o'

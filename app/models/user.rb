@@ -65,31 +65,31 @@ class User < ApplicationRecord
 private
   def save2virtuoso(thisuser)
     user = User.find_by(email: thisuser.email)
-    
-    id = 'mf-user:' + sprintf("%010d", user.id)
+
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id + '>'
     mail = '<mailto:' + user.email + '>'
     name = '"' + user.name + '"' + '@jp'
 
     
     insertquery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
-      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/MissionForest/missions/>
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
+      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
       prefix foaf: <http://xmlns.com/foaf/0.1/>
       prefix dct: <http://purl.org/dc/terms/>
-      prefix mf-task: <http://lod.srmt.nitech.ac.jp/MissionForest/tasks/>
-      prefix mf: <http://lod.srmt.nitech.ac.jp/MissionForest/ontology/>
+      prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
+      prefix mf: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/ontology#>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
       EOS
     
     
-    insertquery += 'INSERT INTO <http://lod.srmt.nitech.ac.jp/MissionForest/>'
+    insertquery += 'INSERT INTO <http://mf.srmt.nitech.ac.jp/>'
     insertquery += '{'
     
-    insertquery += id + ' rdf:type mf:User ;'
-    insertquery += 'foaf:mail ' + mail + ' ;'
-    insertquery += 'foaf:name '+ name + ' .'
+    insertquery += id + ' rdf:type mf:User .'
+    insertquery += id + ' foaf:mail ' + mail + ' .'
+    insertquery += id + ' foaf:name '+ name + ' .'
     
     insertquery += '}'
 
@@ -102,12 +102,12 @@ private
   end
 
   def deletefromvirtuoso(task)
-    id = 'mf-user:' + sprintf("%010d", user.id)
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id + '>'
 
     deletequery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/MissionForest/users/>
+      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
       
-      WITH <http://lod.srmt.nitech.ac.jp/MissionForest/>
+      WITH <http://mf.srmt.nitech.ac.jp/>
       DELETE {
       EOS
     deletequery += id + ' ?q ?o'
