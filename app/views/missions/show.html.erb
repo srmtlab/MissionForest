@@ -369,6 +369,17 @@
  .target_task{
 	 filter: drop-shadow(0 0 30px rgba(255,255,0,1));
  }
+
+
+ .orgchart .node .new-icon {
+	 position : absolute;
+	 top: -5px;
+   height: 20px;
+   white-space: normal;
+   font-size: 16px;
+   color: #f00;
+ }
+ 
 </style>
 
 <script>
@@ -423,15 +434,15 @@
 				 }
 			 },
 			 success: function(data) {
-				 console.log(data)
-				 tasks.update_hierarchy(data.task_data.hierarchy);
-				 tasks.update_all_tasks(data.task_data.all_tasks);
-
-				 oc.init({'data': data.task_data.hierarchy});
-oc.$chart.on('nodedrop.orgchart', function(event) {
-                 console.log('drop');
-                 setTimeout('tasks.drop_hierarchy()', 100);
- });
+					 console.log(data)
+					 tasks.update_hierarchy(data.task_data.hierarchy);
+					 tasks.update_all_tasks(data.task_data.all_tasks);
+					 
+					 oc.init({'data': data.task_data.hierarchy});
+					 oc.$chart.on('nodedrop.orgchart', function(event) {
+               console.log('drop');
+               setTimeout('tasks.drop_hierarchy()', 100);
+					 });
 			 }
 		 })
 	 }
@@ -619,6 +630,10 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 		 'createNode': function($node, data) {
 				 $node.append('<div class="add-button">+</div>')
 				 $node.append('<div class="delete-button">X</div>')
+
+				 if (data.id > 2250){
+						 $node.append('<div class="new-icon">NEW</div>')
+				 }
 		 }
  }
 
