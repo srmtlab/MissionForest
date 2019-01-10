@@ -391,7 +391,7 @@
 		 $.ajax({
 			 type: 'GET',
 			 async: false,
-			 url: '/MissionForest/api/missions/<%= @mission.id %>/tasks',
+			 url: '/api/missions/<%= @mission.id %>/tasks',
 			 success: function(data){
 				 task_data = data;
 			 }});
@@ -423,7 +423,7 @@
 		 console.log(task_detail)
 		 $.ajax({
 			 type: 'PUT',
-			 url: '/MissionForest/api/tasks/' + task_id + '/update',
+			 url: '/api/tasks/' + task_id + '/update',
 			 data: {
 				 task: {
 					 title: task_detail.title,
@@ -464,7 +464,7 @@
 
 		 $.ajax({
 			 type: 'POST',
-			 url: '/MissionForest/api/missions/<%= @mission.id %>/task',
+			 url: '/api/missions/<%= @mission.id %>/task',
 			 data: {
 				 task: {
 					 title: task_detail.title,
@@ -495,7 +495,7 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 	 delete_task(task_id){
 		 $.ajax({
 			 type: 'DELETE',
-			 url: '/MissionForest/api/tasks/' + task_id + '/delete',
+			 url: '/api/tasks/' + task_id + '/delete',
 			 data: {
 				 'id' : task_id
 			 },
@@ -519,7 +519,7 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 		 
 		 $.ajax({
 			 type: 'PUT',
-			 url: '/MissionForest/api/tasks/' + task_id + '/add_participant',
+			 url: '/api/tasks/' + task_id + '/add_participant',
 			 data: {
 				 'id' : task_id,
 				 'user_id' : user_id
@@ -585,7 +585,7 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 
 				 $.ajax({
 						 type: 'PUT',
-						 url: '/MissionForest/api/missions/<%= @mission.id %>/update_hierarchy',
+						 url: '/api/missions/<%= @mission.id %>/update_hierarchy',
 						 data: {
 								 tree : hierarchy,
 								 user_id : user_id
@@ -618,7 +618,7 @@ oc.$chart.on('nodedrop.orgchart', function(event) {
 
 
 
- tasks = new TaskDatabase('/MissionForest/api/missions/<%= @mission.id %>/tasks')
+ tasks = new TaskDatabase('/api/missions/<%= @mission.id %>/tasks')
  console.log(tasks.get_all_tasks())
  
  const options = {
@@ -811,7 +811,7 @@ $("#ToDeleteTask").click(function(){
 
 	 $.ajax({
 		 type: 'DELETE',
-		 url: '/MissionForest/api/missions/' + mission_id + '/delete_admin/' + admin_id,
+		 url: '/api/missions/' + mission_id + '/delete_admin/' + admin_id,
 		 success: function(data){
 			 $('p[admin_id=' + admin_id + ']').remove();
 		 }});
@@ -824,7 +824,7 @@ $("#ToDeleteTask").click(function(){
 
 	 $.ajax({
 		 type: 'DELETE',
-		 url: '/MissionForest/api/missions/' + mission_id + '/delete_participant/' + participant_id,
+		 url: '/api/missions/' + mission_id + '/delete_participant/' + participant_id,
 		 success: function(data){
 			 $('p[participant_id=' + participant_id + ']').remove();
 		 }});
@@ -838,7 +838,7 @@ $("#ToDeleteTask").click(function(){
 		 
 		 $.ajax({
 			 type: 'DELETE',
-			 url: '/MissionForest/api/tasks/' + task_id + '/delete_participant/' + participant_id,
+			 url: '/api/tasks/' + task_id + '/delete_participant/' + participant_id,
 			 success: function(data){
 				 $('span[participant_id=' + participant_id + ']').parent().remove();
 

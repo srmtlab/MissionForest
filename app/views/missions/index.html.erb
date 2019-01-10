@@ -21,11 +21,11 @@
     <div class="row">
       <% @missions.each do |mission| %>
         <div class="col-md-4">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-					
-				  <%= link_to mission_path(mission) do %>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								
+								<%= link_to mission_path(mission) do %>
                   <%= mission.title %>
                 <% end %>
               </h3>
@@ -34,8 +34,8 @@
               <p><%= mission.description %></p>
             </div>
             <div class="panel-footer">
-				<p>作成者: <%= mission.user.name %></p>
-				<p>タスク数: <%= mission.tasks.count %></p>
+							<p>作成者: <%= mission.user.name %></p>
+							<p>タスク数: <%= mission.tasks.count %></p>
             </div>
           </div>
         </div>
