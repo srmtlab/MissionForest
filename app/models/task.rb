@@ -57,13 +57,13 @@ class Task < ApplicationRecord
       return true
     end
 
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id + '>'
-    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + task.user_id + '>'
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
+    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + task.user_id.to_s + '>'
     title = '"' + task.title + '"' + '@jp'
     description = '"' + task.description + '"' + '@jp'
     created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
     updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
-    mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id + '>'
+    mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id.to_s + '>'
 
     case task.status
     when 'todo' then
@@ -109,7 +109,7 @@ class Task < ApplicationRecord
   end
 
   def deletefromvirtuoso(task)
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id + '>'
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
 
     deletequery = <<-EOS
       prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>

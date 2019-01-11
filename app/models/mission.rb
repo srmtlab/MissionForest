@@ -53,8 +53,8 @@ class Mission < ApplicationRecord
     end
 
 
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id + '>'
-    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + mission.user_id + '>'
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id.to_s + '>'
+    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + mission.user_id.to_s + '>'
     title = '"' + mission.title + '"' + '@jp'
     description = '"' + mission.description + '"' + '@jp'
     created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
@@ -88,7 +88,7 @@ class Mission < ApplicationRecord
   end
 
   def deletefromvirtuoso(mission)
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id + '>'
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id.to_s + '>'
 
     deletequery = <<-EOS
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
