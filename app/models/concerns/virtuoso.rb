@@ -3,7 +3,7 @@ module Virtuoso
   require 'httpclient'
   def auth_query(sparqlquery)
     #    uri = 'http://localhost:8890/sparql-auth'
-    uri = 'http://lod.srmt.nitec.ac.jp/sparql-auth'
+    uri = 'http://lod.srmt.nitech.ac.jp/sparql-auth'
     client = HTTPClient.new
     user = 'dba'
     # password = 'dba'
