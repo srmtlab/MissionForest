@@ -1,4 +1,4 @@
-class DropComment < ActiveRecord::Migration
+class DropComment < ActiveRecord::Migration[4.2]
   def change
 	  drop_table :comments
   end

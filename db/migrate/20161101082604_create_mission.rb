@@ -1,4 +1,4 @@
-class CreateMission < ActiveRecord::Migration
+class CreateMission < ActiveRecord::Migration[4.2]
   def change
     create_table :missions do |t|
       t.integer :user_id

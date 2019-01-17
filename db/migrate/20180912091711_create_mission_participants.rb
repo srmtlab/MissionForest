@@ -1,4 +1,4 @@
-class CreateMissionParticipants < ActiveRecord::Migration
+class CreateMissionParticipants < ActiveRecord::Migration[4.2]
   def change
     create_table :mission_participants do |t|
       t.references :mission

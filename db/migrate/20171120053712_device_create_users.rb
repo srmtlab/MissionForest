@@ -1,5 +1,5 @@
 # coding: utf-8
-class DeviceCreateUsers < ActiveRecord::Migration
+class DeviceCreateUsers < ActiveRecord::Migration[4.2]
   def change
     
     ## 認証トークン

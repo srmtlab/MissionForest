@@ -1,4 +1,4 @@
-class CreateTaskParticipants < ActiveRecord::Migration
+class CreateTaskParticipants < ActiveRecord::Migration[4.2]
   def change
     create_table :task_participants do |t|
       t.references :task, index: true, foreign_key: true

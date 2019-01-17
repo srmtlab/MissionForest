@@ -1,4 +1,4 @@
-class CreateTask < ActiveRecord::Migration
+class CreateTask < ActiveRecord::Migration[4.2]
   def change
     create_table :tasks do |t|
       t.integer :user_id

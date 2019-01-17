@@ -1,4 +1,4 @@
-class Migration < ActiveRecord::Migration
+class Migration < ActiveRecord::Migration[4.2]
   def change
     add_column :tasks, :hierarchy, :text
     remove_column :tasks, :parent_id, :integer
