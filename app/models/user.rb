@@ -88,7 +88,7 @@ private
     insertquery += '{'
     
     insertquery += id + ' rdf:type mf:User .'
-    insertquery += id + ' foaf:mail ' + mail + ' .'
+#    insertquery += id + ' foaf:mail ' + mail + ' .'
     insertquery += id + ' foaf:name '+ name + ' .'
     
     insertquery += '}'

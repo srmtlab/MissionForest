@@ -61,8 +61,8 @@ class Task < ApplicationRecord
     user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + task.user_id.to_s + '>'
     title = '"' + task.title + '"' + '@jp'
     description = '"' + task.description + '"' + '@jp'
-    created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
-    updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
+    created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
+    updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
     mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id.to_s + '>'
 
     case task.status
@@ -100,10 +100,12 @@ class Task < ApplicationRecord
     insertquery += id + ' dct:title '+ title + '.'
     insertquery += '}'
 
+    puts 'insertquery'
+    puts insertquery
     
     clireturn = auth_query(insertquery)
-#    puts 'clireturn'
-#    puts clireturn.body
+    puts 'clireturn'
+    puts clireturn.body
 
     return true
   end
@@ -114,7 +116,6 @@ class Task < ApplicationRecord
     deletequery = <<-EOS
       prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
       
-      WITH <http://mf.srmt.nitech.ac.jp/>
       DELETE {
       EOS
     deletequery += id + ' ?q ?o'

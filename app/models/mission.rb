@@ -57,8 +57,8 @@ class Mission < ApplicationRecord
     user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + mission.user_id.to_s + '>'
     title = '"' + mission.title + '"' + '@jp'
     description = '"' + mission.description + '"' + '@jp'
-    created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
-    updated_at = '"' + mission.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:tateTime'
+    created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
+    updated_at = '"' + mission.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
 
     
     insertquery = <<-EOS
@@ -93,7 +93,6 @@ class Mission < ApplicationRecord
     deletequery = <<-EOS
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
 
-      WITH <http://mf.srmt.nitech.ac.jp/>
       DELETE {
       EOS
     deletequery += id + ' ?q ?o'
