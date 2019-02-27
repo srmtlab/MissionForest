@@ -1,28 +1,9 @@
-== README
+# MissionForest
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+## 開発環境構築手順
+1. config/database.yml にデータベース接続用の設定ファイルを配置。  
+2. "bundle install"でライブラリをインストール  
+3. "gem install foreman"でforemanをインストール  
+4. "rake db:create"でデータベース作成  
+5. "rake db:migrate"でマイグレーション  
+6. "foreman start"でMissionForest起動  
