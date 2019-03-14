@@ -1,7 +1,7 @@
 MissionForest
 ====
 MissionForest is the system for sharing collaborative activities.  
-MissionForest has been developed as successor system since 2016 in order to overcome the technical issues of [GoalShare](https://github.com/srmtlab/old-goalshare).  
+MissionForest has been developed as successor system since 2016 in order to overcome the technical issues of [GoalShare](https://github.com/srmtlab/GoalShare).  
 
 ## How to start
 1. config/database.yml にデータベース接続用の設定ファイルを配置。  
