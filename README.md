@@ -16,10 +16,8 @@ MissionForest has been developed as successor system since 2016 in order to over
   - 2019-3~
 - Masaru Watanabe
   - 2017-03~2019-03
-  - LOD, tag system
 - Yasu Goto
   - 2016-03~2017-03
-  - front engineer
   
 # LICENCE
 - The MIT LICENCE (MIT)
