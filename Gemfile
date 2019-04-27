@@ -1,4 +1,4 @@
-ruby '2.4.1'
+ruby '2.6.3'
 source 'https://rubygems.org'
 
 gem 'rails', '5.1.2'
@@ -42,3 +42,6 @@ group :unicorn do
   gem 'listen'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
+
+# forman
+gem 'forman'
