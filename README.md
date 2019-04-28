@@ -17,7 +17,7 @@ bundle exec rake db:migrate
 ```
 ### run server
 ```bash
-bundle exec foreman start
+foreman start
 ```
 
 # Authors
