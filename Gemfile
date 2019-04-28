@@ -42,6 +42,3 @@ group :unicorn do
   gem 'listen'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
-
-# forman
-gem 'foreman'

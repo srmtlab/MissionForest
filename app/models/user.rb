@@ -45,19 +45,23 @@ class User < ApplicationRecord
   
 
   def save(*args)
-    super(*args)
-    save2virtuoso(self)
+    if super(*args) then
+      save2virtuoso(self)
+    end
   end
 
   def destroy(*args)
-    deletefromvirtuoso(self)
-    super(*args)
+    if deletefromvirtuoso(self) then
+      super(*args)
+    end
   end
 
   def update(*args)
-    deletefromvirtuoso(self)
-    super(*args)
-    save2virtuoso(self)
+    if deletefromvirtuoso(self) then
+      if super(*args) then
+        save2virtuoso(self)
+      end
+    end
   end
 
 
