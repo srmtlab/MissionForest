@@ -1,15 +1,15 @@
 ruby '2.6.3'
 source 'https://rubygems.org'
 
-gem 'rails', '5.1.2'
+gem 'rails', '5.2.3'
 
+gem 'nokogiri', '>=1.10.3'
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 
 # LOD
 # gem 'stardog-rb'
 gem 'httpclient'
-
 
 # Asset
 gem 'uglifier', '>= 1.3.0'
@@ -44,4 +44,4 @@ group :unicorn do
 end
 
 # forman
-gem 'forman'
+gem 'foreman'

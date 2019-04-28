@@ -8,16 +8,16 @@ MissionForest has been developed as successor system since 2016 in order to over
 
 2. Install library 
 ```bash
-bundle install
+bundle install --path vendor/bundle
 ```
 3. make database and migrate
 ```bash
-bundle rake db:create
-bundle rake db:migrate
+bundle exec rake db:create
+bundle exec rake db:migrate
 ```
 ### run server
 ```bash
-foreman start
+bundle exec foreman start
 ```
 
 # Authors
