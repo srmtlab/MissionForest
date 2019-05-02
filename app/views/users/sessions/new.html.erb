@@ -1,41 +1,35 @@
 <div class="main">
   <div class="container">
-    <div class="page-header">
-		<!-- <h2>プロフィール編集</h2> -->
-		<h2>ログイン</h2>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p>必要な情報を入力してください</p>
-      </div>
-      <div class="panel-body">
+    <h2 class="border-bottom border-white mb-4">ログイン</h2>
+    <div class="card">
+
+      <div class="card-body">
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <%= devise_error_messages! %>
 
           <div class="form-group">
-              <!-- <label for="title">ユーザー名</label> -->
-			  <label for="title">メールアドレス</label>
-            <%= f.email_field :email, class: "form-control", autofocus: true %>
+            <label for="title">メールアドレス</label>
+            <%= f.email_field :email, class: "form-control", autofocus: true, placeholder: "メールアドレス", required: true%>
           </div>
 
           <div class="form-group">
             <label for="title">パスワード</label>
-            <%= f.password_field :password, class: "form-control", autocomplete: "off" %>
+            <%= f.password_field :password, class: "form-control", autocomplete: "off", placeholder: "パスワード", required: true %>
           </div>
 
           <% if devise_mapping.rememberable? -%>
-            <div class="form-group">
-              <label>
-                <%= f.check_box :remember_me, class: "form-control" %>パスワードを保存する
-              </label>
+            <div class="form-group form-check">
+              <%= f.check_box :remember_me, class: "form-check-input" %>
+              <label class="form-check-label" for="user_remember_me">パスワードを保存する</label>
             </div>
           <% end -%>
 
           <div class="actions">
-            <%= f.submit "ログイン", class: "btn btn-default" %>
+            <%= f.submit "ログイン", class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>
+
     </div>
   </div>
 </div>

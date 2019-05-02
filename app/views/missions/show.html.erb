@@ -1,852 +1,846 @@
 <div class="main">
 	<div class="container">
-		<div class="page-header">
-      <h2><%= @mission.title %></h2>
-			<h4>#<span id="mission_id"><%= @mission.id %></span></h4>
-    </div>
-    <div class="btn-group" role="group" style="margin-bottom: 20px">
-		<% if user_signed_in? %>
-			<!-- <%= link_to 'タスクを追加', mission_task_new_path(@mission), :class => 'btn btn-default' %> -->
-			
-			<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-				<%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn btn-default' %>
-				<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn btn-default' %>
-				<%= link_to '参加者を追加', mission_add_participant_path(@mission), :class => 'btn btn-default' %>
-				<%= link_to '管理者を追加', mission_add_admin_path(@mission), :class => 'btn btn-default' %>
-			<% end %>
-				
-			<% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
-				<%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-default' %>
-			<% end %>
-		<% end %>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <span>ミッション概要</span>
-        </h3>
-      </div>
-      <div class="panel-body">
-        <p><%= @mission.description %></p>
-      </div>
-    </div>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">
-				<span>ミッション管理者</span>
-			</h3>
-		</div>
-		<div class="panel-body">
-			<% @mission.admins.each do |admin| %>
-				<p admin_id="<%= admin.id %>">
-					<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-						<span class="delete_admin" admin_id="<%= admin.id %>">X</span>
-					<% end %>
-					<%= admin.name %>
-				</p>
+		<h2 class="border-bottom border-white mb-4"><%= @mission.title %></h2>
+		<!-- <h4>#<span id="mission_id"><%= @mission.id %></span></h4> -->
+
+
+		<div class="btn-group mb-4" role="group">
+			<% if user_signed_in? %>
+				<!-- <%= link_to 'タスクを追加', mission_task_new_path(@mission), :class => 'btn btn-default' %> -->
+				<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
+					<%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
+					<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn page-link text-dark d-inline-block mr-1' %>
+					<%= link_to '参加者を追加', mission_add_participant_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
+					<%= link_to '管理者を追加', mission_add_admin_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
+				<% end %>
+
+				<% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
+					<%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-default' %>
+				<% end %>
 			<% end %>
 		</div>
-    </div>
-    
-	
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <span>ミッション参加者</span>
-        </h3>
-      </div>
-      <div class="panel-body">
-        <% @mission.participants.each do |participant| %>
-			<p participant_id="<%= participant.id %>">
-				<% if @mission.admins.include?(current_user) || @mission.user == current_user || current_user == participant %>
-					<span class="delete_mission_participant" participant_id="<%= participant.id %>">X</span>
+
+		<div class="card mb-4">
+			<div class="card-header">
+				ミッション概要
+			</div>
+			<div class="card-body">
+				<p class="card-text"><%= @mission.description %></p>
+			</div>
+		</div>
+
+		<div class="card mb-4">
+			<div class="card-header">
+				ミッション管理者
+			</div>
+			<div class="card-body">
+				<% @mission.admins.each do |admin| %>
+					<p admin_id="<%= admin.id %>">
+						<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
+							<span class="delete_admin" admin_id="<%= admin.id %>">X</span>
+						<% end %>
+						<%= admin.name %>
+					</p>
 				<% end %>
-				<%= participant.name %>
-			</p>
-	<% end %>
-      </div>
-    </div>
-    
-    
-    <div class="panel panel-info">
-      <div class="panel-body tree">
-        <div id="chart-container"></div>
-        <input type="hidden" id="selected-node">
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+
+		<div class="card mb-4">
+			<div class="card-header">
+				ミッション参加者
+			</div>
+			<div class="card-body">
+				<% @mission.participants.each do |participant| %>
+					<p participant_id="<%= participant.id %>">
+						<% if @mission.admins.include?(current_user) || @mission.user == current_user || current_user == participant %>
+							<span class="delete_mission_participant" participant_id="<%= participant.id %>">X</span>
+						<% end %>
+						<%= participant.name %>
+					</p>
+				<% end %>
+			</div>
+		</div>
+
+
+		<div class="panel panel-info">
+			<div class="panel-body tree">
+				<div id="chart-container"></div>
+				<input type="hidden" id="selected-node">
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- DetailTask -->
 <div class="modal fade" id="DetailTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">タスクの編集</h4>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">タスクの編集</h4>
 				<h5>#<span id="DetailTaskID"></span></h5>
-		<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="exampleInputEmail1">タスク名</label>
-            <input id="DetailTaskTitle" type="text" class="form-control" value="">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">概要</label>
-            <textarea id="DetailTaskDescription" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="form-group input-group date datepicker">
-            <label for="description">締め切り</label>
-            <input id="DetailTaskDeadline" class="form-control"></input>
-            <span class="input-group-addon">
-          </div>
-          <div class="form-group">
-            <label for="description">状況</label>
-            <select id="DetailTaskStatus" class="form-control">
-              <option value="todo">未着手</option>
-              <option value="doing">進行中</option>
-              <option value="done">完了</option>
-              <option value="cancel">取りやめ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="description">公開範囲</label>
-            <select id="DetailTaskNotify" class="form-control">
-              <option value="own">個人的構想</option>
-              <option value="organize">組織内限定</option>
-              <option value="publish">外部公開</option>
-              <option value="lod">LOD (CC BY)</option>
-            </select>
-          </div>
-        </form>
+				<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="exampleInputEmail1">タスク名</label>
+						<input id="DetailTaskTitle" type="text" class="form-control" value="">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">概要</label>
+						<textarea id="DetailTaskDescription" class="form-control" rows="3"></textarea>
+					</div>
+					<div class="form-group input-group date datepicker">
+						<label for="description">締め切り</label>
+						<input id="DetailTaskDeadline" class="form-control"></input>
+						<span class="input-group-addon"></span>
+					</div>
+					<div class="form-group">
+						<label for="description">状況</label>
+						<select id="DetailTaskStatus" class="form-control">
+							<option value="todo">未着手</option>
+							<option value="doing">進行中</option>
+							<option value="done">完了</option>
+							<option value="cancel">取りやめ</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="description">公開範囲</label>
+						<select id="DetailTaskNotify" class="form-control">
+							<option value="own">個人的構想</option>
+							<option value="organize">組織内限定</option>
+							<option value="publish">外部公開</option>
+							<option value="lod">LOD (CC BY)</option>
+						</select>
+					</div>
+				</form>
 				<h4>参加者</h4>
 				<ul id="TaskParticipants"></ul>
 				<hr>
 				<h4>タグ</h4>
 				<ul id="TaskTags"></ul>
-      </div>
-	  <% if user_signed_in? %>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-		  <button type="button" id="ToParticipate" class="btn btn-primary" data-dismiss="modal">タスクへ参加</button>
-        <button type="button" id="ToAddChild" class="btn btn-default" data-dismiss="modal">子タスクを追加</button>
-        <button type="button" id="ToDeleteTask" class="btn btn-danger" data-dismiss="modal">削除</button>
-        <button type="button" id="ChangeDetail" class="btn btn-primary" data-dismiss="modal">変更</button>
-      </div>
-	  <% end %>
-    </div>
-  </div>
+			</div>
+			<% if user_signed_in? %>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" id="ToParticipate" class="btn btn-primary" data-dismiss="modal">タスクへ参加</button>
+					<button type="button" id="ToAddChild" class="btn btn-default" data-dismiss="modal">子タスクを追加</button>
+					<button type="button" id="ToDeleteTask" class="btn btn-danger" data-dismiss="modal">削除</button>
+					<button type="button" id="ChangeDetail" class="btn btn-primary" data-dismiss="modal">変更</button>
+				</div>
+			<% end %>
+		</div>
+	</div>
 </div>
 
 <!-- DeleteTask -->
 <div class="modal fade" id="ConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">タスクの削除</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <p>本当に以下のタスクを削除しますか？</p>
-          </div>
-          <div class="form-group">
-            <label for="exampleInputEmail1">タスク名</label>
-            <p id="DeleteTaskTitle"></p>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-        <button type="button" id="DeleteTask" class="btn btn-danger" data-dismiss="modal">タスクを削除する</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">タスクの削除</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<p>本当に以下のタスクを削除しますか？</p>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">タスク名</label>
+						<p id="DeleteTaskTitle"></p>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+				<button type="button" id="DeleteTask" class="btn btn-danger" data-dismiss="modal">タスクを削除する</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- AddTask -->
 <div class="modal fade" id="AddTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">子タスクの追加</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="exampleInputEmail1">タスク名</label>
-            <input id="AddTaskTitle" type="text" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">概要</label>
-            <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="form-group input-group date datepicker">
-            <label for="description">締め切り</label>
-            <input id="AddTaskDeadline" class="form-control"></input>
-			<span class="input-group-addon">
-          </div>
-          <div class="form-group">
-            <label for="description">状況</label>
-            <select id="AddTaskStatus" class="form-control">
-              <option value="todo">未着手</option>
-              <option value="doing">進行中</option>
-              <option value="done">完了</option>
-              <option value="cancel">取りやめ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="description">公開範囲</label>
-            <select id="AddTaskNotify" class="form-control">
-              <option value="own">個人的構想</option>
-              <option value="organize">組織内限定</option>
-              <option value="publish">外部公開</option>
-              <option value="lod">LOD (CC BY)</option>
-            </select>
-          </div>
-        </form>
-      </div>
-	  <% if user_signed_in? %>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-        <button type="button" id="AddChild" class="btn btn-primary" data-dismiss="modal">追加する</button>
-      </div>
-	  <% end %>
-    </div>
-  </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">子タスクの追加</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="exampleInputEmail1">タスク名</label>
+						<input id="AddTaskTitle" type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">概要</label>
+						<textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
+					</div>
+					<div class="form-group input-group date datepicker">
+						<label for="description">締め切り</label>
+						<input id="AddTaskDeadline" class="form-control"></input>
+						<span class="input-group-addon"></span>
+					</div>
+					<div class="form-group">
+						<label for="description">状況</label>
+						<select id="AddTaskStatus" class="form-control">
+							<option value="todo">未着手</option>
+							<option value="doing">進行中</option>
+							<option value="done">完了</option>
+							<option value="cancel">取りやめ</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="description">公開範囲</label>
+						<select id="AddTaskNotify" class="form-control">
+							<option value="own">個人的構想</option>
+							<option value="organize">組織内限定</option>
+							<option value="publish">外部公開</option>
+							<option value="lod">LOD (CC BY)</option>
+						</select>
+					</div>
+				</form>
+			</div>
+			<% if user_signed_in? %>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" id="AddChild" class="btn btn-primary" data-dismiss="modal">追加する</button>
+				</div>
+			<% end %>
+		</div>
+	</div>
 </div>
 
 <style>
-  .container{
-  width : 93%;
+	.container{
+		width : 93%;
+	}
+
+
+	.ccby-license{
+		height : 15px;
+		width : 80px;
+		display : none;
+	}
+	.ccby-active{
+		display : block !important;
+	}
+
+	.oc-export-btn {
+		position: absolute;
+		right: 10px;
+		bottom: 10px;
+		top: initial;
+		background: rgba(0,0,0,.15);
+	}
+
+	#chart-container {
+		/* height: 600px; */
+		height: 90vh;
+	}
+
+	.tree {
+		background: #E2E4E6;
+	}
+
+	.orgchart {
+		display: block;
+		background-image: none;
+	}
+
+	/*
+  .orgchart .node .title {
+    height: 100px;
+    padding: 8px;
+    white-space: normal;
+    font-size: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    color: black;
   }
+  */
 
-  
- .ccby-license{
-	 height : 15px;
-	 width : 80px;
-	 display : none;
- }
- .ccby-active{
-	 display : block !important;
- }
- 
-.oc-export-btn {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  top: initial;
-  background: rgba(0,0,0,.15);
-}
+	.orgchart .node .title {
+		height: 80px;
+		padding: 8px;
+		white-space: normal;
+		font-size: 15px;
+		background-color: #fff;
+		border-bottom: 1px solid #ccc;
+		border-radius: 3px 3px 0 0;
+		cursor: pointer;
+		color: black;
+	}
 
-#chart-container {
-  /* height: 600px; */
-  height: 90vh;
-}
+	.orgchart .node .add-button {
+		height: 20px;
+		white-space: normal;
+		font-size: 12px;
+		background-color: #800000;
+		border-bottom: 1px solid #ccc;
+		border-radius: 0 0 3px 3px;
+		cursor: pointer;
+		color: #fff;
+	}
 
-.tree {
-  background: #E2E4E6;
-}
+	.orgchart .node .delete-button {
+		position: absolute;
+		top : -5px;
+		right : -5px;
+		height: 20px;
+		width: 20px;
+		white-space: normal;
+		font-size: 12px;
+		background-color: #808080;
+		border-bottom: 1px solid #ccc;
+		border-radius: 3px;
+		cursor: pointer;
+		color: #fff;
+	}
 
-.orgchart {
-  display: block;
-  background-image: none;
-}
+	.orgchart .node .description {
+		display : none;
+	}
 
-/*
-.orgchart .node .title {
-  height: 100px;
-  padding: 8px;
-  white-space: normal;
-  font-size: 15px;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  border-radius: 3px;
-  cursor: pointer;
-  color: black;
-}
-*/
+	.orgchart .node .deadline_at {
+		display : none;
+	}
 
-.orgchart .node .title {
-  height: 80px;
-  padding: 8px;
-  white-space: normal;
-  font-size: 15px;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  border-radius: 3px 3px 0 0;
-  cursor: pointer;
-  color: black;
-}
+	.orgchart .node .status {
+		display : none;
+	}
 
-.orgchart .node .add-button {
-  height: 20px;
-  white-space: normal;
-  font-size: 12px;
-  background-color: #800000;
-  border-bottom: 1px solid #ccc;
-  border-radius: 0 0 3px 3px;
-  cursor: pointer;
-  color: #fff;
-}
+	.orgchart .node .notify {
+		display : none;
+	}
 
-.orgchart .node .delete-button {
-  position: absolute;
-  top : -5px;
-  right : -5px;
-  height: 20px;
-  width: 20px;
-  white-space: normal;
-  font-size: 12px;
-  background-color: #808080;
-  border-bottom: 1px solid #ccc;
-  border-radius: 3px;
-  cursor: pointer;
-  color: #fff;
-}
+	.orgchart .node .title:hover {
+		background-color: #EDEFF0;
+		border-bottom-color: #D6DADC;
+	}
 
-.orgchart .node .description {
-  display : none;
-}
+	.orgchart .node:hover {
+		background-color: transparent;
+	}
 
-.orgchart .node .deadline_at {
-  display : none;
-}
+	.orgchart .node.focused {
+		background-color: transparent;
+	}
 
-.orgchart .node .status {
-  display : none;
-}
+	.delete_admin {
+		padding : 0 4px;
+		border-radius: 3px;
+		margin-right : 5px;
+		background-color: #808080;
+		color: #ffffff;
+		cursor: pointer;
+	}
 
- .orgchart .node .notify {
-	 display : none;
- }
- 
-.orgchart .node .title:hover {
-  background-color: #EDEFF0;
-  border-bottom-color: #D6DADC;
-}
+	.delete_mission_participant {
+		padding : 0 4px;
+		border-radius: 3px;
+		margin-right : 5px;
+		background-color: #808080;
+		color: #ffffff;
+		cursor: pointer;
+	}
 
-.orgchart .node:hover {
-  background-color: transparent;
-}
+	.delete_task_participant {
+		padding : 0 4px;
+		border-radius: 3px;
+		margin-right : 5px;
+		background-color: #808080;
+		color: #ffffff;
+		cursor: pointer;
+	}
 
-.orgchart .node.focused {
-  background-color: transparent;
- }
-
- .delete_admin {
-	 padding : 0 4px;
-	 border-radius: 3px;
-	 margin-right : 5px;
-	 background-color: #808080;
-	 color: #ffffff;
-	 cursor: pointer;
- }
- 
- .delete_mission_participant {
-	 padding : 0 4px;
-	 border-radius: 3px;
-	 margin-right : 5px;
-	 background-color: #808080;
-	 color: #ffffff;
-	 cursor: pointer;
- }
-
- .delete_task_participant {
-	 padding : 0 4px;
-	 border-radius: 3px;
-	 margin-right : 5px;
-	 background-color: #808080;
-	 color: #ffffff;
-	 cursor: pointer;
- }
-
- .target_task{
-	 filter: drop-shadow(0 0 30px rgba(255,255,0,1));
- }
+	.target_task{
+		filter: drop-shadow(0 0 30px rgba(255,255,0,1));
+	}
 
 
- .orgchart .node .new-icon {
-	 position : absolute;
-	 top: -5px;
-   height: 20px;
-   white-space: normal;
-   font-size: 16px;
-   color: #f00;
- }
- 
+	.orgchart .node .new-icon {
+		position : absolute;
+		top: -5px;
+		height: 20px;
+		white-space: normal;
+		font-size: 16px;
+		color: #f00;
+	}
+
 </style>
 
 <script>
 
- 
- class TaskDatabase {
-	 constructor(api){
-		 let task_data = {}
-		 $.ajax({
-			 type: 'GET',
-			 async: false,
-			 url: '/api/missions/<%= @mission.id %>/tasks',
-			 success: function(data){
-				 task_data = data;
-			 }});
-		 
-		 this.hierarchy = task_data.hierarchy;
-		 this.all_tasks = task_data.all_tasks;
-	 }
 
-	 get_task_detail(search_task_id){
-		 for (let task of this.get_all_tasks()){
-			 if(task.id == search_task_id){
-				 return task;
-			 }
-		 }
-		 return null;
-	 }
+	class TaskDatabase {
+		constructor(api){
+			let task_data = {}
+			$.ajax({
+				type: 'GET',
+				async: false,
+				url: '/api/missions/<%= @mission.id %>/tasks',
+				success: function(data){
+					task_data = data;
+				}});
 
-	 <% if user_signed_in? %>
-	 update_task_detail(task_id, title, description,
-						deadline_at, status, notify){
-		 let task_detail = this.get_task_detail(task_id)
-		 task_detail.title = title != null ? title : task_detail.title;
-		 task_detail.description = description != null ? description : task_detail.description;
-		 task_detail.deadline_at = deadline_at != null ? deadline_at : task_detail.deadline_at;
-		 task_detail.status = status != null ? status : task_detail.status;
-		 task_detail.notify = notify != null ? notify : task_detail.notify;
+			this.hierarchy = task_data.hierarchy;
+			this.all_tasks = task_data.all_tasks;
+		}
 
-
-		 console.log(task_detail)
-		 $.ajax({
-			 type: 'PUT',
-			 url: '/api/tasks/' + task_id + '/update',
-			 data: {
-				 task: {
-					 title: task_detail.title,
-					 description: task_detail.description,
-					 deadline_at: task_detail.deadline_at,
-					 status: task_detail.status,
-					 notify: task_detail.notify
-				 }
-			 },
-			 success: function(data) {
-					 console.log(data)
-					 tasks.update_hierarchy(data.task_data.hierarchy);
-					 tasks.update_all_tasks(data.task_data.all_tasks);
-					 
-					 oc.init({'data': data.task_data.hierarchy});
-					 oc.$chart.on('nodedrop.orgchart', function(event) {
-               console.log('drop');
-               setTimeout('tasks.drop_hierarchy()', 100);
-					 });
-			 }
-		 })
-	 }
-	 <% end %>
-
-	 <% if user_signed_in? %>
-	 add_new_task(parent_task_id, title, description,
-				  deadline_at, status, notify){
-		 let task_detail = {};
-
-		 task_detail.title = title;
-		 task_detail.description = description;
-		 task_detail.deadline_at = deadline_at;
-		 task_detail.status = status;
-		 task_detail.notify = notify;
-		 task_detail.mission_id = <%= @mission.id %>;
-		 task_detail.sub_task_of = parent_task_id;
-		 //task_detail.user_id = <= current_user.id >;
-
-		 $.ajax({
-			 type: 'POST',
-			 url: '/api/missions/<%= @mission.id %>/task',
-			 data: {
-				 task: {
-					 title: task_detail.title,
-					 description: task_detail.description,
-					 sub_task_of: task_detail.sub_task_of,
-					 deadline_at: task_detail.deadline_at,
-					 status: task_detail.status,
-					 notify: task_detail.notify
-				 }
-			 },
-			 success: function(data) {
-				 tasks.update_hierarchy(data.task_data.hierarchy);
-				 tasks.update_all_tasks(data.task_data.all_tasks);
-
-				 console.log(tasks.get_all_tasks())
-
-				 oc.init({'data': data.task_data.hierarchy});
-oc.$chart.on('nodedrop.orgchart', function(event) {
-                 console.log('drop');
-                 setTimeout('tasks.drop_hierarchy()', 100);
- });
-			 }
-		 })
-	 }
-	  <% end %>
-
-	 <% if user_signed_in? %>
-	 delete_task(task_id){
-		 $.ajax({
-			 type: 'DELETE',
-			 url: '/api/tasks/' + task_id + '/delete',
-			 data: {
-				 'id' : task_id
-			 },
-			 success: function(data) {
-				 tasks.update_hierarchy(data.task_data.hierarchy);
-				 tasks.update_all_tasks(data.task_data.all_tasks);
-				 
-				 oc.init({'data': data.task_data.hierarchy});
-oc.$chart.on('nodedrop.orgchart', function(event) {
-                 console.log('drop');
-                 setTimeout('tasks.drop_hierarchy()', 100);
- });
-			 }
-		 })
-	 }
-	 <% end %>
-
-	 <% if user_signed_in? %>
-	 participate_to_task(task_id){
-		 let user_id = <%= current_user.id %>;
-		 
-		 $.ajax({
-			 type: 'PUT',
-			 url: '/api/tasks/' + task_id + '/add_participant',
-			 data: {
-				 'id' : task_id,
-				 'user_id' : user_id
-			 },
-			 success: function(data) {
-				 tasks.update_hierarchy(data.task_data.hierarchy);
-				 tasks.update_all_tasks(data.task_data.all_tasks);
-
-				 oc.init({'data': data.task_data.hierarchy});
-oc.$chart.on('nodedrop.orgchart', function(event) {
-                 console.log('drop');
-                 setTimeout('tasks.drop_hierarchy()', 100);
- });
-			 }
-		 })
-	 }
-	 <% end %>
-
-		 get_tasks_hierarchy(){
-				 return this.hierarchy;
-		 }
-		 
-		 get_all_tasks(){
-				 return this.all_tasks;
-		 }
-		 
-		 set_selected_task_id(task_id){
-				 this.selected_id = task_id
-		 }
-		 
-		 get_selected_task_id(){
-				 return this.selected_id;
-		 }
-
-		 update_hierarchy(hierarchy){
-				 this.hierarchy = hierarchy;
-		 }
-	 
-		 update_all_tasks(all_tasks){
-				 this.all_tasks = all_tasks;
-		 }
+		get_task_detail(search_task_id){
+			for (let task of this.get_all_tasks()){
+				if(task.id == search_task_id){
+					return task;
+				}
+			}
+			return null;
+		}
 
 		<% if user_signed_in? %>
-		 drop_hierarchy(){
-				 let taskdb = this;
-				 let user_id = <%= current_user.id %>;
-				 
-				 function recursion(tree, taskdb){
-						 const id = tree['id'];
-						 const detail = taskdb.get_task_detail(id);
-						 tree['name'] = detail['title'];
-						 
-						 if (tree['children'] === undefined){
-								 return;
-						 }
-						 for (let child of tree['children']){
-								 recursion(child, taskdb);
-						 }
-				 }
-				 
-				 let hierarchy = oc.getHierarchy();
-				 recursion(hierarchy, taskdb);
+		update_task_detail(task_id, title, description,
+											 deadline_at, status, notify){
+			let task_detail = this.get_task_detail(task_id)
+			task_detail.title = title != null ? title : task_detail.title;
+			task_detail.description = description != null ? description : task_detail.description;
+			task_detail.deadline_at = deadline_at != null ? deadline_at : task_detail.deadline_at;
+			task_detail.status = status != null ? status : task_detail.status;
+			task_detail.notify = notify != null ? notify : task_detail.notify;
 
-				 $.ajax({
-						 type: 'PUT',
-						 url: '/api/missions/<%= @mission.id %>/update_hierarchy',
-						 data: {
-								 tree : hierarchy,
-								 user_id : user_id
-						 }
-				 })
-				 
-				 App.mission.change_tasktree(hierarchy);
-		 }
+
+			console.log(task_detail)
+			$.ajax({
+				type: 'PUT',
+				url: '/api/tasks/' + task_id + '/update',
+				data: {
+					task: {
+						title: task_detail.title,
+						description: task_detail.description,
+						deadline_at: task_detail.deadline_at,
+						status: task_detail.status,
+						notify: task_detail.notify
+					}
+				},
+				success: function(data) {
+					console.log(data)
+					tasks.update_hierarchy(data.task_data.hierarchy);
+					tasks.update_all_tasks(data.task_data.all_tasks);
+
+					oc.init({'data': data.task_data.hierarchy});
+					oc.$chart.on('nodedrop.orgchart', function(event) {
+						console.log('drop');
+						setTimeout('tasks.drop_hierarchy()', 100);
+					});
+				}
+			})
+		}
 		<% end %>
- }
 
- function date_format2rails(datestring){
-	 try {
-		 console.log(datestring)
-		 let tmp = datestring.split('/');
-		 let month = ('00' + Number(tmp[0])).slice(-2);
-		 let date = ('00' +  Number(tmp[1])).slice(-2);
-		 tmp = tmp[2].split(' ');
-		 let year = ('0000' +  Number(tmp[0])).slice(-4);
-		 let ampm = tmp[2];
-		 tmp = tmp[1].split(':');
-		 let hour = ('00' + ( Number(tmp[0]) + ampm == 'AM' ? 0 : 12)).slice(-2);
-		 let minute = ('00' +  Number(tmp[1])).slice(-2);
-		 return year + '-' + month + '-' + date + 'T' + hour + ':' + minute
-	 }
-	 catch {
-		 return datestring
-	 }
- }
+		<% if user_signed_in? %>
+		add_new_task(parent_task_id, title, description,
+								 deadline_at, status, notify){
+			let task_detail = {};
 
+			task_detail.title = title;
+			task_detail.description = description;
+			task_detail.deadline_at = deadline_at;
+			task_detail.status = status;
+			task_detail.notify = notify;
+			task_detail.mission_id = <%= @mission.id %>;
+			task_detail.sub_task_of = parent_task_id;
+			//task_detail.user_id = <= current_user.id >;
 
+			$.ajax({
+				type: 'POST',
+				url: '/api/missions/<%= @mission.id %>/task',
+				data: {
+					task: {
+						title: task_detail.title,
+						description: task_detail.description,
+						sub_task_of: task_detail.sub_task_of,
+						deadline_at: task_detail.deadline_at,
+						status: task_detail.status,
+						notify: task_detail.notify
+					}
+				},
+				success: function(data) {
+					tasks.update_hierarchy(data.task_data.hierarchy);
+					tasks.update_all_tasks(data.task_data.all_tasks);
 
- tasks = new TaskDatabase('/api/missions/<%= @mission.id %>/tasks')
- console.log(tasks.get_all_tasks())
- 
- const options = {
-		 'data' : tasks.get_tasks_hierarchy(),
-		 'pan': true,
-		 'draggable': true,
-		 'exportButton': true,
-		 'exportFilename': '<%= @mission.title %>',
-		 'createNode': function($node, data) {
-				 $node.append('<div class="add-button">+</div>')
-				 $node.append('<div class="delete-button">X</div>')
+					console.log(tasks.get_all_tasks())
 
-				 if (data.id > 2250){
-						 $node.append('<div class="new-icon">NEW</div>')
-				 }
-		 }
- }
+					oc.init({'data': data.task_data.hierarchy});
+					oc.$chart.on('nodedrop.orgchart', function(event) {
+						console.log('drop');
+						setTimeout('tasks.drop_hierarchy()', 100);
+					});
+				}
+			})
+		}
+		<% end %>
 
- 
- let oc = $('#chart-container').orgchart(options)
+		<% if user_signed_in? %>
+		delete_task(task_id){
+			$.ajax({
+				type: 'DELETE',
+				url: '/api/tasks/' + task_id + '/delete',
+				data: {
+					'id' : task_id
+				},
+				success: function(data) {
+					tasks.update_hierarchy(data.task_data.hierarchy);
+					tasks.update_all_tasks(data.task_data.all_tasks);
 
- oc.$chart.on('nodedrop.orgchart', function(event) {
-		 console.log('drop');
-		 setTimeout('tasks.drop_hierarchy()', 100);
- });
+					oc.init({'data': data.task_data.hierarchy});
+					oc.$chart.on('nodedrop.orgchart', function(event) {
+						console.log('drop');
+						setTimeout('tasks.drop_hierarchy()', 100);
+					});
+				}
+			})
+		}
+		<% end %>
 
+		<% if user_signed_in? %>
+		participate_to_task(task_id){
+			let user_id = <%= current_user.id %>;
 
- if (location.search !== '') {
-		 let task = location.search;
-		 task = task.replace( '?taskid=' , '' );
+			$.ajax({
+				type: 'PUT',
+				url: '/api/tasks/' + task_id + '/add_participant',
+				data: {
+					'id' : task_id,
+					'user_id' : user_id
+				},
+				success: function(data) {
+					tasks.update_hierarchy(data.task_data.hierarchy);
+					tasks.update_all_tasks(data.task_data.all_tasks);
 
-		 $('#' + task).addClass("target_task");
+					oc.init({'data': data.task_data.hierarchy});
+					oc.$chart.on('nodedrop.orgchart', function(event) {
+						console.log('drop');
+						setTimeout('tasks.drop_hierarchy()', 100);
+					});
+				}
+			})
+		}
+		<% end %>
 
- }
+		get_tasks_hierarchy(){
+			return this.hierarchy;
+		}
 
- 
+		get_all_tasks(){
+			return this.all_tasks;
+		}
 
- 
- $(document)
-		 .on('click', '.node', function() {
-				 tasks.set_selected_task_id($(this).attr('id'));
-		 })
-		 .on('click', '.title', function() {
-				 var deadline,
-						 $this = $(this).parent();
-				 
-				 let task_data = tasks.get_task_detail($(this).parent().attr('id'));
+		set_selected_task_id(task_id){
+			this.selected_id = task_id
+		}
 
-				 $('#selected-node').val(task_data.title).data('node', $this)
-				 $('#DetailTask').modal('show')
-				 $('#DetailTaskID').text(task_data.id)
-				 $('#DetailTaskTitle').val(task_data.title)
-				 $('#DetailTaskDescription').val(task_data.description)
-				 deadline = task_data.deadline_at
-				 if (deadline !== 'null') {
-						 $('#DetailTaskDeadline').val(task_data.deadline_at)
-				 }
-				 $('#DetailTaskStatus').val(task_data.status)
-				 $('#DetailTaskNotify').val(task_data.notify)
-				 if (task_data.notify == 'lod'){
-						 $('.ccby-license').addClass('ccby-active');
-				 }
-				 else {
-						 $('.ccby-license').removeClass('ccby-active');
-				 }
-				 
-				 $('#TaskParticipants').empty()
-				 for (participant of task_data.participants){
-						 <% if user_signed_in? %>
-						 if (participant.id === <%= current_user.id %>){
-								 $('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
-						 }
-						 else {
-								 $('#TaskParticipants').append('<li>' + participant.name + '</li>');
-						 }
-						 <% else %>
-						 $('#TaskParticipants').append('<li>' + participant.name + '</li>');
-						 <% end %>
-				 }
+		get_selected_task_id(){
+			return this.selected_id;
+		}
 
-				 
-				 {
-						 $('#TaskTags').empty();
-						 
-						 let task_id = task_data.id;
-						 let query = 'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
-											 + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
-											 + ''
-											 + 'select ?tags where{'
-											 + '  ?annotate tags:target mf-task:' + task_id + ' ;'
-											 + '  tags:body ?tags.'
-											 + '}'
+		update_hierarchy(hierarchy){
+			this.hierarchy = hierarchy;
+		}
 
-						 $.ajax({
-								 type: 'GET',
-								 url: 'http://lod.srmt.nitech.ac.jp/sparql/',
-								 data: {
-										 'query' : query,
-										 'format' : 'application/sparql-results+json',
-										 'default-graph-uri' : 'http://mf.srmt.nitech.ac.jp/tags/'
-								 },
-								 success: function(data) {
-										 console.log(data);
-										 for ( let x of data['results']['bindings'] ){
-												 let tag_name = x['tags']['value'];
-												 $('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
-										 }
-										 
-								 }
-						 });
-				 }
-		 })
-		 .on('click', '.add-button', function() {
-				 var $this = $(this).parent();
-				 
-				 task_data = tasks.get_task_detail($(this).parent().attr('id'));
-				 
-				 $('#selected-node').val(task_data.title).data('node', $this)
-				 $('#AddTask').modal('show')
-				 $('#AddTaskTitle').val('')
-				 $('#AddTaskDescription').val('')
-		 })
-		 .on('click', '.delete-button', function() {
-				 var $this = $(this).parent();
-				 
-				 console.log($(this).parent().attr('id'));
-				 task_data = tasks.get_task_detail($(this).parent().attr('id'));
-				 console.log(task_data);
-				 console.log(tasks.get_all_tasks());
-				 
-				 $('#selected-node').val(task_data.title).data('node', $this)
-				 $('#ConfirmDelete').modal('show')
-				 $('#DeleteTaskID').val(task_data.id);
-				 $('#DeleteTaskTitle').text(task_data.title);
-		 })
- 
- <% if user_signed_in? %>
- $("#ToAddChild").click(function(){
-  $('#AddTask').modal('show')
-  $('#AddTaskTitle').val('')
-  $('#AddTaskDescription').val('')
-})
-$("#ToDeleteTask").click(function(){
-  $('#ConfirmDelete').modal('show')
-  $('#DeleteTaskID').val($('#DetailTaskID').val())
-  $('#DeleteTaskTitle').text($('#DetailTaskTitle').val())
-})
+		update_all_tasks(all_tasks){
+			this.all_tasks = all_tasks;
+		}
+
+		<% if user_signed_in? %>
+		drop_hierarchy(){
+			let taskdb = this;
+			let user_id = <%= current_user.id %>;
+
+			function recursion(tree, taskdb){
+				const id = tree['id'];
+				const detail = taskdb.get_task_detail(id);
+				tree['name'] = detail['title'];
+
+				if (tree['children'] === undefined){
+					return;
+				}
+				for (let child of tree['children']){
+					recursion(child, taskdb);
+				}
+			}
+
+			let hierarchy = oc.getHierarchy();
+			recursion(hierarchy, taskdb);
+
+			$.ajax({
+				type: 'PUT',
+				url: '/api/missions/<%= @mission.id %>/update_hierarchy',
+				data: {
+					tree : hierarchy,
+					user_id : user_id
+				}
+			})
+
+			App.mission.change_tasktree(hierarchy);
+		}
+		<% end %>
+	}
+
+	function date_format2rails(datestring){
+		try {
+			console.log(datestring)
+			let tmp = datestring.split('/');
+			let month = ('00' + Number(tmp[0])).slice(-2);
+			let date = ('00' +  Number(tmp[1])).slice(-2);
+			tmp = tmp[2].split(' ');
+			let year = ('0000' +  Number(tmp[0])).slice(-4);
+			let ampm = tmp[2];
+			tmp = tmp[1].split(':');
+			let hour = ('00' + ( Number(tmp[0]) + ampm == 'AM' ? 0 : 12)).slice(-2);
+			let minute = ('00' +  Number(tmp[1])).slice(-2);
+			return year + '-' + month + '-' + date + 'T' + hour + ':' + minute
+		}
+		catch {
+			return datestring
+		}
+	}
 
 
- $("#DeleteTask").click(function(){
-	 task_id = tasks.get_selected_task_id();
-	 tasks.delete_task(task_id);   
-})
 
- $("#ChangeDetail").click(function(){
-	 let task_id = tasks.get_selected_task_id(),
-		 title = $('#DetailTaskTitle').val(),
-         description = $('#DetailTaskDescription').val(),
-         deadline_at = date_format2rails($('#DetailTaskDeadline').val()),
-         status = $('#DetailTaskStatus').val(),
-         notify = $('#DetailTaskNotify').val()
+	tasks = new TaskDatabase('/api/missions/<%= @mission.id %>/tasks')
+	console.log(tasks.get_all_tasks())
 
-	 tasks.update_task_detail(task_id, title, description,
-						deadline_at, status, notify)
- })
- 
- 
- $("#AddChild").click(function(){
-	 let parent_task_id = tasks.get_selected_task_id(),
-		 title = $('#AddTaskTitle').val(),
-		 description = $('#AddTaskDescription').val(),
-		 deadline_at = date_format2rails($('#AddTaskDeadline').val()),
-		 status = $('#AddTaskStatus').val(),
-		 notify = $('#AddTaskNotify').val()
+	const options = {
+		'data' : tasks.get_tasks_hierarchy(),
+		'pan': true,
+		'draggable': true,
+		'exportButton': true,
+		'exportFilename': '<%= @mission.title %>',
+		'createNode': function($node, data) {
+			$node.append('<div class="add-button">+</div>')
+			$node.append('<div class="delete-button">X</div>')
 
-	 
-	 tasks.add_new_task(parent_task_id, title, description,
-				  deadline_at, status, notify)
- })
-
- $("#ToParticipate").click(function(){
-	 task_id = tasks.get_selected_task_id()
-	 tasks.participate_to_task(task_id)
- });
-
- 
- $(".delete_admin").click(function(){
-	 var mission_id = <%= @mission.id %>
-		 var admin_id = $(this).attr('admin_id');
-
-	 $.ajax({
-		 type: 'DELETE',
-		 url: '/api/missions/' + mission_id + '/delete_admin/' + admin_id,
-		 success: function(data){
-			 $('p[admin_id=' + admin_id + ']').remove();
-		 }});
- });
- 
-
- $(".delete_mission_participant").click(function(){
-	 let mission_id = <%= @mission.id %>,
-		 participant_id = $(this).attr('participant_id');
-
-	 $.ajax({
-		 type: 'DELETE',
-		 url: '/api/missions/' + mission_id + '/delete_participant/' + participant_id,
-		 success: function(data){
-			 $('p[participant_id=' + participant_id + ']').remove();
-		 }});
- });
+			if (data.id > 2250){
+				$node.append('<div class="new-icon">NEW</div>')
+			}
+		}
+	}
 
 
- $(document)
-	 .on('click', '.delete_task_participant', function() {
-		 let task_id = tasks.get_selected_task_id(),
-			 participant_id = $(this).attr('participant_id');
-		 
-		 $.ajax({
-			 type: 'DELETE',
-			 url: '/api/tasks/' + task_id + '/delete_participant/' + participant_id,
-			 success: function(data){
-				 $('span[participant_id=' + participant_id + ']').parent().remove();
+	let oc = $('#chart-container').orgchart(options)
 
-				 tasks.update_hierarchy(data.task_data.hierarchy);
-				 tasks.update_all_tasks(data.task_data.all_tasks);
-			 }});
-	 });
- 
+	oc.$chart.on('nodedrop.orgchart', function(event) {
+		console.log('drop');
+		setTimeout('tasks.drop_hierarchy()', 100);
+	});
 
- <% end %>
+
+	if (location.search !== '') {
+		let task = location.search;
+		task = task.replace( '?taskid=' , '' );
+
+		$('#' + task).addClass("target_task");
+
+	}
+
+
+
+
+	$(document)
+			.on('click', '.node', function() {
+				tasks.set_selected_task_id($(this).attr('id'));
+			})
+			.on('click', '.title', function() {
+				var deadline,
+						$this = $(this).parent();
+
+				let task_data = tasks.get_task_detail($(this).parent().attr('id'));
+
+				$('#selected-node').val(task_data.title).data('node', $this)
+				$('#DetailTask').modal('show')
+				$('#DetailTaskID').text(task_data.id)
+				$('#DetailTaskTitle').val(task_data.title)
+				$('#DetailTaskDescription').val(task_data.description)
+				deadline = task_data.deadline_at
+				if (deadline !== 'null') {
+					$('#DetailTaskDeadline').val(task_data.deadline_at)
+				}
+				$('#DetailTaskStatus').val(task_data.status)
+				$('#DetailTaskNotify').val(task_data.notify)
+				if (task_data.notify == 'lod'){
+					$('.ccby-license').addClass('ccby-active');
+				}
+				else {
+					$('.ccby-license').removeClass('ccby-active');
+				}
+
+				$('#TaskParticipants').empty()
+				for (participant of task_data.participants){
+					<% if user_signed_in? %>
+					if (participant.id === <%= current_user.id %>){
+						$('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
+					}
+					else {
+						$('#TaskParticipants').append('<li>' + participant.name + '</li>');
+					}
+					<% else %>
+					$('#TaskParticipants').append('<li>' + participant.name + '</li>');
+					<% end %>
+				}
+
+
+				{
+					$('#TaskTags').empty();
+
+					let task_id = task_data.id;
+					let query = 'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
+							+ 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
+							+ ''
+							+ 'select ?tags where{'
+							+ '  ?annotate tags:target mf-task:' + task_id + ' ;'
+							+ '  tags:body ?tags.'
+							+ '}'
+
+					$.ajax({
+						type: 'GET',
+						url: 'http://lod.srmt.nitech.ac.jp/sparql/',
+						data: {
+							'query' : query,
+							'format' : 'application/sparql-results+json',
+							'default-graph-uri' : 'http://mf.srmt.nitech.ac.jp/tags/'
+						},
+						success: function(data) {
+							console.log(data);
+							for ( let x of data['results']['bindings'] ){
+								let tag_name = x['tags']['value'];
+								$('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
+							}
+
+						}
+					});
+				}
+			})
+			.on('click', '.add-button', function() {
+				var $this = $(this).parent();
+
+				task_data = tasks.get_task_detail($(this).parent().attr('id'));
+
+				$('#selected-node').val(task_data.title).data('node', $this)
+				$('#AddTask').modal('show')
+				$('#AddTaskTitle').val('')
+				$('#AddTaskDescription').val('')
+			})
+			.on('click', '.delete-button', function() {
+				var $this = $(this).parent();
+
+				console.log($(this).parent().attr('id'));
+				task_data = tasks.get_task_detail($(this).parent().attr('id'));
+				console.log(task_data);
+				console.log(tasks.get_all_tasks());
+
+				$('#selected-node').val(task_data.title).data('node', $this)
+				$('#ConfirmDelete').modal('show')
+				$('#DeleteTaskID').val(task_data.id);
+				$('#DeleteTaskTitle').text(task_data.title);
+			})
+
+	<% if user_signed_in? %>
+	$("#ToAddChild").click(function(){
+		$('#AddTask').modal('show')
+		$('#AddTaskTitle').val('')
+		$('#AddTaskDescription').val('')
+	})
+	$("#ToDeleteTask").click(function(){
+		$('#ConfirmDelete').modal('show')
+		$('#DeleteTaskID').val($('#DetailTaskID').val())
+		$('#DeleteTaskTitle').text($('#DetailTaskTitle').val())
+	})
+
+
+	$("#DeleteTask").click(function(){
+		task_id = tasks.get_selected_task_id();
+		tasks.delete_task(task_id);
+	})
+
+	$("#ChangeDetail").click(function(){
+		let task_id = tasks.get_selected_task_id(),
+				title = $('#DetailTaskTitle').val(),
+				description = $('#DetailTaskDescription').val(),
+				deadline_at = date_format2rails($('#DetailTaskDeadline').val()),
+				status = $('#DetailTaskStatus').val(),
+				notify = $('#DetailTaskNotify').val()
+
+		tasks.update_task_detail(task_id, title, description,
+				deadline_at, status, notify)
+	})
+
+
+	$("#AddChild").click(function(){
+		let parent_task_id = tasks.get_selected_task_id(),
+				title = $('#AddTaskTitle').val(),
+				description = $('#AddTaskDescription').val(),
+				deadline_at = date_format2rails($('#AddTaskDeadline').val()),
+				status = $('#AddTaskStatus').val(),
+				notify = $('#AddTaskNotify').val()
+
+
+		tasks.add_new_task(parent_task_id, title, description,
+				deadline_at, status, notify)
+	})
+
+	$("#ToParticipate").click(function(){
+		task_id = tasks.get_selected_task_id()
+		tasks.participate_to_task(task_id)
+	});
+
+
+	$(".delete_admin").click(function(){
+		var mission_id = <%= @mission.id %>
+		var admin_id = $(this).attr('admin_id');
+
+		$.ajax({
+			type: 'DELETE',
+			url: '/api/missions/' + mission_id + '/delete_admin/' + admin_id,
+			success: function(data){
+				$('p[admin_id=' + admin_id + ']').remove();
+			}});
+	});
+
+
+	$(".delete_mission_participant").click(function(){
+		let mission_id = <%= @mission.id %>,
+				participant_id = $(this).attr('participant_id');
+
+		$.ajax({
+			type: 'DELETE',
+			url: '/api/missions/' + mission_id + '/delete_participant/' + participant_id,
+			success: function(data){
+				$('p[participant_id=' + participant_id + ']').remove();
+			}});
+	});
+
+
+	$(document)
+			.on('click', '.delete_task_participant', function() {
+				let task_id = tasks.get_selected_task_id(),
+						participant_id = $(this).attr('participant_id');
+
+				$.ajax({
+					type: 'DELETE',
+					url: '/api/tasks/' + task_id + '/delete_participant/' + participant_id,
+					success: function(data){
+						$('span[participant_id=' + participant_id + ']').parent().remove();
+
+						tasks.update_hierarchy(data.task_data.hierarchy);
+						tasks.update_all_tasks(data.task_data.all_tasks);
+					}});
+			});
+
+
+	<% end %>
 </script>

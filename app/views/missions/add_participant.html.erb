@@ -1,14 +1,9 @@
-
 <div class="main">
 	<div class="container">
-		<div class="page-header">
-			<h2>参加者追加</h2>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<p>新しい参加者のユーザ名を入力してください</p>
-			</div>
-			<div class="panel-body">
+		<h2 class="border-bottom border-white mb-4">参加者追加</h2>
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">新しい参加者のユーザ名を入力してください</h5>
 				<%= form_tag(:mission_add_participant_update, method: "put") do %>
 					<%= label_tag(:participant, "新参加者")%>
 					<%= text_field_tag(:participant) %>

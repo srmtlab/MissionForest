@@ -9,19 +9,27 @@ h1, h2, h3 {
 *	Header
 *************************************/
 .header {
-  background: rgba(0,0,0,.15);
-  box-shadow: 0 1px 1px rgba(0,0,0,.1);
+  background-color: forestgreen;
   border: none;
 }
 
-.header.navbar-default .navbar-brand {
-    color: white;
+.header .navbar-brand{
+  color: aliceblue;
 }
 
-.header.navbar-default .navbar-nav > li > a {
+.header .navbar-text{
+  color: aliceblue;
+}
+
+.header .nav-link{
+  color: aliceblue;
+}
+
+.header .nav-link:hover{
+  color: aquamarine;
+}
+
+.navbar-toggler-icon{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
   color: white;
-}
-
-.header.navbar-default .navbar-text {
-    color: white;
 }

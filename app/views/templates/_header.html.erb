@@ -1,30 +1,31 @@
-<nav class="navbar navbar-default header">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <%= link_to '🌳 MissionForest', root_path, :class => 'navbar-brand' %>
-    </div>
+<nav class="navbar navbar-expand-lg header mb-5">
+  <%= link_to '🌳 MissionForest', root_path, :class => 'navbar-brand' %>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav mr-auto">
+      <!--
+      <li class="nav-item">
+        <%= link_to 'ミッション一覧', root_path, :class => 'nav-link' %>
+      </li>
+      -->
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <%= link_to 'ミッション作成', new_mission_path, :class => 'nav-link' %>
+        </li>
+      <% end %>
+    </ul>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <!--    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"> -->
-    <div>
-
-      <ul class="nav navbar-nav">
-        <li><%= link_to 'ミッション一覧', root_path, :class => 'navbar-link' %></li>
-        <% if user_signed_in? %>
-          <li><%= link_to 'ミッション作成', new_mission_path, :class => 'navbar-link' %></li>
-        <% end %>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <% if user_signed_in? %>
-          <li><p class="navbar-text">ようこそ！<%= current_user.name %>さん</p></li>
-          <li><%= link_to 'プロフィール編集', edit_user_registration_path, :class => 'navbar-link' %></li>
-          <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %></li>
-        <% else %>
-          <li><%= link_to "ユーザー登録", new_user_registration_path, :class => 'navbar-link'  %></li>
-          <li><%= link_to "ログイン", new_user_session_path, :class => 'navbar-link'  %></li>
-        <% end %>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+    <ul class="navbar-nav">
+      <% if user_signed_in? %>
+        <li class="nav-item"><span class="navbar-text font-weight-bold">ようこそ！<%= current_user.name %>さん</span></li>
+        <li class="nav-item"><%= link_to 'プロフィール編集', edit_user_registration_path, :class => 'nav-link' %></li>
+        <li class="nav-item"><%= link_to "ログアウト", destroy_user_session_path, method: :delete, :class => 'nav-link' %></li>
+      <% else %>
+        <li class="nav-item"><%= link_to "ユーザー登録", new_user_registration_path, :class => 'nav-link'  %></li>
+        <li class="nav-item"><%= link_to "ログイン", new_user_session_path, :class => 'nav-link'  %></li>
+      <% end %>
+    </ul>
+  </div>
 </nav>

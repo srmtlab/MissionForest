@@ -6,7 +6,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   # 認証トークンはユニークに。ただしnilは許可
-  validates:authentication_token, uniqueness: true, allow_nil: true
+  validates :authentication_token, uniqueness: true, allow_nil: true
   has_many :missions
   
   has_many :participate_missions, class_name: "Mission",

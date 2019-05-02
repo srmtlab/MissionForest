@@ -2,7 +2,6 @@
 	<% if @mission.errors.any? %>
 		<div id="error_explanation">
 			<h2><%= pluralize(@mission.errors.count, "error") %> prohibited this mission from being saved:</h2>
-
 			<ul>
 				<% @mission.errors.full_messages.each do |message| %>
 					<li><%= message %></li>
@@ -13,15 +12,15 @@
 
 	<div class="form-group">
 		<label for="title">ミッション名</label>
-		<%= f.text_field :title, class: "form-control" %>
+		<%= f.text_field :title, class: "form-control", placeholder: "ミッション名", required: true%>
 	</div>
 
 	<div class="form-group">
 		<label for="description">概要</label>
-		<%= f.text_area :description, class: "form-control" %>
+		<%= f.text_area :description, class: "form-control", placeholder: "ミッション概要"%>
 	</div>
 
 	<div class="actions">
-		<%= f.submit "変更する", class: "btn btn-default" %>
+		<%= f.submit "変更する", class: "btn btn-success float-right" %>
 	</div>
 <% end %>
