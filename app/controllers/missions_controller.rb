@@ -4,8 +4,8 @@ class MissionsController < ApplicationController
   
   # GET /missions
   def index
-    #@missions = Mission.order(created_at: :desc).all
-    #@missions = Mission.all
+    # @missions = Mission.order(created_at: :desc).all
+    # @missions = Mission.all
     @missions = []
     Mission.order(created_at: :desc).all.each do |mission|
       root_task = mission.root_task
@@ -32,7 +32,6 @@ class MissionsController < ApplicationController
     all_tasks = get_all_tasks(@mission)
     hierarchy = get_hierarchy(@mission)
     taskjson = {all_tasks: all_tasks, hierarchy: hierarchy}
-    #    render :json => hierarchy
     render :json => taskjson
   end
 
@@ -42,7 +41,7 @@ class MissionsController < ApplicationController
       def recursion(tree, pcrelation)
         parent = tree['id']
 
-        if ! tree['children'].nil? then
+        if ! tree['children'].nil?
           tree['children'].each do |child|
             pair = []
             pair.push(parent)
@@ -56,7 +55,7 @@ class MissionsController < ApplicationController
       pcrelation = []
       recursion(tree, pcrelation)
       
-      return pcrelation
+      pcrelation
     end
     authorize!
 
@@ -279,7 +278,7 @@ class MissionsController < ApplicationController
       task_detail['participants'] = task.participants
       tasks.push(task_detail)
     end
-    return tasks
+    tasks
   end
   
   def get_hierarchy(mission)
@@ -290,32 +289,30 @@ class MissionsController < ApplicationController
       if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
         return nil
       end
-      
-      
+
       tree["id"] = task.id
       tree["name"] = task.title
       tree["description"] = task.description
       tree["deadline_at"] = task.deadline_at
+      tree["created_at"] = task.created_at
       tree["status"] = task.status
       tree["notify"] = notify
 
-      
-      if ! task.subtasks[0].nil? then
+      if ! task.subtasks[0].nil?
         tree["children"] = []
         task.subtasks.each do |child|
           childtree = generate_tree(child)
           
-          if ! childtree.nil? then
+          if ! childtree.nil?
             tree["children"].push(childtree)
           end
         end
       end
-      return tree
+      tree
     end
 
     task = mission.root_task
     tree = generate_tree(task)
-    return tree
   end
   
   def set_mission

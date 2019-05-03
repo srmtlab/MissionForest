@@ -15,7 +15,5 @@ module Virtuoso
     clireturn = client.get(uri, query)
 =end
     clireturn = 'no virtuoso'
-
-    return clireturn
   end
 end

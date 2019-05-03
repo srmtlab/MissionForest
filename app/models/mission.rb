@@ -1,7 +1,7 @@
 class Mission < ApplicationRecord
   include Virtuoso
-  
-  
+
+
   belongs_to :user
   has_many :tasks, :dependent => :destroy
   accepts_nested_attributes_for :tasks
@@ -11,7 +11,7 @@ class Mission < ApplicationRecord
 
   has_many :mission_participant
   has_many :participants,
-	       through: :mission_participant,
+           through: :mission_participant,
            source: :user
   accepts_nested_attributes_for :mission_participant
 
@@ -20,7 +20,7 @@ class Mission < ApplicationRecord
            through: :mission_admin,
            source: :user
   accepts_nested_attributes_for :mission_admin
-  
+
   def save(*args)
     super(*args)
     save2virtuoso(self)
@@ -60,7 +60,7 @@ class Mission < ApplicationRecord
     created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
     updated_at = '"' + mission.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
 
-    
+
     insertquery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
@@ -73,7 +73,7 @@ class Mission < ApplicationRecord
       
       INSERT INTO <http://mf.srmt.nitech.ac.jp/>
       {
-      EOS
+    EOS
 
     insertquery += id + ' rdf:type mf:Mission .'
     insertquery += id + ' dct:creator ' + user_id + ' .'
@@ -82,7 +82,7 @@ class Mission < ApplicationRecord
     insertquery += id + ' dct:dateSubmitted '+ created_at + ' .'
     insertquery += id + ' dct:title '+ title + ' .'
     insertquery += '}'
-    
+
     clireturn = auth_query(insertquery)
     return true
   end
@@ -94,15 +94,15 @@ class Mission < ApplicationRecord
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
 
       DELETE {
-      EOS
+    EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
       }
       WHERE {
-      EOS
+    EOS
     deletequery += id + ' ?q ?o'
     deletequery += '}'
-    
+
     clireturn = auth_query(deletequery)
     return true
   end

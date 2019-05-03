@@ -397,7 +397,7 @@
 			$.ajax({
 				type: 'GET',
 				async: false,
-				url: '/api/missions/<%= @mission.id %>/tasks',
+				url: api,
 				success: function(data){
 					task_data = data;
 				}});
@@ -623,9 +623,12 @@
 		'exportFilename': '<%= @mission.title %>',
 		'createNode': function($node, data) {
 			$node.append('<div class="add-button">+</div>');
-			$node.append('<div class="delete-button">X</div>');
 
-			if (data.id > 2250){
+			if(data.level !== 1){
+				$node.append('<div class="delete-button">X</div>');
+			}
+
+			if (moment().diff(moment(data.created_at), 'weeks') < 1){
 				$node.append('<div class="new-icon">NEW</div>')
 			}
 		}
@@ -668,9 +671,10 @@
 				$('#DetailTaskID').text(task_data.id);
 				$('#DetailTaskTitle').val(task_data.title);
 				$('#DetailTaskDescription').val(task_data.description);
+
 				deadline = task_data.deadline_at;
 				if (deadline !== 'null') {
-					$('#DetailTaskDeadline').val(moment(deadline).format('MM/DD/YYYY HH:mm'))
+					$('#DetailTaskDeadline').val(moment(deadline).format('MM/DD/YYYY HH:mm'));
 				}
 				$('#DetailTaskStatus').val(task_data.status);
 				$('#DetailTaskNotify').val(task_data.notify);
@@ -681,17 +685,19 @@
 					$('.ccby-license').removeClass('ccby-active');
 				}
 
-				$('#TaskParticipants').empty();
+
+				let TaskParticipants = $('#TaskParticipants');
+				TaskParticipants.empty();
 				for (participant of task_data.participants){
 					<% if user_signed_in? %>
 					if (participant.id === <%= current_user.id %>){
-						$('#TaskParticipants').append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
+						TaskParticipants.append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
 					}
 					else {
-						$('#TaskParticipants').append('<li>' + participant.name + '</li>');
+						TaskParticipants.append('<li>' + participant.name + '</li>');
 					}
 					<% else %>
-					$('#TaskParticipants').append('<li>' + participant.name + '</li>');
+					TaskParticipants.append('<li>' + participant.name + '</li>');
 					<% end %>
 				}
 
