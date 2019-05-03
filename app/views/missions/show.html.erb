@@ -618,9 +618,8 @@
 	const options = {
 		'data' : tasks.get_tasks_hierarchy(),
 		'pan': true,
+		'zoom': true,
 		'draggable': true,
-		'exportButton': false,
-		'exportFilename': '<%= @mission.title %>',
 		'createNode': function($node, data) {
 			$node.append('<div class="add-button">+</div>');
 
