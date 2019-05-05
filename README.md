@@ -3,6 +3,14 @@ MissionForest
 MissionForest is the system for sharing collaborative activities.  
 MissionForest has been developed as successor system since 2016 in order to overcome the technical issues of [GoalShare](https://github.com/srmtlab/GoalShare).  
 
+## Requirement
+- [MeCab](http://taku910.github.io/mecab/)
+- ruby 2.6.3
+    - rails 5.2.3
+- Web server (Nginx, apache, ...)
+    - to serve static content and proxy
+- [Virtuoso](https://virtuoso.openlinksw.com/rdf/) (Optional)
+
 
 ## How to start
 1. download source code 

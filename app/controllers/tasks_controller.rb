@@ -168,7 +168,7 @@ class TasksController < ApplicationController
   
   def get_ancestors(task)
     def ancestor(nexttask)
-      if nexttask.sub_task_of.present? then
+      if nexttask.sub_task_of.present?
         ancestors_list = ancestor(Task.find(nexttask.sub_task_of))
       else
         ancestors_list = []
@@ -214,12 +214,12 @@ class TasksController < ApplicationController
       tree["status"] = task.status
       tree["notify"] = notify
       
-      if ! task.subtasks[0].nil? then
+      if ! task.subtasks[0].nil?
         tree["children"] = []
         task.subtasks.each do |child|
           childtree = generate_tree(child)
           
-          if ! childtree.nil? then
+          if ! childtree.nil?
             tree["children"].push(childtree)
           end
         end

@@ -1,25 +1,29 @@
 <div class="main">
 	<div class="container">
 
-		<h2 class="border-bottom border-white mb-4"><%= @mission.title %></h2>
-		<!-- <h4>#<span id="mission_id"><%= @mission.id %></span></h4> -->
+		<h2 class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
 
-
-		<div class="btn-group mb-4" role="group">
-			<% if user_signed_in? %>
-				<!-- <%= link_to 'タスクを追加', mission_task_new_path(@mission), :class => 'btn btn-default' %> -->
-				<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-					<%= link_to 'ミッションを編集', edit_mission_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
-					<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :class => 'btn page-link text-dark d-inline-block mr-1' %>
-					<%= link_to '参加者を追加', mission_add_participant_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
-					<%= link_to '管理者を追加', mission_add_admin_path(@mission), :class => 'btn page-link text-dark d-inline-block mr-1' %>
-				<% end %>
-
-				<% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
-					<%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-default' %>
-				<% end %>
+		<% if user_signed_in? %>
+			<% if @mission.admins.include?(current_user) || @mission.user == current_user %>
+				<div class="row">
+					<div class="col-md-3 col-sm-6 mb-4">
+						<%= link_to 'ミッションを編集', edit_mission_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-4">
+						<%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-4">
+						<%= link_to '参加者を追加', mission_add_participant_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-4">
+						<%= link_to '管理者を追加', mission_add_admin_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+					</div>
+				</div>
 			<% end %>
-		</div>
+			<% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
+				<%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-primary mb-4' %>
+			<% end %>
+		<% end %>
 
 		<div class="card mb-4">
 			<div class="card-header">
@@ -61,8 +65,6 @@
 				<% end %>
 			</div>
 		</div>
-
-
 		<div class="panel panel-info mb-4">
 			<div class="panel-body tree">
 				<div id="chart-container"></div>
@@ -857,7 +859,5 @@
 						tasks.update_all_tasks(data.task_data.all_tasks);
 					}});
 			});
-
-
 	<% end %>
 </script>
