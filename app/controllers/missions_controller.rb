@@ -1,21 +1,21 @@
 # coding: utf-8
 class MissionsController < ApplicationController
   before_action :set_mission, only: [:show, :edit, :update, :destroy]
-  
+
   # GET /missions
   def index
-    # @missions = Mission.order(created_at: :desc).all
-    # @missions = Mission.all
+
     @missions = []
     Mission.order(created_at: :desc).all.each do |mission|
       root_task = mission.root_task
       notify = root_task.notify
       if (notify == 'own' or notify == 'organize') and root_task.user.id != current_user.try(:id)
-          next
+        next
       end
       @missions.push(mission)
     end
-    #@missions = Mission.order(created_at: :desc).all
+# @missions = Mission.order(created_at: :desc).all
+# @missions = Mission.page(params[:page]).per(1).order(created_at: :desc)
   end
 
   # GET /missions/1
@@ -51,16 +51,16 @@ class MissionsController < ApplicationController
           end
         end
       end
-      
+
       pcrelation = []
       recursion(tree, pcrelation)
-      
+
       pcrelation
     end
     authorize!
 
     pcrelation = tree2pcrelation(params[:tree].to_unsafe_h)
-    
+
     pcrelation.each do |pair|
       task = Task.find(pair[1])
       task.sub_task_of = pair[0].to_i
@@ -82,7 +82,7 @@ class MissionsController < ApplicationController
       render :json => {participation: @participation}
     end
   end
-  
+
   # GET /missions/new
   def new
     authorize!
@@ -152,7 +152,7 @@ class MissionsController < ApplicationController
   # PATCH/PUT /missions/1
   def update
     authorize! @mission
-    
+
     if @mission.update(mission_params)
       redirect_to mission_path(@mission), notice: 'ミッションが更新されました'
     else
@@ -163,7 +163,7 @@ class MissionsController < ApplicationController
   # DELETE /missions/1
   def destroy
     authorize! @mission
-    
+
     @mission.destroy
     redirect_to missions_path, notice: 'ミッションが削除されました'
   end
@@ -180,7 +180,7 @@ class MissionsController < ApplicationController
     authorize! @mission
 
     user_name = params[:admin]
-    
+
     user = User.find_by(name: user_name)
     if not @mission.admins.include?(user)
       @mission.admins.push(user)
@@ -189,7 +189,7 @@ class MissionsController < ApplicationController
       @mission.participants.push(user)
     end
 
-    
+
     if @mission.save
       redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'
     else
@@ -221,13 +221,13 @@ class MissionsController < ApplicationController
     authorize! @mission
 
     user_name = params[:participant]
-    
+
     user = User.find_by(name: user_name)
-    
+
     if not @mission.participants.include?(user)
       @mission.participants.push(user)
     end
-    
+
     if @mission.save
       redirect_to mission_path(@mission), notice: user_name + 'さんが参加しました'
     else
@@ -240,7 +240,7 @@ class MissionsController < ApplicationController
     @mission = Mission.find(params[:id])
     user = current_user
     @mission.participants.push(user)
-    
+
     if @mission.save
       redirect_to mission_path(@mission), notice: user.name + 'さんが参加しました'
     else
@@ -260,7 +260,7 @@ class MissionsController < ApplicationController
     end
   end
 
-  
+
   private
   def get_all_tasks(mission)
     tasks = []
@@ -280,11 +280,11 @@ class MissionsController < ApplicationController
     end
     tasks
   end
-  
+
   def get_hierarchy(mission)
     def generate_tree(task)
       tree = {}
-      
+
       notify = task.notify
       if (notify == 'own' or notify == 'organize') and task.user.id != current_user.try(:id)
         return nil
@@ -302,7 +302,7 @@ class MissionsController < ApplicationController
         tree["children"] = []
         task.subtasks.each do |child|
           childtree = generate_tree(child)
-          
+
           if ! childtree.nil?
             tree["children"].push(childtree)
           end
@@ -314,15 +314,15 @@ class MissionsController < ApplicationController
     task = mission.root_task
     tree = generate_tree(task)
   end
-  
+
   def set_mission
     @mission = Mission.find(params[:id])
   end
-  
+
   def mission_params
     params[:mission].permit(:title, :description)
   end
-  
+
   def root_task_params
     params[:mission].permit(:title, :description)
   end
