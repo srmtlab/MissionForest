@@ -4,6 +4,7 @@ class TaskDatabase {
         this.all_tasks = task_data.all_tasks;
     }
 
+
     get_task_detail(search_task_id){
         for (let task of this.get_all_tasks()){
             if(task.id === search_task_id){
@@ -60,7 +61,7 @@ class TaskDatabase {
         task_detail.deadline_at = deadline_at;
         task_detail.status = status;
         task_detail.notify = notify;
-        task_detail.mission_id = <%= @mission.id %>;
+        task_detail.mission_id = mission_id;
         task_detail.sub_task_of = parent_task_id;
         //task_detail.user_id = <= current_user.id >;
 
@@ -113,8 +114,6 @@ class TaskDatabase {
     }
 
     participate_to_task(task_id){
-        let user_id = <%= current_user.id %>;
-
         $.ajax({
             type: 'PUT',
             url: '/api/tasks/' + task_id + '/add_participant',

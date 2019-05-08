@@ -23,10 +23,12 @@ $(function(){
 				if(data.status === "init")
 				{
 					tasks = new TaskDatabase(data);
+					oc = new OCDraw(tasks);
+					oc.draw();
 				}
-				else
+				else if (data.status === "work" && typeof tasks !== 'undefined')
 				{
-					
+
 				}
 
 				tasks.update_hierarchy(data);
