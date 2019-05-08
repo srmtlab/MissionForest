@@ -1,7 +1,5 @@
 $(function(){
 	const channel = 'MissionChannel';
-	const mission_id = $('#mission_id').text();
-
 
 	App.mission = App.cable.subscriptions.create(
 		{
@@ -33,4 +31,7 @@ $(function(){
 				return this.perform('change_tasktree', { tree:tree })
 			}
 		});
+
+
+
 });

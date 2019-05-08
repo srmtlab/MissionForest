@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '5.2.3'
 
-# gem 'nokogiri', '>=1.10.3'
-
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 
@@ -22,7 +20,6 @@ gem 'bootstrap', '~> 4.3.1'
 gem 'bootstrap4-datetime-picker-rails'
 gem 'momentjs-rails'
 gem "font-awesome-rails"
-# gem 'bootstrap3-datetimepicker-rails'
 
 # Security
 gem 'devise'
