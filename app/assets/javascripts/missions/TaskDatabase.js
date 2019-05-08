@@ -1,28 +1,19 @@
 class TaskDatabase {
-    constructor(api){
-        let task_data = {};
-        $.ajax({
-            type: 'GET',
-            async: false,
-            url: api,
-            success: function(data){
-                task_data = data;
-            }});
-
+    constructor(task_data){
         this.hierarchy = task_data.hierarchy;
         this.all_tasks = task_data.all_tasks;
     }
 
     get_task_detail(search_task_id){
         for (let task of this.get_all_tasks()){
-            if(task.id == search_task_id){
+            if(task.id === search_task_id){
                 return task;
             }
         }
         return null;
     }
 
-<% if user_signed_in? %>
+
     update_task_detail(task_id, title, description,
                        deadline_at, status, notify){
         let task_detail = this.get_task_detail(task_id);
@@ -59,9 +50,7 @@ class TaskDatabase {
             }
         })
     }
-<% end %>
 
-<% if user_signed_in? %>
     add_new_task(parent_task_id, title, description,
                  deadline_at, status, notify){
         let task_detail = {};
@@ -102,9 +91,7 @@ class TaskDatabase {
             }
         })
     }
-<% end %>
 
-<% if user_signed_in? %>
     delete_task(task_id){
         $.ajax({
             type: 'DELETE',
@@ -124,9 +111,7 @@ class TaskDatabase {
             }
         })
     }
-<% end %>
 
-<% if user_signed_in? %>
     participate_to_task(task_id){
         let user_id = <%= current_user.id %>;
 
@@ -149,7 +134,7 @@ class TaskDatabase {
             }
         })
     }
-<% end %>
+
 
     get_tasks_hierarchy(){
         return this.hierarchy;
@@ -175,7 +160,7 @@ class TaskDatabase {
         this.all_tasks = all_tasks;
     }
 
-<% if user_signed_in? %>
+
     drop_hierarchy(){
         let taskdb = this;
         let user_id = <%= current_user.id %>;
@@ -207,5 +192,4 @@ class TaskDatabase {
 
         App.mission.change_tasktree(hierarchy);
     }
-<% end %>
 }

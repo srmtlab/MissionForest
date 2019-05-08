@@ -233,6 +233,7 @@
 
 <script>
 	const mission_id = <%= @mission.id %>;
+	let tasks;
 
 	function date_format2rails(datestring){
 		try {
@@ -448,7 +449,6 @@
 
 
 	$(".delete_admin").click(function(){
-		var mission_id = <%= @mission.id %>;
 		var admin_id = $(this).attr('admin_id');
 
 		$.ajax({
@@ -461,8 +461,7 @@
 
 
 	$(".delete_mission_participant").click(function(){
-		let mission_id = <%= @mission.id %>,
-				participant_id = $(this).attr('participant_id');
+		let participant_id = $(this).attr('participant_id');
 
 		$.ajax({
 			type: 'DELETE',

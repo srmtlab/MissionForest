@@ -9,6 +9,7 @@ $(function(){
 		{
 			connected: function() {
 				// Called when the subscription is ready for use on the server
+
 			},
 
 			disconnected: function() {
@@ -18,6 +19,16 @@ $(function(){
 			received: function(data) {
 				// Called when there's incoming data on the websocket for this channel
 				console.log(data);
+
+				if(data.status === "init")
+				{
+					tasks = new TaskDatabase(data);
+				}
+				else
+				{
+					
+				}
+
 				tasks.update_hierarchy(data);
 				oc.init({'data':tasks.get_tasks_hierarchy()});
 
@@ -31,7 +42,4 @@ $(function(){
 				return this.perform('change_tasktree', { tree:tree })
 			}
 		});
-
-
-
 });
