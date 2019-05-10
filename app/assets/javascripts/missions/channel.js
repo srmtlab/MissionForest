@@ -18,17 +18,40 @@ $(function(){
 
 			received: function(data) {
 				// Called when there's incoming data on the websocket for this channel
-				console.log(data);
-
 				if(data.status === "init")
 				{
-					tasks = new TaskDatabase(data);
-					oc = new OCDraw(tasks);
-					oc.draw();
+					tasks = new Tasks(data.tasks, user_signed_in, user_id);
+					tasks.draw('#chart-container');
 				}
 				else if (data.status === "work" && typeof tasks !== 'undefined')
 				{
+					let operation = data.operation;
+					let type = data.type;
+					let data = data.data;
 
+					if(type === "mission")
+					{
+						if(operation === "edit")
+						{
+							$('#mission-title').text(data.title);
+							$('#mission-description').text(data.description);
+						}
+					}
+					else if(type === "task")
+					{
+						if(operation === "add")
+						{
+							add_node(data);
+						}
+						else if(operation === "delete")
+						{
+							delete_node(data)
+						}
+						else if(operation === "edit")
+						{
+							edit_node(data)
+						}
+					}
 				}
 
 				tasks.update_hierarchy(data);

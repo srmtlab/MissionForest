@@ -1,7 +1,7 @@
 <div class="main">
   <div class="container">
 
-    <h2 class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
+    <h2 id="mission-title" class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
 
     <% if user_signed_in? %>
       <% if @mission.admins.include?(current_user) || @mission.user == current_user %>
@@ -30,7 +30,7 @@
         ミッション概要
       </div>
       <div class="card-body">
-        <p class="card-text"><%= @mission.description %></p>
+        <p id="mission-description" class="card-text"><%= @mission.description %></p>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
     <div class="panel panel-info mb-4">
       <div class="panel-body tree">
         <div id="chart-container"></div>
-        <input type="hidden" id="selected-node">
+        <!-- <input type="hidden" id="selected-node"> -->
       </div>
     </div>
   </div>
@@ -233,12 +233,18 @@
 
 <script>
     const mission_id = <%= @mission.id %>;
+    const lod = <%= @lod %>;
     <% if user_signed_in? %>
+    const user_signed_in = true;
     const user_id = <%= current_user.id %>;
+    <% else %>
+    const user_signed_in = false;
+    const user_id = null;
     <% end %>
+
     const lod_graph_uri = 'http://mf.srmt.nitech.ac.jp/tags/';
     const sparql_endpoint = 'http://lod.srmt.nitech.ac.jp/sparql/';
-    let tasks, oc;
+    let tasks, selected_task;
 
 
     function date_format2rails(datestring){
@@ -264,93 +270,17 @@
 
     $(document)
         .on('click', '.node', function() {
-            tasks.set_selected_task_id($(this).attr('id'));
+            selected_task = $(this);
         })
         .on('click', '.title', function() {
-            var deadline,
-                $this = $(this).parent();
-
-            let task_data = tasks.get_task_detail($(this).parent().attr('id'));
-
-            $('#selected-node').val(task_data.title).data('node', $this);
-            $('#DetailTask').modal('show');
-            $('#datetimepickerDetailTaskDeadline').datetimepicker(
-                {
-                    format: 'MM/DD/YYYY HH:mm',
-                }
-            );
-            $('#DetailTaskID').text(task_data.id);
-            $('#DetailTaskTitle').val(task_data.title);
-            $('#DetailTaskDescription').val(task_data.description);
-
-            deadline = task_data.deadline_at;
-            if (deadline !== 'null') {
-                $('#DetailTaskDeadline').val(moment(deadline).format('MM/DD/YYYY HH:mm'));
-            }
-            $('#DetailTaskStatus').val(task_data.status);
-            $('#DetailTaskNotify').val(task_data.notify);
-            if (task_data.notify === 'lod'){
-                $('.ccby-license').addClass('ccby-active');
-            }
-            else {
-                $('.ccby-license').removeClass('ccby-active');
-            }
-
-
-            let TaskParticipants = $('#TaskParticipants');
-            TaskParticipants.empty();
-            for (participant of task_data.participants){
-                <% if user_signed_in? %>
-                if (participant.id === user_id){
-                    TaskParticipants.append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">X</span>' + participant.name + '</li>');
-                }
-                else {
-                    TaskParticipants.append('<li>' + participant.name + '</li>');
-                }
-                <% else %>
-                TaskParticipants.append('<li>' + participant.name + '</li>');
-                <% end %>
-            }
-
-
-            {
-                $('#TaskTags').empty();
-
-                let task_id = task_data.id;
-                let query =
-                    'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
-                    + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
-                    + ''
-                    + 'select ?tags where{'
-                    + '  ?annotate tags:target mf-task:' + task_id + ' ;'
-                    + '  tags:body ?tags.'
-                    + '}';
-
-                $.ajax({
-                    type: 'GET',
-                    url: sparql_endpoint,
-                    data: {
-                        'query' : query,
-                        'format' : 'application/sparql-results+json',
-                        'default-graph-uri' : lod_graph_uri
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        for ( let x of data['results']['bindings'] ){
-                            let tag_name = x['tags']['value'];
-                            $('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
-                        }
-
-                    }
-                });
-            }
+            tasks.drawDetailTask($(this).parent());
         })
         .on('click', '.add-button', function() {
             var $this = $(this).parent();
 
             task_data = tasks.get_task_detail($(this).parent().attr('id'));
 
-            $('#selected-node').val(task_data.title).data('node', $this);
+            // $('#selected-node').val(task_data.title).data('node', $this);
             $('#AddTask').modal('show');
             $('#datetimepickerAddTaskDeadline').datetimepicker(
                 {
@@ -368,7 +298,7 @@
             console.log(task_data);
             console.log(tasks.get_all_tasks());
 
-            $('#selected-node').val(task_data.title).data('node', $this);
+            // $('#selected-node').val(task_data.title).data('node', $this);
             $('#ConfirmDelete').modal('show');
             $('#DeleteTaskID').val(task_data.id);
             $('#DeleteTaskTitle').text(task_data.title);
