@@ -252,7 +252,7 @@
             return moment(datestring,'MM/DD/YYYY HH:mm').utc().format();
         }
         catch {
-            return datestring
+            return null
         }
     }
 
@@ -280,47 +280,43 @@
             tasks.drawDeleteTask($(this).parent().attr('id'));
         })
         .on('click', '#ToAddChild', function () {
-            tasks.drawAddTask($('#DetailTaskID').val());
+            tasks.drawAddTask($('#DetailTaskID').text());
         })
         .on('click', '#ToDeleteTask', function () {
-            tasks.drawDeleteTask($('#DetailTaskID').val());
+            tasks.drawDeleteTask($('#DetailTaskID').text());
+        })
+        .on('click', '#DeleteTask', function(){
+            let task = {
+              'task_id' : tasks.get_selected_task_id()
+            }
+            App.mission.send_delete_task(task);
+        })
+        .on('click', '#ChangeDetail', function(){
+            let task = {
+              'task_id' : tasks.get_selected_task_id(),
+              'title' : $('#DetailTaskTitle').val(),
+              'description' : $('#DetailTaskDescription').val(),
+              'deadline_at' : date_format2rails($('#DetailTaskDeadline').val()),
+              'status' : $('#DetailTaskStatus').val(),
+              'notify' : $('#DetailTaskNotify').val()
+            }
+            App.mission.send_update_task(task);
+        })
+        .on('click', '#AddChild', function(){
+            let task = {
+              'parent_task_id' : task.get_selected_task_id(),
+              'title' : $('#AddTaskTitle').val(),
+              'description' : $('#AddTaskDescription').val(),
+              'deadline_at' : date_format2rails($('#AddTaskDeadline').val()),
+              'status' : $('#AddTaskStatus').val(),
+              'notify' : $('#AddTaskNotify').val()
+            };
+            App.mission.send_add_task(task);
         })
     <% end %>
     ;
 
     <% if user_signed_in? %>
-
-
-    $("#DeleteTask").click(function(){
-        task_id = tasks.get_selected_task_id();
-        tasks.delete_task(task_id);
-    });
-
-    $("#ChangeDetail").click(function(){
-        let task_id = tasks.get_selected_task_id(),
-            title = $('#DetailTaskTitle').val(),
-            description = $('#DetailTaskDescription').val(),
-            deadline_at = date_format2rails($('#DetailTaskDeadline').val()),
-            status = $('#DetailTaskStatus').val(),
-            notify = $('#DetailTaskNotify').val();
-
-        tasks.update_task_detail(task_id, title, description,
-            deadline_at, status, notify)
-    });
-
-
-    $("#AddChild").click(function(){
-        let parent_task_id = tasks.get_selected_task_id(),
-            title = $('#AddTaskTitle').val(),
-            description = $('#AddTaskDescription').val(),
-            deadline_at = date_format2rails($('#AddTaskDeadline').val()),
-            status = $('#AddTaskStatus').val(),
-            notify = $('#AddTaskNotify').val();
-
-
-        tasks.add_new_task(parent_task_id, title, description,
-            deadline_at, status, notify)
-    });
 
     $("#ToParticipate").click(function(){
         task_id = tasks.get_selected_task_id();

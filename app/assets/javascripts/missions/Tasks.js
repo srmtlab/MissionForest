@@ -146,6 +146,37 @@ class Tasks {
         $('#DeleteTaskTitle').text(task.title);
     }
 
+    delete_task(task_id){
+        let tasks = this.tasks;
+
+        this.oc.init({
+            'data': 
+        })
+
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/tasks/' + task_id + '/delete',
+            data: {
+                'id' : task_id
+            },
+            success: function(data) {
+                tasks.update_hierarchy(data.task_data.hierarchy);
+                tasks.update_all_tasks(data.task_data.all_tasks);
+
+                oc.init({'data': data.task_data.hierarchy});
+                oc.$chart.on('nodedrop.orgchart', function(event) {
+                    console.log('drop');
+                    setTimeout('tasks.drop_hierarchy()', 100);
+                });
+            }
+        })
+    }
+
+    get_selected_task_id(){
+        return this.selected_task_id;
+    }
+
     /*=========================================================================================*/
     update_task_detail(task_id, title, description,
                        deadline_at, status, notify){
@@ -225,25 +256,7 @@ class Tasks {
         })
     }
 
-    delete_task(task_id){
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/tasks/' + task_id + '/delete',
-            data: {
-                'id' : task_id
-            },
-            success: function(data) {
-                tasks.update_hierarchy(data.task_data.hierarchy);
-                tasks.update_all_tasks(data.task_data.all_tasks);
 
-                oc.init({'data': data.task_data.hierarchy});
-                oc.$chart.on('nodedrop.orgchart', function(event) {
-                    console.log('drop');
-                    setTimeout('tasks.drop_hierarchy()', 100);
-                });
-            }
-        })
-    }
 
     participate_to_task(task_id){
         $.ajax({
@@ -279,9 +292,7 @@ class Tasks {
         this.selected_id = task_id
     }
 
-    get_selected_task_id(){
-        return this.selected_id;
-    }
+
 
     update_hierarchy(hierarchy){
         this.hierarchy = hierarchy;
@@ -294,7 +305,7 @@ class Tasks {
 
     drop_hierarchy(){
         let taskdb = this;
-        let user_id = <%= current_user.id %>;
+        let user_id = this.user_id;
 
         function recursion(tree, taskdb){
             const id = tree['id'];

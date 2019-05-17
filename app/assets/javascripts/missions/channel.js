@@ -64,8 +64,22 @@ $(function(){
 				});
 			},
 
+			send_delete_task: function(task){
+				return this.perform('delete_task', task)
+			},
+
+			send_update_task : function(task){
+				return this.perform('update_task', task)
+			},
+
+			send_add_task: function(task){
+				return this.perform('add_task', task)
+			},
+
 			change_tasktree: function(tree){
-				return this.perform('change_tasktree', { tree:tree })
+				return this.perform('change_tasktree', { 
+					tree:tree 
+				})
 			}
 		});
 });
