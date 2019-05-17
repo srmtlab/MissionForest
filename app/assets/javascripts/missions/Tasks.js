@@ -5,6 +5,7 @@ class Tasks {
         this.user_signed_in = user_signed_in;
         this.user_id = user_id;
         this.oc = null;
+        this.selected_task_id = null;
         this.options = {
             'data' : this.tasks.get_tasks_hierarchy(),
             'pan': true,
@@ -31,28 +32,17 @@ class Tasks {
         let stack_tasks = [this.tasks];
 
         while (stack_tasks.length > 0) {
-            task = stack_tasks.pop();
+            let task = stack_tasks.pop();
             if (task.id === search_task_id){
-                break;
+                return task;
             }
 
             for(let child_task of task.children){
                 stack_tasks.push(child_task);
             }
         }
-    }
-
-    /*
-    get_task_detail(search_task_id){
-        for (let task of this.get_all_tasks()){
-            if(task.id === search_task_id){
-                return task;
-            }
-        }
         return null;
     }
-    */
-
 
     draw(container_id){
         this.oc = $(container_id).orgchart(this.options);
@@ -64,8 +54,8 @@ class Tasks {
         }
     }
 
-    drawDetailTask($node){
-        let task_id = $node.attr('id');
+    drawDetailTask(selected_task_id){
+        this.selected_task_id = selected_task_id;
         
         $('#DetailTask').modal('show');
         $('#datetimepickerDetailTaskDeadline').datetimepicker(
@@ -73,7 +63,7 @@ class Tasks {
                 format: this.datetimepickerformat,
             }
         );
-        let task = this.get_task(task_id);
+        let task = this.get_task(this.selected_task_id);
 
         $('#DetailTaskID').text(task.id);
         $('#DetailTaskTitle').val(task.title);
@@ -94,7 +84,7 @@ class Tasks {
 
         let TaskParticipants = $('#TaskParticipants');
         TaskParticipants.empty();
-        for (participant of task.participants){
+        for (let participant of task.participants){
             if(this.user_signed_in && participant.id === user_id){
                 TaskParticipants.append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">&times;</span>' + participant.name + '</li>');
             }
@@ -105,7 +95,7 @@ class Tasks {
 
         if(lod){
             $('#TaskTags').empty();
-            let task_id = task_data.id;
+            let task_id = this.selected_task_id;
             let query =
                 'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
                 + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
@@ -134,14 +124,29 @@ class Tasks {
         }
     }
 
-
-    /*=========================================================================================*/
-
-    drawAddTask($node){
-        let task = this.get_task(task_id);
+    drawAddTask(selected_task_id){
+        this.selected_task_id = selected_task_id;
+        $('#AddTask').modal('show');
+        $('#datetimepickerAddTaskDeadline').datetimepicker(
+            {
+                format: this.datetimepickerformat,
+            }
+        );
+        $('#AddTaskTitle').val('');
+        $('#AddTaskDescription').val('')
     }
 
+    drawDeleteTask(selected_task_id){
+        this.selected_task_id = selected_task_id;
 
+        let task = this.get_task(this.selected_task_id);
+
+        $('#ConfirmDelete').modal('show');
+        $('#DeleteTaskID').val(task.id);
+        $('#DeleteTaskTitle').text(task.title);
+    }
+
+    /*=========================================================================================*/
     update_task_detail(task_id, title, description,
                        deadline_at, status, notify){
         let task_detail = this.get_task_detail(task_id);

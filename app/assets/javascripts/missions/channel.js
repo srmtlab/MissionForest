@@ -9,6 +9,7 @@ $(function(){
 		{
 			connected: function() {
 				// Called when the subscription is ready for use on the server
+                return this.perform('init', { 'status': 'init' })
 
 			},
 
@@ -18,7 +19,7 @@ $(function(){
 
 			received: function(data) {
 				// Called when there's incoming data on the websocket for this channel
-				if(data.status === "init")
+				if(data.status === "init" && typeof tasks === 'undefined')
 				{
 					tasks = new Tasks(data.tasks, user_signed_in, user_id);
 					tasks.draw('#chart-container');

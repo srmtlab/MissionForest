@@ -244,7 +244,7 @@
 
     const lod_graph_uri = 'http://mf.srmt.nitech.ac.jp/tags/';
     const sparql_endpoint = 'http://lod.srmt.nitech.ac.jp/sparql/';
-    let tasks, selected_task;
+    let tasks;
 
 
     function date_format2rails(datestring){
@@ -265,61 +265,30 @@
         setTimeout('tasks.drop_hierarchy()', 100);
     });
 
-
-
-
     $(document)
         .on('click', '.node', function() {
             selected_task = $(this);
         })
         .on('click', '.title', function() {
-            tasks.drawDetailTask($(this).parent());
+            tasks.drawDetailTask($(this).parent().attr('id'));
         })
+    <% if user_signed_in? %>
         .on('click', '.add-button', function() {
-            var $this = $(this).parent();
-
-            task_data = tasks.get_task_detail($(this).parent().attr('id'));
-
-            // $('#selected-node').val(task_data.title).data('node', $this);
-            $('#AddTask').modal('show');
-            $('#datetimepickerAddTaskDeadline').datetimepicker(
-                {
-                    format: 'MM/DD/YYYY HH:mm',
-                }
-            );
-            $('#AddTaskTitle').val('');
-            $('#AddTaskDescription').val('')
+            tasks.drawAddTask($(this).parent().attr('id'));
         })
         .on('click', '.delete-button', function() {
-            var $this = $(this).parent();
-
-            console.log($(this).parent().attr('id'));
-            task_data = tasks.get_task_detail($(this).parent().attr('id'));
-            console.log(task_data);
-            console.log(tasks.get_all_tasks());
-
-            // $('#selected-node').val(task_data.title).data('node', $this);
-            $('#ConfirmDelete').modal('show');
-            $('#DeleteTaskID').val(task_data.id);
-            $('#DeleteTaskTitle').text(task_data.title);
-        });
+            tasks.drawDeleteTask($(this).parent().attr('id'));
+        })
+        .on('click', '#ToAddChild', function () {
+            tasks.drawAddTask($('#DetailTaskID').val());
+        })
+        .on('click', '#ToDeleteTask', function () {
+            tasks.drawDeleteTask($('#DetailTaskID').val());
+        })
+    <% end %>
+    ;
 
     <% if user_signed_in? %>
-    $("#ToAddChild").click(function(){
-        $('#AddTask').modal('show');
-        $('#datetimepickerAddTaskDeadline').datetimepicker(
-            {
-                format: 'MM/DD/YYYY HH:mm',
-            }
-        );
-        $('#AddTaskTitle').val('');
-        $('#AddTaskDescription').val('')
-    });
-    $("#ToDeleteTask").click(function(){
-        $('#ConfirmDelete').modal('show');
-        $('#DeleteTaskID').val($('#DetailTaskID').val());
-        $('#DeleteTaskTitle').text($('#DetailTaskTitle').val())
-    });
 
 
     $("#DeleteTask").click(function(){
