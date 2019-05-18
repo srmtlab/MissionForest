@@ -147,30 +147,62 @@ class Tasks {
     }
 
     delete_task(task_id){
-        let tasks = this.tasks;
+
+        let stack_tasks = [this.tasks];
+        while (stack_tasks.length > 0) {
+            let task = stack_tasks.pop();
+
+            for(let i=0; i<task.children.length; i++){
+                if(task.children[i].id === task_id){
+                    task.children.splice(i, 1);
+                }
+            }
+        }
 
         this.oc.init({
-            'data': 
-        })
+            'data': this.tasks
+        });
+        this.oc.$chart.on('nodedrop.orgchart', function(event) {
+            console.log('drop');
+            setTimeout(tasks.drop_hierarchy, 100);
+        });
+    }
 
+    add_task(task){
+        let parent_task_id = task.id;
+        let parent_task = this.get_task(parent_task_id);
 
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/tasks/' + task_id + '/delete',
-            data: {
-                'id' : task_id
-            },
-            success: function(data) {
-                tasks.update_hierarchy(data.task_data.hierarchy);
-                tasks.update_all_tasks(data.task_data.all_tasks);
+        parent_task.children.push(task);
 
-                oc.init({'data': data.task_data.hierarchy});
-                oc.$chart.on('nodedrop.orgchart', function(event) {
-                    console.log('drop');
-                    setTimeout('tasks.drop_hierarchy()', 100);
-                });
-            }
-        })
+        this.oc.init({
+            'data': this.tasks
+        });
+        this.oc.$chart.on('nodedrop.orgchart', function(event) {
+            console.log('drop');
+            setTimeout(tasks.drop_hierarchy, 100);
+        });
+    }
+
+    update_task(task){
+        let task_id = task.id;
+        let update_task = this.get_task(task_id);
+
+        if(task !== null){
+            update_task.title = title != null ? title : task.title;
+            update_task.description = description != null ? description : task.description;
+            update_task.deadline_at = deadline_at != null ? deadline_at : task.deadline_at;
+            update_task.status = status != null ? status : task.status;
+            update_task.notify = notify != null ? notify : task.notify;
+        }
+
+        this.oc.init({
+            'data': this.tasks
+        });
+        this.oc.$chart.on('nodedrop.orgchart', function(event) {
+            console.log('drop');
+            setTimeout(tasks.drop_hierarchy, 100);
+        });
+
     }
 
     get_selected_task_id(){
@@ -178,86 +210,6 @@ class Tasks {
     }
 
     /*=========================================================================================*/
-    update_task_detail(task_id, title, description,
-                       deadline_at, status, notify){
-        let task_detail = this.get_task_detail(task_id);
-        if(task_detail !== null){
-            task_detail.title = title != null ? title : task_detail.title;
-            task_detail.description = description != null ? description : task_detail.description;
-            task_detail.deadline_at = deadline_at != null ? deadline_at : task_detail.deadline_at;
-            task_detail.status = status != null ? status : task_detail.status;
-            task_detail.notify = notify != null ? notify : task_detail.notify;
-        }
-
-        $.ajax({
-            type: 'PUT',
-            url: '/api/tasks/' + task_id + '/update',
-            data: {
-                task: {
-                    title: task_detail.title,
-                    description: task_detail.description,
-                    deadline_at: task_detail.deadline_at,
-                    status: task_detail.status,
-                    notify: task_detail.notify
-                }
-            },
-            success: function(data) {
-                console.log(data);
-                tasks.update_hierarchy(data.task_data.hierarchy);
-                tasks.update_all_tasks(data.task_data.all_tasks);
-
-                oc.init({'data': data.task_data.hierarchy});
-                oc.$chart.on('nodedrop.orgchart', function(event) {
-                    console.log('drop');
-                    setTimeout('tasks.drop_hierarchy()', 100);
-                });
-            }
-        })
-    }
-
-    add_new_task(parent_task_id, title, description,
-                 deadline_at, status, notify){
-        let task_detail = {};
-
-        task_detail.title = title;
-        task_detail.description = description;
-        task_detail.deadline_at = deadline_at;
-        task_detail.status = status;
-        task_detail.notify = notify;
-        task_detail.mission_id = mission_id;
-        task_detail.sub_task_of = parent_task_id;
-        //task_detail.user_id = <= current_user.id >;
-
-        $.ajax({
-            type: 'POST',
-            url: '/api/missions/<%= @mission.id %>/task',
-            data: {
-                task: {
-                    title: task_detail.title,
-                    description: task_detail.description,
-                    sub_task_of: task_detail.sub_task_of,
-                    deadline_at: task_detail.deadline_at,
-                    status: task_detail.status,
-                    notify: task_detail.notify
-                }
-            },
-            success: function(data) {
-                tasks.update_hierarchy(data.task_data.hierarchy);
-                tasks.update_all_tasks(data.task_data.all_tasks);
-
-                console.log(tasks.get_all_tasks());
-
-                oc.init({'data': data.task_data.hierarchy});
-                oc.$chart.on('nodedrop.orgchart', function(event) {
-                    console.log('drop');
-                    setTimeout('tasks.drop_hierarchy()', 100);
-                });
-            }
-        })
-    }
-
-
-
     participate_to_task(task_id){
         $.ajax({
             type: 'PUT',
@@ -277,29 +229,6 @@ class Tasks {
                 });
             }
         })
-    }
-
-
-    get_tasks_hierarchy(){
-        return this.hierarchy;
-    }
-
-    get_all_tasks(){
-        return this.all_tasks;
-    }
-
-    set_selected_task_id(task_id){
-        this.selected_id = task_id
-    }
-
-
-
-    update_hierarchy(hierarchy){
-        this.hierarchy = hierarchy;
-    }
-
-    update_all_tasks(all_tasks){
-        this.all_tasks = all_tasks;
     }
 
 

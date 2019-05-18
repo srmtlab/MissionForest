@@ -288,7 +288,7 @@
         .on('click', '#DeleteTask', function(){
             let task = {
               'task_id' : tasks.get_selected_task_id()
-            }
+            };
             App.mission.send_delete_task(task);
         })
         .on('click', '#ChangeDetail', function(){
@@ -299,7 +299,7 @@
               'deadline_at' : date_format2rails($('#DetailTaskDeadline').val()),
               'status' : $('#DetailTaskStatus').val(),
               'notify' : $('#DetailTaskNotify').val()
-            }
+            };
             App.mission.send_update_task(task);
         })
         .on('click', '#AddChild', function(){
