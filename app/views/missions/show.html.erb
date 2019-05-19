@@ -42,7 +42,7 @@
         <% @mission.admins.each do |admin| %>
           <p admin_id="<%= admin.id %>">
             <% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-              <span class="delete_admin" admin_id="<%= admin.id %>">X</span>
+              <span class="delete_admin" data-mission_admin_id="<%= admin.id %>">&times;</span>
             <% end %>
             <%= admin.name %>
           </p>
@@ -58,7 +58,7 @@
         <% @mission.participants.each do |participant| %>
           <p participant_id="<%= participant.id %>">
             <% if @mission.admins.include?(current_user) || @mission.user == current_user || current_user == participant %>
-              <span class="delete_mission_participant" participant_id="<%= participant.id %>">X</span>
+              <span class="delete_mission_participant" data-mission_participant_id="<%= participant.id %>">&times;</span>
             <% end %>
             <%= participant.name %>
           </p>
@@ -233,7 +233,7 @@
 
 <script>
     const mission_id = <%= @mission.id %>;
-    const lod = <%= @lod %>;
+    const lod = false;
     <% if user_signed_in? %>
     const user_signed_in = true;
     const user_id = <%= current_user.id %>;
@@ -246,7 +246,6 @@
     const sparql_endpoint = 'http://lod.srmt.nitech.ac.jp/sparql/';
     let tasks;
 
-
     function date_format2rails(datestring){
         try {
             return moment(datestring,'MM/DD/YYYY HH:mm').utc().format();
@@ -255,15 +254,6 @@
             return null
         }
     }
-
-    console.log(tasks.get_all_tasks());
-
-    oc = $('#chart-container').orgchart(orgchart_options);
-
-    oc.$chart.on('nodedrop.orgchart', function(event) {
-        console.log('drop');
-        setTimeout('tasks.drop_hierarchy()', 100);
-    });
 
     $(document)
         .on('click', '.node', function() {
@@ -304,7 +294,7 @@
         })
         .on('click', '#AddChild', function(){
             let task = {
-              'parent_task_id' : task.get_selected_task_id(),
+              'parent_task_id' : tasks.get_selected_task_id(),
               'title' : $('#AddTaskTitle').val(),
               'description' : $('#AddTaskDescription').val(),
               'deadline_at' : date_format2rails($('#AddTaskDeadline').val()),
@@ -313,55 +303,32 @@
             };
             App.mission.send_add_task(task);
         })
+        .on('click', '#ToParticipate', function () {
+            let participant = {
+                'task_id' : tasks.get_selected_task_id(),
+                'participant_id' : user_id
+            };
+            App.mission.send_add_task_participant(participant);
+        })
+        .on('click', '.delete_task_participant', function () {
+            let participant = {
+                'task_id' : tasks.get_selected_task_id(),
+                'participant_id' : $(this).attr('data-task_participant_id')
+            };
+            App.mission.send_delete_task_participant(participant);
+        })
+        .on('click', '.delete_mission_participant',function () {
+            let participant = {
+                'participant_id' : $(this).attr('data-mission_participant_id')
+            };
+            App.mission.send_delete_mission_participant(participant);
+        })
+        .on('click', '.delete_admin', function () {
+            let admin = {
+                'admin_id': $(this).attr('data-mission_admin_id')
+            };
+            App.mission.send_delete_mission_admin(admin);
+        })
     <% end %>
     ;
-
-    <% if user_signed_in? %>
-
-    $("#ToParticipate").click(function(){
-        task_id = tasks.get_selected_task_id();
-        tasks.participate_to_task(task_id)
-    });
-
-
-    $(".delete_admin").click(function(){
-        var admin_id = $(this).attr('admin_id');
-
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/missions/' + mission_id + '/delete_admin/' + admin_id,
-            success: function(data){
-                $('p[admin_id=' + admin_id + ']').remove();
-            }});
-    });
-
-
-    $(".delete_mission_participant").click(function(){
-        let participant_id = $(this).attr('participant_id');
-
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/missions/' + mission_id + '/delete_participant/' + participant_id,
-            success: function(data){
-                $('p[participant_id=' + participant_id + ']').remove();
-            }});
-    });
-
-
-    $(document)
-        .on('click', '.delete_task_participant', function() {
-            let task_id = tasks.get_selected_task_id(),
-                participant_id = $(this).attr('participant_id');
-
-            $.ajax({
-                type: 'DELETE',
-                url: '/api/tasks/' + task_id + '/delete_participant/' + participant_id,
-                success: function(data){
-                    $('span[participant_id=' + participant_id + ']').parent().remove();
-
-                    tasks.update_hierarchy(data.task_data.hierarchy);
-                    tasks.update_all_tasks(data.task_data.all_tasks);
-                }});
-        });
-    <% end %>
 </script>

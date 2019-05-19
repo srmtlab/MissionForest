@@ -4,7 +4,6 @@ class MissionsController < ApplicationController
 
   # GET /missions
   def index
-
     @missions = []
     Mission.order(created_at: :desc).all.each do |mission|
       root_task = mission.root_task
@@ -14,8 +13,6 @@ class MissionsController < ApplicationController
       end
       @missions.push(mission)
     end
-# @missions = Mission.order(created_at: :desc).all
-# @missions = Mission.page(params[:page]).per(1).order(created_at: :desc)
   end
 
   # GET /missions/1
@@ -174,7 +171,7 @@ class MissionsController < ApplicationController
     authorize! @mission
   end
 
-  # PATCHPUT /missions/1/add_admin_update
+  # PATCH PUT /missions/1/add_admin_update
   def add_admin_update
     @mission = Mission.find(params[:id])
     authorize! @mission

@@ -47,6 +47,10 @@ class Tasks {
     draw(container_id){
         this.oc = $(container_id).orgchart(this.options);
 
+        this.oc.$chart.on('nodedrop.orgchart', function(event) {
+            setTimeout('tasks.drop_hierarchy()', 100);
+        });
+
         let urlParams = new URLSearchParams(location.search);
         if(urlParams.has('taskid')){
             let task_id = urlParams.get('taskid');
@@ -86,7 +90,7 @@ class Tasks {
         TaskParticipants.empty();
         for (let participant of task.participants){
             if(this.user_signed_in && participant.id === user_id){
-                TaskParticipants.append('<li><span class="delete_task_participant" participant_id="' + participant.id + '">&times;</span>' + participant.name + '</li>');
+                TaskParticipants.append('<li><span class="delete_task_participant" data-task_participant_id="' + participant.id + '">&times;</span>' + participant.name + '</li>');
             }
             else{
                 TaskParticipants.append('<li>' + participant.name + '</li>');
@@ -149,8 +153,9 @@ class Tasks {
     delete_task(task_id){
 
         let stack_tasks = [this.tasks];
+
+        delete_task_label:
         while (stack_tasks.length > 0) {
-            delete_task_label:
             let task = stack_tasks.pop();
 
             for(let i=0; i<task.children.length; i++){
@@ -188,21 +193,20 @@ class Tasks {
         let task_id = task.id;
         let update_task = this.get_task(task_id);
 
-        if(task !== null){
+        if(typeof task != null){
             update_task.title = task.title;
             update_task.description = task.description;
             update_task.deadline_at = task.deadline_at;
             update_task.status = task.status;
             update_task.notify = task.notify;
+
+            this.oc.init({
+                'data': this.tasks
+            });
+            this.oc.$chart.on('nodedrop.orgchart', function(event) {
+                setTimeout(tasks.drop_hierarchy, 100);
+            });
         }
-
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
-
     }
 
     get_selected_task_id(){
@@ -212,8 +216,10 @@ class Tasks {
     change_hierarchy(target_task_id, change_task_id){
         let target_task;
         let stack_tasks = [this.tasks];
+
+        delete_task_label:
         while (stack_tasks.length > 0) {
-            delete_task_label:
+
             let task = stack_tasks.pop();
 
             for(let i=0; i<task.children.length; i++){
@@ -262,5 +268,35 @@ class Tasks {
                 break;
             }
         }
+    }
+
+    drop_hierarchy(){
+        let user_id = this.user_id;
+        /*
+
+        function recursion(tree, taskdb){
+            const id = tree['id'];
+            const detail = taskdb.get_task_detail(id);
+            tree['name'] = detail['title'];
+            if (tree['children'] === undefined){
+                return;
+            }
+            for (let child of tree['children']){
+                recursion(child, taskdb);
+            }
+        }
+
+        let hierarchy = oc.getHierarchy();
+        recursion(hierarchy, taskdb);
+        $.ajax({
+            type: 'PUT',
+            url: '/api/missions/<%= @mission.id %>/update_hierarchy',
+            data: {
+                tree : hierarchy,
+                user_id : user_id
+            }
+        });
+        App.mission.change_tasktree(hierarchy);
+         */
     }
 }

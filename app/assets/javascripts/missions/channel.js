@@ -9,7 +9,10 @@ $(function(){
 		{
 			connected: function() {
 				// Called when the subscription is ready for use on the server
-                return this.perform('init', { 'status': 'init' })
+                return this.perform('init', {
+                    'user_signed_in': user_signed_in,
+                    'user_id': user_id
+                })
 
 			},
 
@@ -53,15 +56,40 @@ $(function(){
 							edit_node(data)
 						}
 					}
+					else if(type === "mission_participant")
+					{
+						if(operation === "add")
+						{
+							add_node(data);
+						}
+						else if(operation === "delete")
+						{
+							delete_node(data)
+						}
+					}
+					else if(type === "mission_admin")
+					{
+						if(operation === "add")
+						{
+							add_node(data);
+						}
+						else if(operation === "delete")
+						{
+							delete_node(data)
+						}
+					}
+                    else if(type === "task_participant")
+                    {
+                        if(operation === "add")
+                        {
+                            add_node(data);
+                        }
+                        else if(operation === "delete")
+                        {
+                            delete_node(data)
+                        }
+                    }
 				}
-
-				tasks.update_hierarchy(data);
-				oc.init({'data':tasks.get_tasks_hierarchy()});
-
-				oc.$chart.on('nodedrop.orgchart', function(event) {
-					console.log('drop');
-					setTimeout('tasks.drop_hierarchy()', 100);
-				});
 			},
 
 			send_delete_task: function(task){
@@ -75,6 +103,22 @@ $(function(){
 			send_add_task: function(task){
 				return this.perform('add_task', task)
 			},
+
+			send_add_task_participant: function(participant){
+				return this.perform('add_task_participant', participant)
+			},
+
+            send_delete_task_participant: function(participant){
+                return this.perform('delete_task_participant', participant)
+            },
+
+            send_delete_mission_participant: function(participant){
+                return this.perform('delete_mission_participant', participant)
+            },
+
+            send_delete_mission_admin: function(admin){
+                return this.perform('delete_mission_admin', admin)
+            },
 
 			change_tasktree: function(tree){
 				return this.perform('change_tasktree', { 
