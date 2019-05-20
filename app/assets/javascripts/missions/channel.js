@@ -9,11 +9,7 @@ $(function(){
 		{
 			connected: function() {
 				// Called when the subscription is ready for use on the server
-                return this.perform('init', {
-                    'user_signed_in': user_signed_in,
-                    'user_id': user_id
-                })
-
+                return this.perform('init')
 			},
 
 			disconnected: function() {

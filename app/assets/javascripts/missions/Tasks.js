@@ -7,12 +7,13 @@ class Tasks {
         this.oc = null;
         this.selected_task_id = null;
         this.options = {
-            'data' : this.tasks.get_tasks_hierarchy(),
+            'data' : this.tasks,
             'pan': true,
             'zoom': true,
             'draggable': true,
             'createNode': function($node, data) {
-                if(this.user_signed_in){
+                if(this.user_signed_in)
+                {
                     $node.append('<div class="add-button">+</div>');
 
                     if(data.level !== 1){

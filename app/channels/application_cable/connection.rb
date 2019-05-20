@@ -1,7 +1,5 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-
-
     identified_by :current_user
 
     def connect
@@ -10,11 +8,13 @@ module ApplicationCable
 
     private
     def find_verified_user
-      if verified_user = User.find_by(id: cookies.encrypted[:id])
-        verified_user
-      else
-        reject_unauthorized_connection
-      end
+      User.find(session['warden.user.user.key'][0][0])
+    rescue
+      reject_unauthorized_connection
+    end
+
+    def session
+      @session ||= cookies.encrypted[Rails.application.config.session_options[:key]]
     end
 
   end
