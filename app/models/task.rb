@@ -23,11 +23,11 @@ class Task < ApplicationRecord
   accepts_nested_attributes_for :task_participant
 
   def self.localized_statuses
-    %w[未着手 進行中 完了 取りやめ]
+    %w(未着手 進行中 完了 取りやめ)
   end
 
   def self.localized_notifies
-    %w[個人的構想 組織内限定 外部公開 LOD]
+    %w(個人的構想 組織内限定 外部公開 LOD)
   end
   
   def save(*args)
