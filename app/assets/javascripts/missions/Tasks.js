@@ -62,16 +62,10 @@ class Tasks {
     drawDetailTask(selected_task_id){
         this.selected_task_id = selected_task_id;
         
-        $('#DetailTask').modal('show');
-        $('#datetimepickerDetailTaskDeadline').datetimepicker(
-            {
-                format: this.datetimepickerformat,
-            }
-        );
         let task = this.get_task(this.selected_task_id);
 
         $('#DetailTaskID').text(task.id);
-        $('#DetailTaskTitle').val(task.title);
+        $('#DetailTaskTitle').val(task.name);
         $('#DetailTaskDescription').val(task.description);
 
         let deadline = task.deadline_at;
@@ -97,6 +91,13 @@ class Tasks {
                 TaskParticipants.append('<li>' + participant.name + '</li>');
             }
         }
+
+        $('#DetailTask').modal('show');
+        $('#datetimepickerDetailTaskDeadline').datetimepicker(
+            {
+                format: this.datetimepickerformat,
+            }
+        );
 
         if(lod){
             $('#TaskTags').empty();
@@ -195,7 +196,7 @@ class Tasks {
         let update_task = this.get_task(task_id);
 
         if(typeof task != null){
-            update_task.title = task.title;
+            update_task.name = task.name;
             update_task.description = task.description;
             update_task.deadline_at = task.deadline_at;
             update_task.status = task.status;

@@ -19,9 +19,35 @@ class MissionChannel < ApplicationCable::Channel
     end
 
     ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
-                                     'status' => 'init',
-                                     'tasks' => get_tasks(@mission, permission)
+                                     status: 'init',
+                                     tasks: get_tasks(@mission, permission)
     })
+  end
+
+  def delete_task(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+    if task.destroy
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+        status: 'work',
+        type: 'task',
+        operation: 'delete',
+        data: task['task_id']
+      })
+    end
+  end
+
+  def update_task(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+    if task.update()
+    end
+  end
+
+  def add_task(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+  end
+
+  def change_tasktree(data)
+    ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", data['tree'])
   end
 
   private
@@ -30,13 +56,14 @@ class MissionChannel < ApplicationCable::Channel
 
     task_dic = {
         root_task.id => {
-            'id' => root_task.id,
-            'name' => root_task.title,
-            'description' => root_task.description,
-            'deadline_at' => root_task.deadline_at,
-            'created_at' => root_task.created_at,
-            'status' => root_task.status,
-            'notify' => root_task.notify
+            id: root_task.id,
+            name: root_task.title,
+            description: root_task.description,
+            deadline_at: root_task.deadline_at,
+            created_at: root_task.created_at,
+            status: root_task.status,
+            notify: root_task.notify,
+            children: []
         }
     }
     stack_tasks = [root_task]
@@ -46,18 +73,18 @@ class MissionChannel < ApplicationCable::Channel
 
       if ! task.subtasks[0].nil?
         parent_task = task_dic[task.id]
-        parent_task['children'] = []
 
         task.subtasks.each do |child|
           if permission.include?(child.notify)
             task_data = {
-                'id' => child.id,
-                'name' => child.title,
-                'description' => child.description,
-                'deadline_at' => child.deadline_at,
-                'created_at' => child.created_at,
-                'status' => child.status,
-                'notify' => child.notify
+                id: child.id,
+                name: child.title,
+                description: child.description,
+                deadline_at: child.deadline_at,
+                created_at: child.created_at,
+                status: child.status,
+                notify: child.notify,
+                children: []
             }
             parent_task['children'].push(task_data)
             task_dic[child.id] = task_data
@@ -67,9 +94,5 @@ class MissionChannel < ApplicationCable::Channel
       end
     end
     task_dic[root_task.id]
-  end
-
-  def change_tasktree(data)
-    ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", data['tree'])
   end
 end
