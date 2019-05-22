@@ -38,12 +38,25 @@ class MissionChannel < ApplicationCable::Channel
 
   def update_task(task_data_json)
     task = Task.find(task_data_json['task_id'])
-    if task.update()
-    end
+    task.update_attributes = { 
+      :title = task_data_json['title'], 
+      :description = task_data_json['description'],
+      :deadline_at = task_data_json['deadline_at'],
+      :status = task_data_json['status'],
+      :notify = task_data_json['notify']
+    }
+
+    ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+      status: 'work',
+      type: 'task',
+      operation: 'edit',
+      data: task_data_json
+    })
   end
 
   def add_task(task_data_json)
-    task = Task.find(task_data_json['task_id'])
+    parent_task = Task.find(task_data_json['parent_task_id'])
+    ## まだ途中やり
   end
 
   def change_tasktree(data)
