@@ -10,7 +10,7 @@ module ApplicationCable
     def find_verified_user
       User.find(session['warden.user.user.key'][0][0])
     rescue
-      reject_unauthorized_connection
+      nil
     end
 
     def session

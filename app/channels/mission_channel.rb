@@ -10,12 +10,12 @@ class MissionChannel < ApplicationCable::Channel
   def init()
     @mission = Mission.find(params['mission_id'])
 
-    permission = %w(publish, lod)
+    permission = %w(publish lod)
 
     if @mission.admins.include?(current_user) || @mission.user == current_user
-      permission = %w(own, organize, publish, lod)
+      permission = %w(own organize publish lod)
     elsif @mission.participants.include?(current_user) || @mission.user == current_user
-      permission = %w(organize, publish, lod)
+      permission = %w(organize publish lod)
     end
 
     ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
@@ -63,19 +63,22 @@ class MissionChannel < ApplicationCable::Channel
             created_at: root_task.created_at,
             status: root_task.status,
             notify: root_task.notify,
+            participants: root_task.participants.map{ |participant| {id: participant.id, name: participant.name}},
             children: []
         }
     }
+
     stack_tasks = [root_task]
 
     while stack_tasks.length > 0
       task = stack_tasks.pop
 
-      if ! task.subtasks[0].nil?
+      if task.subtasks.size != 0
         parent_task = task_dic[task.id]
 
         task.subtasks.each do |child|
           if permission.include?(child.notify)
+
             task_data = {
                 id: child.id,
                 name: child.title,
@@ -84,9 +87,11 @@ class MissionChannel < ApplicationCable::Channel
                 created_at: child.created_at,
                 status: child.status,
                 notify: child.notify,
+                participants: root_task.participants.map{ |participant| {id: participant.id, name: participant.name}},
                 children: []
             }
-            parent_task['children'].push(task_data)
+
+            parent_task[:children].push(task_data)
             task_dic[child.id] = task_data
             stack_tasks.push(child)
           end

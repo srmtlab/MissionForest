@@ -12,7 +12,7 @@ class Tasks {
             'zoom': true,
             'draggable': true,
             'createNode': function($node, data) {
-                if(this.user_signed_in)
+                if(user_signed_in)
                 {
                     $node.append('<div class="add-button">+</div>');
 
@@ -31,9 +31,9 @@ class Tasks {
 
     get_task(search_task_id){
         let stack_tasks = [this.tasks];
-
         while (stack_tasks.length > 0) {
             let task = stack_tasks.pop();
+
             if (task.id === search_task_id){
                 return task;
             }
@@ -60,9 +60,11 @@ class Tasks {
     }
 
     drawDetailTask(selected_task_id){
-        this.selected_task_id = selected_task_id;
+        this.selected_task_id = Number(selected_task_id);
         
         let task = this.get_task(this.selected_task_id);
+
+        console.log(task);
 
         $('#DetailTaskID').text(task.id);
         $('#DetailTaskTitle').val(task.name);
