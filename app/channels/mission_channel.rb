@@ -38,25 +38,104 @@ class MissionChannel < ApplicationCable::Channel
 
   def update_task(task_data_json)
     task = Task.find(task_data_json['task_id'])
-    task.update_attributes = { 
-      :title = task_data_json['title'], 
-      :description = task_data_json['description'],
-      :deadline_at = task_data_json['deadline_at'],
-      :status = task_data_json['status'],
-      :notify = task_data_json['notify']
-    }
+    if task.update_attributes(
+        title: task_data_json['title'], 
+        description: task_data_json['description'],
+        deadline_at: task_data_json['deadline_at'],
+        status: task_data_json['status'],
+        notify: task_data_json['notify']
+      )
 
-    ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
-      status: 'work',
-      type: 'task',
-      operation: 'edit',
-      data: task_data_json
-    })
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+        status: 'work',
+        type: 'task',
+        operation: 'edit',
+        data: task_data_json
+      })
+    end
   end
 
   def add_task(task_data_json)
-    parent_task = Task.find(task_data_json['parent_task_id'])
-    ## まだ途中やり
+    task = Task.new(
+      user_id: current_user.id,
+      mission_id: params['mission_id'],
+      title: task_data_json['title'],
+      description: task_data_json['description'],
+      sub_task_of: task_data_json['parent_task_id'],
+      deadline_at: task_data_json['deadline_at'],
+      status: task_data_json['status'],
+      notify: task_data_json['notify']
+    )
+
+    if task.save
+      task_data_json['task_id'] = task.id
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+        status: 'work',
+        type: 'task',
+        operation: 'add',
+        data: task_data_json
+      })
+    end
+  end
+
+  def add_task_participant(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+    participant = User.find(task_data_json['participant_id'])
+    if task.participants.include?(participant) != false
+      task.participants.push(participant)
+      if task.save
+        ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+          status: 'work',
+          type: 'task_participant',
+          operation: 'add',
+          data: task_data_json
+        })
+      end
+    end
+  end
+
+  def delete_task_participant(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+    task.participants.delete(task_data_json['participant_id'])
+
+    if task.save
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+        status: 'work',
+        type: 'task_participant',
+        operation: 'delete',
+        data: task_data_json
+      })
+    end
+  end
+
+  def delete_mission_participant(task_data_json)
+    mission = Mission.find(params['mission_id'])
+    mission.participants.delete(task_data_json['participant_id'])
+    
+    if mission.save
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+        status: 'work',
+        type: 'mission_participant',
+        operation: 'delete',
+        data: task_data_json
+      })
+    end
+  end
+
+  def delete_mission_admin(task_data_json)
+    mission = Mission.find(params['mission_id'])
+    
+    if mission.admins.size != 1
+      mission.admins.delete(task_data_json['admin_id'])
+      if mission.save
+        ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+          status: 'work',
+          type: 'mission_admin',
+          operation: 'delete',
+          data: task_data_json
+        })
+      end
+    end
   end
 
   def change_tasktree(data)
