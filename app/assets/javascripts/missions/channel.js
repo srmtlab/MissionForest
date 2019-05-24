@@ -43,13 +43,24 @@ $(function(){
 						{
 							add_node(data);
 						}
+						else if(operation === "update")
+						{
+							edit_node(data)
+						}
 						else if(operation === "delete")
 						{
 							delete_node(data)
 						}
-						else if(operation === "edit")
+					}
+					else if(type === "task_participant")
+					{
+						if(operation === "add")
 						{
-							edit_node(data)
+							add_node(data);
+						}
+						else if(operation === "delete")
+						{
+							delete_node(data)
 						}
 					}
 					else if(type === "mission_participant")
@@ -74,30 +85,19 @@ $(function(){
 							delete_node(data)
 						}
 					}
-                    else if(type === "task_participant")
-                    {
-                        if(operation === "add")
-                        {
-                            add_node(data);
-                        }
-                        else if(operation === "delete")
-                        {
-                            delete_node(data)
-                        }
-                    }
 				}
 			},
 
-			send_delete_task: function(task){
-				return this.perform('delete_task', task)
+			send_add_task: function(task){
+				return this.perform('add_task', task)
 			},
 
 			send_update_task : function(task){
 				return this.perform('update_task', task)
 			},
 
-			send_add_task: function(task){
-				return this.perform('add_task', task)
+			send_delete_task: function(task){
+				return this.perform('delete_task', task)
 			},
 
 			send_add_task_participant: function(participant){

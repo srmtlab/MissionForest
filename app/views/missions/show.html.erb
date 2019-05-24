@@ -7,7 +7,7 @@
       <% if @mission.admins.include?(current_user) || @mission.user == current_user %>
         <div class="row">
           <div class="col-md-3 col-sm-6 mb-4">
-            <%= link_to 'ミッションを編集', edit_mission_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+            <%= link_to 'ミッションを編集', "#", :id=> "DetailMissionModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
           </div>
           <div class="col-md-3 col-sm-6 mb-4">
             <%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
@@ -20,8 +20,10 @@
           </div>
         </div>
       <% end %>
-      <% if not (@mission.participants.include?(current_user) || @mission.user == current_user) %>
-        <%= link_to '参加', mission_add_me_path(@mission), :class => 'btn btn-primary mb-4' %>
+      <% if @mission.participants.include?(current_user) || @mission.user == current_user %>
+        <%= link_to 'ミッションから抜ける?', "#", :id => "ConfirmDeleteMissionParticipantModal", :class => 'btn btn-primary mb-4' %>
+      <%else %>
+        <%= link_to 'ミッションに参加してみる', mission_add_me_path(@mission), :class => 'btn btn-primary mb-4' %>
       <% end %>
     <% end %>
 
@@ -74,162 +76,11 @@
   </div>
 </div>
 
-<!-- DetailTask -->
-<div class="modal fade" id="DetailTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">タスクの編集 #<span id="DetailTaskID"></span>
-          <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="DetailTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
-            <input id="DetailTaskTitle" type="text" class="form-control" value="" required>
-          </div>
-          <div class="form-group">
-            <label for="DetailTaskDescription" class="col-form-label">概要</label>
-            <textarea id="DetailTaskDescription" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="form-group input-group date datepicker">
-            <label for="DetailTaskDeadline" class="col-form-label">締め切り</label>
-            <div class="input-group date" id="datetimepickerDetailTaskDeadline" data-target-input="nearest">
-              <input id="DetailTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDetailTaskDeadline"/>
-              <div class="input-group-append" data-target="#datetimepickerDetailTaskDeadline" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="DetailTaskStatus" class="col-form-label">状況</label>
-            <select id="DetailTaskStatus" class="form-control">
-              <option value="todo">未着手</option>
-              <option value="doing">進行中</option>
-              <option value="done">完了</option>
-              <option value="cancel">取りやめ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="DetailTaskNotify" class="col-form-label">公開範囲</label>
-            <select id="DetailTaskNotify" class="form-control">
-              <option value="own">個人的構想</option>
-              <option value="organize">組織内限定</option>
-              <option value="publish">外部公開</option>
-              <option value="lod">LOD (CC BY)</option>
-            </select>
-          </div>
-        </form>
-        <h4>参加者</h4>
-        <ul id="TaskParticipants"></ul>
-        <hr>
-        <h4>タグ</h4>
-        <ul id="TaskTags"></ul>
-      </div>
-      <% if user_signed_in? %>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">閉じる</button>
-          <button type="button" id="ToParticipate" class="btn btn-light btn-sm" data-dismiss="modal">タスクへ参加</button>
-          <button type="button" id="ToAddChild" class="btn btn-primary btn-sm" data-dismiss="modal">子タスクを追加</button>
-          <button type="button" id="ToDeleteTask" class="btn btn-danger btn-sm" data-dismiss="modal">削除</button>
-          <button type="button" id="ChangeDetail" class="btn btn-success btn-sm" data-dismiss="modal">変更</button>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
 
-<!-- DeleteTask -->
-<div class="modal fade" id="ConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">タスクの削除</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            本当に以下のタスクを削除しますか？
-          </div>
-          <div class="form-group">
-            <label for="exampleInputEmail1">タスク名</label>
-            <p id="DeleteTaskTitle" style="color: red"></p>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-        <button type="button" id="DeleteTask" class="btn btn-danger" data-dismiss="modal">タスクを削除する</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- AddTask -->
-<div class="modal fade" id="AddTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">子タスクの追加</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="AddTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
-            <input id="AddTaskTitle" type="text" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="AddTaskDescription" class="col-form-label">概要</label>
-            <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="AddTaskDeadline" class="col-form-label">締め切り</label>
-            <div class="input-group date" id="datetimepickerAddTaskDeadline" data-target-input="nearest">
-              <input id="AddTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerAddTaskDeadline"/>
-              <div class="input-group-append" data-target="#datetimepickerAddTaskDeadline" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="AddTaskStatus" class="col-form-label">状況</label>
-            <select id="AddTaskStatus" class="form-control">
-              <option value="todo" selected>未着手</option>
-              <option value="doing">進行中</option>
-              <option value="done">完了</option>
-              <option value="cancel">取りやめ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="AddTaskNotify" class="col-form-label">公開範囲</label>
-            <select id="AddTaskNotify" class="form-control">
-              <option value="own" selected>個人的構想</option>
-              <option value="organize">組織内限定</option>
-              <option value="publish">外部公開</option>
-              <option value="lod">LOD (CC BY)</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <% if user_signed_in? %>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          <button type="button" id="AddChild" class="btn btn-primary" data-dismiss="modal">追加する</button>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
+<%= render 'missions/modal/show/missions/detailmission' %>
+<%= render 'missions/modal/show/tasks/addtask' %>
+<%= render 'missions/modal/show/tasks/confirmdelete' %>
+<%= render 'missions/modal/show/tasks/detailtask' %>
 
 <script>
     const mission_id = <%= @mission.id %>;
@@ -244,7 +95,7 @@
 
     const lod_graph_uri = 'http://mf.srmt.nitech.ac.jp/tags/';
     const sparql_endpoint = 'http://lod.srmt.nitech.ac.jp/sparql/';
-    let tasks;
+    let tasks, mission;
 
     function date_format2rails(datestring){
         try {
@@ -263,6 +114,7 @@
             tasks.drawDetailTask($(this).parent().attr('id'));
         })
     <% if user_signed_in? %>
+
         .on('click', '.add-button', function() {
             tasks.drawAddTask($(this).parent().attr('id'));
         })
@@ -317,18 +169,44 @@
             };
             App.mission.send_delete_task_participant(participant);
         })
+
+
+        .on('click', '#DetailMissionModal', function () {
+            mission.drawDeleteMission();
+        })
+        .on('click', '#ChangeMissionDetail', function () {
+            let mission = {
+                'mission_id' : mission_id,
+                'title' : $('#DetailMissionTitle').val(),
+                'description' : $('#DetailMissionDescription').val()
+            };
+            App.mission.send_delete_mission_participant(mission);
+        })
+
         .on('click', '.delete_mission_participant',function () {
             let participant = {
                 'participant_id' : $(this).attr('data-mission_participant_id')
             };
             App.mission.send_delete_mission_participant(participant);
         })
+        .on('click','#ConfirmDeleteMissionParticipantModal',function () {
+            mission.drawDeleteMissionParticipant();
+        })
+        .on('click', '#DeleteMissionParticipant', function () {
+            let participant = {
+                'participant_id' : user_id
+            };
+            App.mission.send_delete_mission_participant(participant);
+        })
+
+
         .on('click', '.delete_admin', function () {
             let admin = {
                 'admin_id': $(this).attr('data-mission_admin_id')
             };
             App.mission.send_delete_mission_admin(admin);
         })
+
     <% end %>
     ;
 </script>

@@ -24,6 +24,48 @@ class MissionChannel < ApplicationCable::Channel
     })
   end
 
+  def add_task(task_data_json)
+    task = Task.new(
+        user_id: current_user.id,
+        mission_id: params['mission_id'],
+        title: task_data_json['title'],
+        description: task_data_json['description'],
+        sub_task_of: task_data_json['parent_task_id'],
+        deadline_at: task_data_json['deadline_at'],
+        status: task_data_json['status'],
+        notify: task_data_json['notify']
+    )
+
+    if task.save
+      task_data_json['task_id'] = task.id
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+          status: 'work',
+          type: 'task',
+          operation: 'add',
+          data: task_data_json
+      })
+    end
+  end
+
+  def update_task(task_data_json)
+    task = Task.find(task_data_json['task_id'])
+    if task.update_attributes(
+        title: task_data_json['title'],
+        description: task_data_json['description'],
+        deadline_at: task_data_json['deadline_at'],
+        status: task_data_json['status'],
+        notify: task_data_json['notify']
+    )
+
+      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+          status: 'work',
+          type: 'task',
+          operation: 'update',
+          data: task_data_json
+      })
+    end
+  end
+
   def delete_task(task_data_json)
     task = Task.find(task_data_json['task_id'])
     if task.destroy
@@ -32,48 +74,6 @@ class MissionChannel < ApplicationCable::Channel
         type: 'task',
         operation: 'delete',
         data: task['task_id']
-      })
-    end
-  end
-
-  def update_task(task_data_json)
-    task = Task.find(task_data_json['task_id'])
-    if task.update_attributes(
-        title: task_data_json['title'], 
-        description: task_data_json['description'],
-        deadline_at: task_data_json['deadline_at'],
-        status: task_data_json['status'],
-        notify: task_data_json['notify']
-      )
-
-      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
-        status: 'work',
-        type: 'task',
-        operation: 'edit',
-        data: task_data_json
-      })
-    end
-  end
-
-  def add_task(task_data_json)
-    task = Task.new(
-      user_id: current_user.id,
-      mission_id: params['mission_id'],
-      title: task_data_json['title'],
-      description: task_data_json['description'],
-      sub_task_of: task_data_json['parent_task_id'],
-      deadline_at: task_data_json['deadline_at'],
-      status: task_data_json['status'],
-      notify: task_data_json['notify']
-    )
-
-    if task.save
-      task_data_json['task_id'] = task.id
-      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
-        status: 'work',
-        type: 'task',
-        operation: 'add',
-        data: task_data_json
       })
     end
   end

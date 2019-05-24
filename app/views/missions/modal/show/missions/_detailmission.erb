@@ -1,0 +1,31 @@
+<!-- DetailMission -->
+<div class="modal fade" id="DetailMission" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ミッションの編集
+          <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="DetailMissionTitle" class="col-form-label">ミッション名 <span style="color: red">(必須)</span></label>
+            <input id="DetailMissionTitle" type="text" class="form-control" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="DetailMissionDescription" class="col-form-label">概要</label>
+            <textarea id="DetailMissionDescription" class="form-control" rows="4"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+        <button type="button" id="ChangeMissionDetail" class="btn btn-success" data-dismiss="modal">変更</button>
+      </div>
+    </div>
+  </div>
+</div>

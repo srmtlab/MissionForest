@@ -1,0 +1,68 @@
+<!-- DetailTask -->
+<div class="modal fade" id="DetailTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">タスクの編集 #<span id="DetailTaskID"></span>
+          <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img class="ccby-license" alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="DetailTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
+            <input id="DetailTaskTitle" type="text" class="form-control" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="DetailTaskDescription" class="col-form-label">概要</label>
+            <textarea id="DetailTaskDescription" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="form-group input-group date datepicker">
+            <label for="DetailTaskDeadline" class="col-form-label">締め切り</label>
+            <div class="input-group date" id="datetimepickerDetailTaskDeadline" data-target-input="nearest">
+              <input id="DetailTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDetailTaskDeadline"/>
+              <div class="input-group-append" data-target="#datetimepickerDetailTaskDeadline" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="DetailTaskStatus" class="col-form-label">状況</label>
+            <select id="DetailTaskStatus" class="form-control">
+              <option value="todo">未着手</option>
+              <option value="doing">進行中</option>
+              <option value="done">完了</option>
+              <option value="cancel">取りやめ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="DetailTaskNotify" class="col-form-label">公開範囲</label>
+            <select id="DetailTaskNotify" class="form-control">
+              <option value="own">個人的構想</option>
+              <option value="organize">組織内限定</option>
+              <option value="publish">外部公開</option>
+              <option value="lod">LOD (CC BY)</option>
+            </select>
+          </div>
+        </form>
+        <h4>参加者</h4>
+        <ul id="TaskParticipants"></ul>
+        <hr>
+        <h4>タグ</h4>
+        <ul id="TaskTags"></ul>
+      </div>
+      <% if user_signed_in? %>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">閉じる</button>
+          <button type="button" id="ToParticipate" class="btn btn-light btn-sm" data-dismiss="modal">タスクへ参加</button>
+          <button type="button" id="ToAddChild" class="btn btn-primary btn-sm" data-dismiss="modal">子タスクを追加</button>
+          <button type="button" id="ToDeleteTask" class="btn btn-danger btn-sm" data-dismiss="modal">削除</button>
+          <button type="button" id="ChangeDetail" class="btn btn-success btn-sm" data-dismiss="modal">変更</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

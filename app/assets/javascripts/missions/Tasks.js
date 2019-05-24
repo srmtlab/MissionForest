@@ -149,7 +149,7 @@ class Tasks {
 
         let task = this.get_task(this.selected_task_id);
 
-        $('#ConfirmDelete').modal('show');
+        $('#ConfirmDeleteTask').modal('show');
         $('#DeleteTaskID').val(task.id);
         $('#DeleteTaskTitle').text(task.title);
     }
