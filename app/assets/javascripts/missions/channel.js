@@ -22,6 +22,7 @@ $(function(){
 				{
 					tasks = new Tasks(data.tasks, user_signed_in, user_id);
 					tasks.draw('#chart-container');
+					mission = new Mission(data.mission, user_signed_in, user_id, mission_id)
 				}
 				else if (data.status === "work" && typeof tasks !== 'undefined')
 				{
@@ -31,58 +32,70 @@ $(function(){
 
 					if(type === "mission")
 					{
-						if(operation === "edit")
+						if(operation === "update")
 						{
-							$('#mission-title').text(data.title);
-							$('#mission-description').text(data.description);
+							mission.update_mission(data);
+						}
+						else if(operation === "delete"){
+							location.href = "/";
 						}
 					}
 					else if(type === "task")
 					{
 						if(operation === "add")
 						{
-							add_node(data);
+							tasks.add_task(data);
 						}
 						else if(operation === "update")
 						{
-							edit_node(data)
+							tasks.update_task(data);
 						}
 						else if(operation === "delete")
 						{
-							delete_node(data)
+							tasks.delete_task(data);
 						}
 					}
 					else if(type === "task_participant")
 					{
 						if(operation === "add")
 						{
-							add_node(data);
+							tasks.add_participant(data);
 						}
 						else if(operation === "delete")
 						{
-							delete_node(data)
+							tasks.delete_participant(data);
 						}
 					}
 					else if(type === "mission_participant")
 					{
 						if(operation === "add")
 						{
-							add_node(data);
+							if(data.id === user_id){
+								location.reload();
+							}
+							else {
+								mission.add_participant(data);
+							}
 						}
 						else if(operation === "delete")
 						{
-							delete_node(data)
+							if(data.id === user_id){
+								location.reload();
+							}
+							else {
+								mission.delete_participant(data);
+							}
 						}
 					}
 					else if(type === "mission_admin")
 					{
 						if(operation === "add")
 						{
-							add_node(data);
+							mission.add_admin(data);
 						}
 						else if(operation === "delete")
 						{
-							delete_node(data)
+							mission.delete_admin(data)
 						}
 					}
 				}
@@ -100,6 +113,15 @@ $(function(){
 				return this.perform('delete_task', task)
 			},
 
+			send_update_mission: function(mission){
+				return this.perform('update_mission', mission)
+			},
+
+			send_delete_mission: function(mission){
+				return this.perform('delete_mission', mission)
+			},
+
+
 			send_add_task_participant: function(participant){
 				return this.perform('add_task_participant', participant)
 			},
@@ -108,9 +130,18 @@ $(function(){
                 return this.perform('delete_task_participant', participant)
             },
 
+
+			send_add_mission_participant: function(participant){
+				return this.perform('add_mission_participant', participant)
+			},
+
             send_delete_mission_participant: function(participant){
                 return this.perform('delete_mission_participant', participant)
             },
+
+			send_add_mission_admin: function(admin){
+				return this.perform('add_mission_admin', admin)
+			},
 
             send_delete_mission_admin: function(admin){
                 return this.perform('delete_mission_admin', admin)

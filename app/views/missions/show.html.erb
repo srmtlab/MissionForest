@@ -3,29 +3,37 @@
 
     <h2 id="mission-title" class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
 
-    <% if user_signed_in? %>
-      <% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-        <div class="row">
+    <div class="col-md-3 col-sm-6 mb-4">
+      <%= link_to '参加者を編集', "#", :id => "DetailMissionParticipantsModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+    </div>
+
+
+    <div class="row">
+      <% if user_signed_in? %>
+        <% if @mission.admins.include?(current_user)%>
           <div class="col-md-3 col-sm-6 mb-4">
-            <%= link_to 'ミッションを編集', "#", :id=> "DetailMissionModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+            <%= link_to 'ミッションを編集', "#", :id => "DetailMissionModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
           </div>
           <div class="col-md-3 col-sm-6 mb-4">
-            <%= link_to "ミッションを削除", @mission, method: :delete, data: {confirm: "本当に削除しますか？"}, :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+            <%= link_to "ミッションを削除", "#", :id => "DeleteMissionModal",:style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
           </div>
           <div class="col-md-3 col-sm-6 mb-4">
-            <%= link_to '参加者を追加', mission_add_participant_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+            <%= link_to '参加者を編集', "#", :id => "DetailMissionParticipantsModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
           </div>
           <div class="col-md-3 col-sm-6 mb-4">
-            <%= link_to '管理者を追加', mission_add_admin_path(@mission), :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+            <%= link_to '管理者を編集', "#", :id => "DetailMissionAdminsModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
           </div>
-        </div>
+        <%elsif @mission.participants.include?(current_user)%>
+          <div class="col-md-3 col-sm-6 mb-4">
+            <%= link_to 'ミッションから抜ける?', "#", :id => "ConfirmDeleteMissionParticipantModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+          </div>
+        <%else %>
+          <div class="col-md-3 col-sm-6 mb-4">
+            <%= link_to 'ミッションに参加してみる', "#", :id => "AddMissionParticipant",  :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
+          </div>
+        <% end %>
       <% end %>
-      <% if @mission.participants.include?(current_user) || @mission.user == current_user %>
-        <%= link_to 'ミッションから抜ける?', "#", :id => "ConfirmDeleteMissionParticipantModal", :class => 'btn btn-primary mb-4' %>
-      <%else %>
-        <%= link_to 'ミッションに参加してみる', mission_add_me_path(@mission), :class => 'btn btn-primary mb-4' %>
-      <% end %>
-    <% end %>
+    </div>
 
     <div class="card mb-4">
       <div class="card-header">
@@ -40,14 +48,9 @@
       <div class="card-header">
         ミッション管理者
       </div>
-      <div class="card-body">
+      <div id="ShowMissionAdmins" class="card-body">
         <% @mission.admins.each do |admin| %>
-          <p admin_id="<%= admin.id %>">
-            <% if @mission.admins.include?(current_user) || @mission.user == current_user %>
-              <span class="delete_admin" data-mission_admin_id="<%= admin.id %>">&times;</span>
-            <% end %>
-            <%= admin.name %>
-          </p>
+          <p data-admin_id="<%= admin.id %>"><%= admin.name %></p>
         <% end %>
       </div>
     </div>
@@ -56,14 +59,9 @@
       <div class="card-header">
         ミッション参加者
       </div>
-      <div class="card-body">
+      <div id="ShowMissionParticipants" class="card-body">
         <% @mission.participants.each do |participant| %>
-          <p participant_id="<%= participant.id %>">
-            <% if @mission.admins.include?(current_user) || @mission.user == current_user || current_user == participant %>
-              <span class="delete_mission_participant" data-mission_participant_id="<%= participant.id %>">&times;</span>
-            <% end %>
-            <%= participant.name %>
-          </p>
+          <p data-participant_id="<%= participant.id %>"><%= participant.name %></p>
         <% end %>
       </div>
     </div>
@@ -81,6 +79,8 @@
 <%= render 'missions/modal/show/tasks/addtask' %>
 <%= render 'missions/modal/show/tasks/confirmdelete' %>
 <%= render 'missions/modal/show/tasks/detailtask' %>
+
+<%= render 'missions/modal/show/mission_admins/detailparticipants' %>
 
 <script>
     const mission_id = <%= @mission.id %>;
@@ -113,7 +113,7 @@
         .on('click', '.title', function() {
             tasks.drawDetailTask($(this).parent().attr('id'));
         })
-    <% if user_signed_in? %>
+        <% if user_signed_in? %>
 
         .on('click', '.add-button', function() {
             tasks.drawAddTask($(this).parent().attr('id'));
@@ -129,80 +129,123 @@
         })
         .on('click', '#DeleteTask', function(){
             let task = {
-              'task_id' : tasks.get_selected_task_id()
+                'id' : tasks.get_selected_task_id()
             };
             App.mission.send_delete_task(task);
         })
         .on('click', '#ChangeDetail', function(){
             let task = {
-              'task_id' : tasks.get_selected_task_id(),
-              'title' : $('#DetailTaskTitle').val(),
-              'description' : $('#DetailTaskDescription').val(),
-              'deadline_at' : date_format2rails($('#DetailTaskDeadline').val()),
-              'status' : $('#DetailTaskStatus').val(),
-              'notify' : $('#DetailTaskNotify').val()
+                'id' : tasks.get_selected_task_id(),
+                'name' : $('#DetailTaskTitle').val(),
+                'description' : $('#DetailTaskDescription').val(),
+                'deadline_at' : date_format2rails($('#DetailTaskDeadline').val()),
+                'status' : $('#DetailTaskStatus').val(),
+                'notify' : $('#DetailTaskNotify').val()
             };
             App.mission.send_update_task(task);
         })
         .on('click', '#AddChild', function(){
             let task = {
-              'parent_task_id' : tasks.get_selected_task_id(),
-              'title' : $('#AddTaskTitle').val(),
-              'description' : $('#AddTaskDescription').val(),
-              'deadline_at' : date_format2rails($('#AddTaskDeadline').val()),
-              'status' : $('#AddTaskStatus').val(),
-              'notify' : $('#AddTaskNotify').val()
+                'parent_task_id' : tasks.get_selected_task_id(),
+                'name' : $('#AddTaskTitle').val(),
+                'description' : $('#AddTaskDescription').val(),
+                'deadline_at' : date_format2rails($('#AddTaskDeadline').val()),
+                'status' : $('#AddTaskStatus').val(),
+                'notify' : $('#AddTaskNotify').val()
             };
             App.mission.send_add_task(task);
         })
         .on('click', '#ToParticipate', function () {
             let participant = {
                 'task_id' : tasks.get_selected_task_id(),
-                'participant_id' : user_id
+                'id' : user_id
             };
             App.mission.send_add_task_participant(participant);
         })
-        .on('click', '.delete_task_participant', function () {
+        .on('click', '#DeleteTaskParticipate', function () {
             let participant = {
                 'task_id' : tasks.get_selected_task_id(),
-                'participant_id' : $(this).attr('data-task_participant_id')
+                'id' : user_id
             };
             App.mission.send_delete_task_participant(participant);
         })
 
 
         .on('click', '#DetailMissionModal', function () {
-            mission.drawDeleteMission();
+            mission.drawDetailMission();
         })
         .on('click', '#ChangeMissionDetail', function () {
             let mission = {
-                'mission_id' : mission_id,
-                'title' : $('#DetailMissionTitle').val(),
+                'id' : mission_id,
+                'name' : $('#DetailMissionTitle').val(),
                 'description' : $('#DetailMissionDescription').val()
             };
-            App.mission.send_delete_mission_participant(mission);
+            App.mission.send_update_mission(mission);
+        })
+        .on('click', '#DetailMissionModal', function () {
+            mission.drawDetailMission();
+        })
+        .on('click', '#DeleteMission', function () {
+            let mission = {
+                'id' : mission_id
+            };
+            App.mission.send_delete_mission(mission);
         })
 
-        .on('click', '.delete_mission_participant',function () {
+        .on('click', '#AddMissionParticipant', function () {
             let participant = {
-                'participant_id' : $(this).attr('data-mission_participant_id')
+                'mission_id' : mission_id,
+                'id' : user_id
             };
-            App.mission.send_delete_mission_participant(participant);
+            App.mission.send_add_mission_participant(participant);
         })
+
+
         .on('click','#ConfirmDeleteMissionParticipantModal',function () {
             mission.drawDeleteMissionParticipant();
         })
         .on('click', '#DeleteMissionParticipant', function () {
             let participant = {
-                'participant_id' : user_id
+                'mission_id' : mission_id,
+                'id' : user_id
             };
             App.mission.send_delete_mission_participant(participant);
         })
 
 
-        .on('click', '.delete_admin', function () {
+        .on('click', '#DetailMissionParticipantsModal', function () {
+            mission.drawDetailMissionParticipants();
+        })
+        .on('click', '#ToAddMissionParticipant', function () {
+            let participant = {
+                'mission_id' : mission_id,
+                'name' : $('#AddMissionParticipant').val()
+            };
+            App.mission.send_add_mission_participant(participant);
+        })
+        .on('click', '.delete_mission_participant', function () {
+            let participant = {
+                'mission_id' : mission_id,
+                'id' : $(this).parent().attr('data-mission_participant')
+            };
+            App.mission.send_delete_mission_participant(participant);
+        })
+
+
+        .on('click', '#DetailMissionAdminsModal', function () {
+            mission.drawDetailMissionAdmins();
+        })
+        .on('click', '#ToAddMissionAdmin', function () {
             let admin = {
-                'admin_id': $(this).attr('data-mission_admin_id')
+                'mission_id' : mission_id,
+                'name' : $('#AddMissionAdmin').val()
+            };
+            App.mission.send_add_mission_admin(admin);
+        })
+        .on('click', '.delete_mission_admin', function () {
+            let admin = {
+                'mission_id' : mission_id,
+                'id': $(this).parent().attr('data-mission_admin')
             };
             App.mission.send_delete_mission_admin(admin);
         })

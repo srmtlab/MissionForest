@@ -34,20 +34,6 @@
     background-image: none;
 }
 
-/*
-.orgchart .node .title {
-height: 100px;
-padding: 8px;
-white-space: normal;
-font-size: 15px;
-background-color: #fff;
-border-bottom: 1px solid #ccc;
-border-radius: 3px;
-cursor: pointer;
-color: black;
-}
-*/
-
 .orgchart .node .title {
     height: 80px;
     padding: 8px;
@@ -115,32 +101,6 @@ color: black;
     background-color: transparent;
 }
 
-.delete_admin {
-    padding : 0 4px;
-    border-radius: 3px;
-    margin-right : 5px;
-    background-color: #808080;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-.delete_mission_participant {
-    padding : 0 4px;
-    border-radius: 3px;
-    margin-right : 5px;
-    background-color: #808080;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-.delete_task_participant {
-    padding : 0 4px;
-    border-radius: 3px;
-    margin-right : 5px;
-    background-color: #808080;
-    color: #ffffff;
-    cursor: pointer;
-}
 
 .target_task{
     filter: drop-shadow(0 0 30px rgba(255,255,0,1));
@@ -154,4 +114,26 @@ color: black;
     white-space: normal;
     font-size: 16px;
     color: #f00;
+}
+
+#MissionParticipants{
+    white-space: nowrap;
+    max-height: 12em;
+}
+
+.mu-text{
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 393px;
+}
+
+.delete_mission_admin {
+    cursor: pointer;
+}
+
+
+.delete_mission_participant {
+    cursor: pointer;
 }

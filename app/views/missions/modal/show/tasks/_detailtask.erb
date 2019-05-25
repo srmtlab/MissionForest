@@ -57,7 +57,10 @@
       <% if user_signed_in? %>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">閉じる</button>
+
           <button type="button" id="ToParticipate" class="btn btn-light btn-sm" data-dismiss="modal">タスクへ参加</button>
+          <button type="button" id="DeleteTaskParticipate" class="btn btn-light btn-sm" data-dismiss="modal">タスクから脱退</button>
+
           <button type="button" id="ToAddChild" class="btn btn-primary btn-sm" data-dismiss="modal">子タスクを追加</button>
           <button type="button" id="ToDeleteTask" class="btn btn-danger btn-sm" data-dismiss="modal">削除</button>
           <button type="button" id="ChangeDetail" class="btn btn-success btn-sm" data-dismiss="modal">変更</button>

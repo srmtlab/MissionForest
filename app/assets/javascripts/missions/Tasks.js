@@ -61,19 +61,15 @@ class Tasks {
 
     drawDetailTask(selected_task_id){
         this.selected_task_id = Number(selected_task_id);
-        
-        let task = this.get_task(this.selected_task_id);
 
-        console.log(task);
+        let task = this.get_task(this.selected_task_id);
 
         $('#DetailTaskID').text(task.id);
         $('#DetailTaskTitle').val(task.name);
         $('#DetailTaskDescription').val(task.description);
 
-        let deadline = task.deadline_at;
-        if(deadline !== null){
-            $('#DetailTaskDeadline').val(moment(deadline).format(this.datetimepickerformat));
-        }
+        $('#DetailTaskDeadline').val(moment(task.deadline_at).format(this.datetimepickerformat));
+
         $('#DetailTaskStatus').val(task.status);
         $('#DetailTaskNotify').val(task.notify);
         if (task.notify === 'lod'){
@@ -84,13 +80,22 @@ class Tasks {
         }
 
         let TaskParticipants = $('#TaskParticipants');
+        let user_participate_flag = false;
         TaskParticipants.empty();
         for (let participant of task.participants){
-            if(this.user_signed_in && participant.id === user_id){
-                TaskParticipants.append('<li><span class="delete_task_participant" data-task_participant_id="' + participant.id + '">&times;</span>' + participant.name + '</li>');
+            if(participant.id === user_id){
+                user_participate_flag = true;
             }
-            else{
-                TaskParticipants.append('<li>' + participant.name + '</li>');
+            TaskParticipants.append('<li>' + participant.name + '</li>');
+        }
+
+        if(this.user_signed_in){
+            if(user_participate_flag){
+                $('#ToParticipate').css('display','none');
+                $('#DeleteTaskParticipate').css('display','block');
+            }else {
+                $('#ToParticipate').css('display','block');
+                $('#DeleteTaskParticipate').css('display','none');
             }
         }
 
@@ -112,7 +117,7 @@ class Tasks {
                 + '  ?annotate tags:target mf-task:' + task_id + ' ;'
                 + '  tags:body ?tags.'
                 + '}';
-    
+
             $.ajax({
                 type: 'GET',
                 url: sparql_endpoint,
@@ -133,7 +138,7 @@ class Tasks {
     }
 
     drawAddTask(selected_task_id){
-        this.selected_task_id = selected_task_id;
+        this.selected_task_id = Number(selected_task_id);
         $('#AddTask').modal('show');
         $('#datetimepickerAddTaskDeadline').datetimepicker(
             {
@@ -141,35 +146,37 @@ class Tasks {
             }
         );
         $('#AddTaskTitle').val('');
-        $('#AddTaskDescription').val('')
+        $('#AddTaskDescription').val('');
+        $('#DetailTaskDeadline').val(null);
+        $('#AddTaskStatus').val('todo');
+        $('#AddTaskNotify').val('own');
     }
 
     drawDeleteTask(selected_task_id){
-        this.selected_task_id = selected_task_id;
+        this.selected_task_id = Number(selected_task_id);
 
         let task = this.get_task(this.selected_task_id);
 
         $('#ConfirmDeleteTask').modal('show');
-        $('#DeleteTaskID').val(task.id);
-        $('#DeleteTaskTitle').text(task.title);
+        $('#DeleteTaskTitle').text(task.name);
     }
 
-    delete_task(task_id){
-
+    delete_task(task){
+        let task_id = task.id;
         let stack_tasks = [this.tasks];
 
         delete_task_label:
-        while (stack_tasks.length > 0) {
-            let task = stack_tasks.pop();
+            while (stack_tasks.length > 0) {
+                let task = stack_tasks.pop();
 
-            for(let i=0; i<task.children.length; i++){
-                if(task.children[i].id === task_id){
-                    task.children.splice(i, 1);
-                    break delete_task_label;
+                for(let i=0; i<task.children.length; i++){
+                    if(task.children[i].id === task_id){
+                        task.children.splice(i, 1);
+                        break delete_task_label;
+                    }
+                    stack_tasks.push(task.children[i]);
                 }
-                stack_tasks.push(task.children[i]);
             }
-        }
 
         this.oc.init({
             'data': this.tasks
@@ -180,7 +187,7 @@ class Tasks {
     }
 
     add_task(task){
-        let parent_task_id = task.id;
+        let parent_task_id = task.parent_task_id;
         let parent_task = this.get_task(parent_task_id);
 
         parent_task.children.push(task);
@@ -222,18 +229,18 @@ class Tasks {
         let stack_tasks = [this.tasks];
 
         delete_task_label:
-        while (stack_tasks.length > 0) {
+            while (stack_tasks.length > 0) {
 
-            let task = stack_tasks.pop();
+                let task = stack_tasks.pop();
 
-            for(let i=0; i<task.children.length; i++){
-                if(task.children[i].id === target_task_id){
-                    target_task = task.children[i];
-                    task.children.splice(i, 1);
-                    break delete_task_label;
+                for(let i=0; i<task.children.length; i++){
+                    if(task.children[i].id === target_task_id){
+                        target_task = task.children[i];
+                        task.children.splice(i, 1);
+                        break delete_task_label;
+                    }
                 }
             }
-        }
 
         let parent_task = this.get_task(change_task_id);
         parent_task.children.push(target_task);
@@ -243,32 +250,32 @@ class Tasks {
         });
         this.oc.$chart.on('nodedrop.orgchart', function(event) {
             setTimeout(tasks.drop_hierarchy, 100);
-        });        
+        });
     }
 
-    add_participant(target_task_id, participant){
-        let target_task = this.get_task(target_task_id);
+    add_participant(data){
+
+        let target_task = this.get_task(data.task_id);
         let exist_flag = false;
 
         for (let target_task_participant of target_task.participants){
-            if(target_task_participant.id === participant.id){
+            if(target_task_participant.id === data.id){
                 exist_flag = true;
                 break;
             }
         }
 
-        if(!exist_flag)
-        {
-            target_task.participants.push(participant)
+        if(!exist_flag) {
+            target_task.participants.push(data);
         }
     }
 
-    delete_participant(target_task_id, participant_id){
-        let target_task = this.get_task(target_task_id);
+    delete_participant(data){
+        let target_task = this.get_task(data.task_id);
 
         for(let i=0; i<target_task.participants.length; i++){
             if(target_task.participants[i].id === participant_id){
-                task.children.splice(i, 1);
+                target_task.children.splice(i, 1);
                 break;
             }
         }
