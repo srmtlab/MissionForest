@@ -33,7 +33,6 @@ class Tasks {
         let stack_tasks = [this.tasks];
         while (stack_tasks.length > 0) {
             let task = stack_tasks.pop();
-            console.log(task);
 
             if (task.id === search_task_id){
                 return task;
@@ -259,6 +258,9 @@ class Tasks {
         let target_task = this.get_task(data.task_id);
         let exist_flag = false;
 
+
+        console.log(target_task);
+
         for (let target_task_participant of target_task.participants){
             if(target_task_participant.id === data.id){
                 exist_flag = true;
@@ -275,8 +277,8 @@ class Tasks {
         let target_task = this.get_task(data.task_id);
 
         for(let i=0; i<target_task.participants.length; i++){
-            if(target_task.participants[i].id === participant_id){
-                target_task.children.splice(i, 1);
+            if(target_task.participants[i].id === data.id){
+                target_task.participants.splice(i, 1);
                 break;
             }
         }

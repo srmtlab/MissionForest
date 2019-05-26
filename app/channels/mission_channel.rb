@@ -84,10 +84,13 @@ class MissionChannel < ApplicationCable::Channel
 
   def add_task_participant(task_data_json)
     task = Task.find(task_data_json['task_id'])
-    participant = User.find(task_data_json['participant_id'])
+    participant = User.find(task_data_json['id'])
+
+
     if task.participants.include?(participant) == false
       task.participants.push(participant)
       if task.save
+        task_data_json['name'] = participant.name
         ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
             status: 'work',
             type: 'task_participant',
@@ -100,7 +103,7 @@ class MissionChannel < ApplicationCable::Channel
 
   def delete_task_participant(task_data_json)
     task = Task.find(task_data_json['task_id'])
-    task.participants.delete(task_data_json['participant_id'])
+    task.participants.delete(task_data_json['id'])
 
     if task.save
       ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
