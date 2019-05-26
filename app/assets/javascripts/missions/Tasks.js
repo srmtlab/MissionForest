@@ -33,6 +33,7 @@ class Tasks {
         let stack_tasks = [this.tasks];
         while (stack_tasks.length > 0) {
             let task = stack_tasks.pop();
+            console.log(task);
 
             if (task.id === search_task_id){
                 return task;

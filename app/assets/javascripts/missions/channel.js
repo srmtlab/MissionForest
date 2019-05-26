@@ -18,7 +18,9 @@ $(function(){
 
 			received: function(data) {
 				// Called when there's incoming data on the websocket for this channel
-				if(data.status === "init" && typeof tasks === 'undefined')
+
+
+				if(data['status'] === "init" && typeof tasks === 'undefined')
 				{
 					tasks = new Tasks(data.tasks, user_signed_in, user_id);
 					tasks.draw('#chart-container');
@@ -28,13 +30,13 @@ $(function(){
 				{
 					let operation = data.operation;
 					let type = data.type;
-					let data = data.data;
+					let fixdata = data.data;
 
 					if(type === "mission")
 					{
 						if(operation === "update")
 						{
-							mission.update_mission(data);
+							mission.update_mission(fixdata);
 						}
 						else if(operation === "delete"){
 							location.href = "/";
@@ -44,46 +46,46 @@ $(function(){
 					{
 						if(operation === "add")
 						{
-							tasks.add_task(data);
+							tasks.add_task(fixdata);
 						}
 						else if(operation === "update")
 						{
-							tasks.update_task(data);
+							tasks.update_task(fixdata);
 						}
 						else if(operation === "delete")
 						{
-							tasks.delete_task(data);
+							tasks.delete_task(fixdata);
 						}
 					}
 					else if(type === "task_participant")
 					{
 						if(operation === "add")
 						{
-							tasks.add_participant(data);
+							tasks.add_participant(fixdata);
 						}
 						else if(operation === "delete")
 						{
-							tasks.delete_participant(data);
+							tasks.delete_participant(fixdata);
 						}
 					}
 					else if(type === "mission_participant")
 					{
 						if(operation === "add")
 						{
-							if(data.id === user_id){
+							if(fixdata.id === user_id){
 								location.reload();
 							}
 							else {
-								mission.add_participant(data);
+								mission.add_participant(fixdata);
 							}
 						}
 						else if(operation === "delete")
 						{
-							if(data.id === user_id){
+							if(fixdata.id === user_id){
 								location.reload();
 							}
 							else {
-								mission.delete_participant(data);
+								mission.delete_participant(fixdata);
 							}
 						}
 					}
@@ -91,11 +93,11 @@ $(function(){
 					{
 						if(operation === "add")
 						{
-							mission.add_admin(data);
+							mission.add_admin(fixdata);
 						}
 						else if(operation === "delete")
 						{
-							mission.delete_admin(data)
+							mission.delete_admin(fixdata)
 						}
 					}
 				}

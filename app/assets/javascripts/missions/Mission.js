@@ -134,7 +134,7 @@ class Mission {
         }
 
         if(exist_flag === true){
-            $('#ShowMissionParticipants').data('participant_id', deleted_participant.id).remove();
+            $('#ShowMissionParticipants').find('p[data-participant_id=' + deleted_participant.id + ']').remove()
         }
 
         let display = $('#DetailMissionParticipants').css('display');
@@ -202,7 +202,7 @@ class Mission {
         }
 
         if(exist_flag === true){
-            $('#ShowMissionAdmins').data('admin_id', deleted_admin.id).remove();
+            $('#ShowMissionAdmins').find('p[data-admin_id=' + deleted_admin.id + ']').remove()
         }
 
         let display = $('#DetailMissionAdmins').css('display');

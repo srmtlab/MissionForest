@@ -8,20 +8,54 @@ class MissionsController < ApplicationController
     Mission.order(created_at: :desc).all.each do |mission|
       root_task = mission.root_task
       notify = root_task.notify
-      if (notify == 'own' or notify == 'organize') and root_task.user.id != current_user.try(:id)
-        next
+      if notify == 'publish' or notify == 'lod' or mission.admins.include?(current_user) or mission.participants.include?(current_user)
+        @missions.push(mission)
       end
-      @missions.push(mission)
+    end
+  end
+
+  # GET /missions/new
+  def new
+    authorize!
+    @mission = Mission.new
+    @mission.tasks.build
+  end
+
+  # POST /missions
+  def create
+    authorize!
+    @mission = Mission.new(mission_params)
+    @mission.user = current_user
+    @mission.participants.push(current_user)
+    @mission.admins.push(current_user)
+    if @mission.save
+      task = Task.new
+      task.title = @mission.title
+      task.description = @mission.description
+      task.user = current_user
+      task.mission = @mission
+      task.direct_mission = @mission
+      @mission.tasks.push(task)
+      @mission.root_task = task
+      @mission.save
+      if task.save
+        redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
+      else
+        render :new
+      end
+    else
+      render :new
     end
   end
 
   # GET /missions/1
   def show
-    @mission = Mission.find(params[:id])
+    @mission = Mission.find(params[:id]).reload
 #    @mission.hierarchy = get_hierarchy(@mission)
     authorize! @mission
   end
 
+  # =====================================================
   # GET /api/missions/1/tasks
   def show_tasks
     @mission = Mission.find(params[:id])
@@ -80,12 +114,7 @@ class MissionsController < ApplicationController
     end
   end
 
-  # GET /missions/new
-  def new
-    authorize!
-    @mission = Mission.new
-    @mission.tasks.build
-  end
+
 
   # GET /missions/1/edit
   def edit
@@ -93,32 +122,7 @@ class MissionsController < ApplicationController
     authorize! @mission
   end
 
-  # POST /missions
-  def create
-    authorize!
-    @mission = Mission.new(mission_params)
-    @mission.user = current_user
-    @mission.participants.push(current_user)
-    @mission.admins.push(current_user)
-    if @mission.save
-      task = Task.new
-      task.title = @mission.title
-      task.description = @mission.description
-      task.user = current_user
-      task.mission = @mission
-      task.direct_mission = @mission
-      @mission.tasks.push(task)
-      @mission.root_task = task
-      @mission.save
-      if task.save
-        redirect_to mission_path(@mission), notice: 'ミッションが作成されました'
-      else
-        render :new
-      end
-    else
-      render :new
-    end
-  end
+
 
   # POST /api/missions/create
   def api_create

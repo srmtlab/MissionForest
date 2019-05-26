@@ -3,11 +3,6 @@
 
     <h2 id="mission-title" class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
 
-    <div class="col-md-3 col-sm-6 mb-4">
-      <%= link_to '参加者を編集', "#", :id => "DetailMissionParticipantsModal", :style=>"width:100%;", :class => 'btn page-link text-dark d-inline-block' %>
-    </div>
-
-
     <div class="row">
       <% if user_signed_in? %>
         <% if @mission.admins.include?(current_user)%>
@@ -74,13 +69,19 @@
   </div>
 </div>
 
-
-<%= render 'missions/modal/show/missions/detailmission' %>
-<%= render 'missions/modal/show/tasks/addtask' %>
-<%= render 'missions/modal/show/tasks/confirmdelete' %>
+<% if user_signed_in? %>
+  <% if @mission.admins.include?(current_user)%>
+    <%= render 'missions/modal/show/mission_admins/detailparticipants' %>
+    <%= render 'missions/modal/show/mission_admins/detailadmins' %>
+    <%= render 'missions/modal/show/missions/detailmission' %>
+    <%= render 'missions/modal/show/missions/confirmdelete' %>
+  <%elsif @mission.participants.include?(current_user)%>
+    <%= render 'missions/modal/show/mission_participants/confirmdelete' %>
+  <%end %>
+  <%= render 'missions/modal/show/tasks/addtask' %>
+  <%= render 'missions/modal/show/tasks/confirmdelete' %>
+<%end %>
 <%= render 'missions/modal/show/tasks/detailtask' %>
-
-<%= render 'missions/modal/show/mission_admins/detailparticipants' %>
 
 <script>
     const mission_id = <%= @mission.id %>;
@@ -114,7 +115,6 @@
             tasks.drawDetailTask($(this).parent().attr('id'));
         })
         <% if user_signed_in? %>
-
         .on('click', '.add-button', function() {
             tasks.drawAddTask($(this).parent().attr('id'));
         })
@@ -169,8 +169,6 @@
             };
             App.mission.send_delete_task_participant(participant);
         })
-
-
         .on('click', '#DetailMissionModal', function () {
             mission.drawDetailMission();
         })
@@ -182,8 +180,8 @@
             };
             App.mission.send_update_mission(mission);
         })
-        .on('click', '#DetailMissionModal', function () {
-            mission.drawDetailMission();
+        .on('click', '#DeleteMissionModal', function () {
+            mission.drawDeleteMission();
         })
         .on('click', '#DeleteMission', function () {
             let mission = {
@@ -199,8 +197,6 @@
             };
             App.mission.send_add_mission_participant(participant);
         })
-
-
         .on('click','#ConfirmDeleteMissionParticipantModal',function () {
             mission.drawDeleteMissionParticipant();
         })
@@ -211,8 +207,6 @@
             };
             App.mission.send_delete_mission_participant(participant);
         })
-
-
         .on('click', '#DetailMissionParticipantsModal', function () {
             mission.drawDetailMissionParticipants();
         })
@@ -230,8 +224,6 @@
             };
             App.mission.send_delete_mission_participant(participant);
         })
-
-
         .on('click', '#DetailMissionAdminsModal', function () {
             mission.drawDetailMissionAdmins();
         })
@@ -249,7 +241,6 @@
             };
             App.mission.send_delete_mission_admin(admin);
         })
-
     <% end %>
     ;
 </script>
