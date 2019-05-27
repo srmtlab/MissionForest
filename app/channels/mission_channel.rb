@@ -117,8 +117,12 @@ class MissionChannel < ApplicationCable::Channel
 
   def add_mission_participant(task_data_json)
     mission = Mission.find(params['mission_id'])
-    user = User.find(task_data_json['id'])
-
+    if task_data_json.key?('id')
+      user = User.find(task_data_json['id'])  
+    elsif task_data_json.key?('name')
+      user = User.find_by(name: task_data_json['name'])  
+    end
+    
     if mission.participants.include?(user) == false
       mission.participants.push(user)
       if mission.save
@@ -130,22 +134,40 @@ class MissionChannel < ApplicationCable::Channel
             data: task_data_json
         })
       end
-
     end
   end
 
+  def add_mission_admin(task_data_json)
+    mission = Mission.find(params['mission_id'])
+    user = User.find_by(name: task_data_json['name'])
+
+    if mission.participants.include?(user) == false
+      mission.participants.push(user)
+      if mission.save
+        task_data_json['id'] = user.id
+        ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+            status: 'work',
+            type: 'mission_admin',
+            operation: 'add',
+            data: task_data_json
+        })
+      end
+    end
+  end
 
   def delete_mission_participant(task_data_json)
     mission = Mission.find(params['mission_id'])
-    mission.participants.delete(task_data_json['id'])
-
-    if mission.save
-      ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
-          status: 'work',
-          type: 'mission_participant',
-          operation: 'delete',
-          data: task_data_json
-      })
+    
+    if mission.participants.size != 1
+      mission.participants.delete(task_data_json['id'])  
+      if mission.save
+        ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
+            status: 'work',
+            type: 'mission_participant',
+            operation: 'delete',
+            data: task_data_json
+        })
+      end  
     end
   end
 
@@ -153,7 +175,7 @@ class MissionChannel < ApplicationCable::Channel
     mission = Mission.find(params['mission_id'])
 
     if mission.admins.size != 1
-      mission.admins.delete(task_data_json['admin_id'])
+      mission.admins.delete(task_data_json['id'])
       if mission.save
         ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
             status: 'work',
