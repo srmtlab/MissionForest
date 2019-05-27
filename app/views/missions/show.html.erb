@@ -220,7 +220,7 @@
         .on('click', '.delete_mission_participant', function () {
             let participant = {
                 'mission_id' : mission_id,
-                'id' : $(this).parent().attr('data-mission_participant')
+                'id' : Number($(this).parent().attr('data-mission_participant'))
             };
             App.mission.send_delete_mission_participant(participant);
         })
@@ -237,7 +237,7 @@
         .on('click', '.delete_mission_admin', function () {
             let admin = {
                 'mission_id' : mission_id,
-                'id': $(this).parent().attr('data-mission_admin')
+                'id': Number($(this).parent().attr('data-mission_admin'))
             };
             App.mission.send_delete_mission_admin(admin);
         })

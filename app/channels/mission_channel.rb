@@ -126,7 +126,11 @@ class MissionChannel < ApplicationCable::Channel
     if mission.participants.include?(user) == false
       mission.participants.push(user)
       if mission.save
-        task_data_json['name'] = user.name
+        if task_data_json.key?('id')
+          task_data_json['name'] = user.name
+        elsif task_data_json.key?('name')
+          task_data_json['id'] = user.id
+        end
         ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
             status: 'work',
             type: 'mission_participant',
@@ -141,8 +145,9 @@ class MissionChannel < ApplicationCable::Channel
     mission = Mission.find(params['mission_id'])
     user = User.find_by(name: task_data_json['name'])
 
-    if mission.participants.include?(user) == false
-      mission.participants.push(user)
+    if mission.participants.include?(user) && mission.admins.include?(user) == false
+      mission.admins.push(user)
+
       if mission.save
         task_data_json['id'] = user.id
         ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {

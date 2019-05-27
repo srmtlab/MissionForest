@@ -9,7 +9,7 @@ $(function(){
 		{
 			connected: function() {
 				// Called when the subscription is ready for use on the server
-                return this.perform('init')
+				return this.perform('init')
 			},
 
 			disconnected: function() {
@@ -93,11 +93,21 @@ $(function(){
 					{
 						if(operation === "add")
 						{
-							mission.add_admin(fixdata);
+							if(fixdata.id === user_id){
+								location.reload();
+							}else {
+								mission.add_admin(fixdata);
+							}
+
 						}
 						else if(operation === "delete")
 						{
-							mission.delete_admin(fixdata)
+							if(fixdata.id === user_id){
+								location.reload();
+							}else {
+								mission.delete_admin(fixdata)
+							}
+
 						}
 					}
 				}
@@ -128,30 +138,30 @@ $(function(){
 				return this.perform('add_task_participant', participant)
 			},
 
-            send_delete_task_participant: function(participant){
-                return this.perform('delete_task_participant', participant)
-            },
+			send_delete_task_participant: function(participant){
+				return this.perform('delete_task_participant', participant)
+			},
 
 
 			send_add_mission_participant: function(participant){
 				return this.perform('add_mission_participant', participant)
 			},
 
-            send_delete_mission_participant: function(participant){
-                return this.perform('delete_mission_participant', participant)
-            },
+			send_delete_mission_participant: function(participant){
+				return this.perform('delete_mission_participant', participant)
+			},
 
 			send_add_mission_admin: function(admin){
 				return this.perform('add_mission_admin', admin)
 			},
 
-            send_delete_mission_admin: function(admin){
-                return this.perform('delete_mission_admin', admin)
-            },
+			send_delete_mission_admin: function(admin){
+				return this.perform('delete_mission_admin', admin)
+			},
 
 			change_tasktree: function(tree){
-				return this.perform('change_tasktree', { 
-					tree:tree 
+				return this.perform('change_tasktree', {
+					tree:tree
 				})
 			}
 		});
