@@ -1,14 +1,15 @@
 class Tasks {
-    constructor(tasks, user_signed_in, user_id){
-        this.tasks = tasks;
+    constructor(taskdata, user_signed_in, user_id){
+        this.tasks = this._make_obj(taskdata);
         this.datetimepickerformat = 'MM/DD/YYYY HH:mm';
         this.user_signed_in = user_signed_in;
         this.user_id = user_id;
         this.oc = null;
         this.selected_task_id = null;
+        this.root_task_id = taskdata['root_task_id'];
         this.options = {
-            'data' : this.tasks,
             'pan': true,
+            'toggleSiblingsResp': true,
             'zoom': true,
             'draggable': true,
             'createNode': function($node, data) {
@@ -26,31 +27,64 @@ class Tasks {
                 }
             }
         };
+    }
 
+    _make_obj(taskdata){
+        let task_dic = {};
+
+        for(let task_id in taskdata) {
+            if(taskdata.hasOwnProperty(task_id)){
+                if(task_id !== "root_task_id"){
+                    task_dic[task_id] = {
+                        'id' : task_id,
+                        'name' : taskdata[task_id]['name'],
+                        'description' : taskdata[task_id]['description'],
+                        'deadline_at' : taskdata[task_id]['deadline_at'],
+                        'created_at' : taskdata[task_id]['created_at'],
+                        'status' : taskdata[task_id]['status'],
+                        'notify' : taskdata[task_id]['notify'],
+                        'participants' : taskdata[task_id]['participants'],
+                        'children' : []
+                    }
+                }
+            }
+        }
+
+        for(let task_id in taskdata) {
+            if(taskdata.hasOwnProperty(task_id)){
+                if(task_id !== "root_task_id"){
+                    for(let child_task_id of taskdata[task_id]['children']){
+                        task_dic[task_id]['children'].push(task_dic[child_task_id]);
+                        task_dic[child_task_id]['parent'] = task_dic[task_id];
+                    }
+                }
+            }
+        }
+        return task_dic;
+    }
+
+    make_hierarchy(){
+        return this.tasks[this.root_task_id];
     }
 
     get_task(search_task_id){
-        let stack_tasks = [this.tasks];
-        while (stack_tasks.length > 0) {
-            let task = stack_tasks.pop();
+        return this.tasks[search_task_id];
+    }
 
-            if (task.id === search_task_id){
-                return task;
-            }
-
-            for(let child_task of task.children){
-                stack_tasks.push(child_task);
-            }
-        }
-        return null;
+    get_selected_task_id(){
+        return this.selected_task_id;
     }
 
     draw(container_id){
+        this.options['data'] = this.make_hierarchy();
+
         this.oc = $(container_id).orgchart(this.options);
 
         this.oc.$chart.on('nodedrop.orgchart', function(event) {
             setTimeout('tasks.drop_hierarchy()', 100);
         });
+
+        $('.orgchart').addClass('noncollapsable');
 
         let urlParams = new URLSearchParams(location.search);
         if(urlParams.has('taskid')){
@@ -64,14 +98,14 @@ class Tasks {
 
         let task = this.get_task(this.selected_task_id);
 
-        $('#DetailTaskID').text(task.id);
-        $('#DetailTaskTitle').val(task.name);
-        $('#DetailTaskDescription').val(task.description);
+        $('#DetailTaskID').text(task['id']);
+        $('#DetailTaskTitle').val(task['name']);
+        $('#DetailTaskDescription').val(task['description']);
 
-        $('#DetailTaskDeadline').val(moment(task.deadline_at).format(this.datetimepickerformat));
+        $('#DetailTaskDeadline').val(moment(task['deadline_at']).format(this.datetimepickerformat));
 
-        $('#DetailTaskStatus').val(task.status);
-        $('#DetailTaskNotify').val(task.notify);
+        $('#DetailTaskStatus').val(task['status']);
+        $('#DetailTaskNotify').val(task['notify']);
         if (task.notify === 'lod'){
             $('.ccby-license').addClass('ccby-active');
         }
@@ -80,13 +114,16 @@ class Tasks {
         }
 
         let TaskParticipants = $('#TaskParticipants');
-        let user_participate_flag = false;
         TaskParticipants.empty();
-        for (let participant of task.participants){
-            if(participant.id === user_id){
-                user_participate_flag = true;
+        let user_participate_flag = false;
+
+        for (let participant_id in task['participants']){
+            if(task['participants'].hasOwnProperty(participant_id)){
+                if (participant_id === user_id){
+                    user_participate_flag = true;
+                }
+                TaskParticipants.append('<li>' + task['participants'][participant_id] + '</li>');
             }
-            TaskParticipants.append('<li>' + participant.name + '</li>');
         }
 
         if(this.user_signed_in){
@@ -99,12 +136,13 @@ class Tasks {
             }
         }
 
-        $('#DetailTask').modal('show');
         $('#datetimepickerDetailTaskDeadline').datetimepicker(
             {
                 format: this.datetimepickerformat,
             }
         );
+        $('#DetailTask').modal('show');
+
 
         if(lod){
             $('#TaskTags').empty();
@@ -135,6 +173,7 @@ class Tasks {
                 }
             });
         }
+
     }
 
     drawAddTask(selected_task_id){
@@ -148,8 +187,8 @@ class Tasks {
         $('#AddTaskTitle').val('');
         $('#AddTaskDescription').val('');
         $('#DetailTaskDeadline').val(null);
-        $('#AddTaskStatus').val('todo');
-        $('#AddTaskNotify').val('own');
+        $('#AddTaskStatus').val();
+        $('#AddTaskNotify').val();
     }
 
     drawDeleteTask(selected_task_id){
@@ -161,127 +200,75 @@ class Tasks {
         $('#DeleteTaskTitle').text(task.name);
     }
 
-    delete_task(task){
-        let task_id = task.id;
-        let stack_tasks = [this.tasks];
+    update_task(task){
+        let update_task = this.get_task(task['id']);
 
-        delete_task_label:
-            while (stack_tasks.length > 0) {
-                let task = stack_tasks.pop();
+        if(typeof task != null){
+            update_task['name'] = task.hasOwnProperty('name') ? task['name'] : update_task['name'];
+            update_task['description'] = task.hasOwnProperty('description') ? task['description'] : update_task['description'];
+            update_task['deadline_at'] = task.hasOwnProperty('deadline_at') ? task['deadline_at'] : update_task['deadline_at'];
+            update_task['status'] = task.hasOwnProperty('status') ? task['status'] : update_task['status'];
+            update_task['notify'] = task.hasOwnProperty('notify') ? task['notify'] : update_task['notify'];
 
-                for(let i=0; i<task.children.length; i++){
-                    if(task.children[i].id === task_id){
-                        task.children.splice(i, 1);
-                        break delete_task_label;
-                    }
-                    stack_tasks.push(task.children[i]);
-                }
-            }
-
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
+            $('#' + task['id'] +' .title').text(update_task['name']);
+        }
     }
 
     add_task(task){
-        let parent_task_id = task.parent_task_id;
-        let parent_task = this.get_task(parent_task_id);
+        if(this.tasks.hasOwnProperty(task['id'])){
+            this.update_task(task);
+        }
+        else{
+            this.tasks[task['id']] = {
+                'id' : task['id'],
+                'name' : task['name'],
+                'description' : task['description'],
+                'deadline_at' : task['deadline_at'],
+                'created_at' : task['created_at'],
+                'status' : task['status'],
+                'notify' : task['notify'],
+                'participants' : task['participants'],
+                'children' : [],
 
-        parent_task.children.push(task);
+            };
 
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
-    }
+            let parent_task = this.get_task(task['parent_task_id']);
+            parent_task['children'].push(this.tasks[task['id']]);
 
-    update_task(task){
-        let task_id = task.id;
-        let update_task = this.get_task(task_id);
+            let $parent_task = $('#' + task['parent_task_id']);
+            let hasChild = $parent_task.parent().attr('colspan') > 0;
 
-        if(typeof task != null){
-            update_task.name = task.name;
-            update_task.description = task.description;
-            update_task.deadline_at = task.deadline_at;
-            update_task.status = task.status;
-            update_task.notify = task.notify;
-
-            this.oc.init({
-                'data': this.tasks
-            });
-            this.oc.$chart.on('nodedrop.orgchart', function(event) {
-                setTimeout(tasks.drop_hierarchy, 100);
-            });
+            if(!hasChild){
+                this.oc.addChildren($parent_task, [{
+                    'id' : task['id'],
+                    'name' : task['name'],
+                    'relationship' : "100"
+                }]);
+            }else {
+                this.oc.addSiblings($parent_task.closest('tr').siblings('.nodes').find('.node:first'), [{
+                    'id' : task['id'],
+                    'name' : task['name'],
+                    'relationship' : "110"
+                }]);
+            }
         }
     }
 
-    get_selected_task_id(){
-        return this.selected_task_id;
-    }
+    delete_task(target_task){
+        let task_id = target_task.id;
+        delete this.tasks[task_id];
 
-    change_hierarchy(target_task_id, change_task_id){
-        let target_task;
-        let stack_tasks = [this.tasks];
-
-        delete_task_label:
-            while (stack_tasks.length > 0) {
-
-                let task = stack_tasks.pop();
-
-                for(let i=0; i<task.children.length; i++){
-                    if(task.children[i].id === target_task_id){
-                        target_task = task.children[i];
-                        task.children.splice(i, 1);
-                        break delete_task_label;
-                    }
-                }
-            }
-
-        let parent_task = this.get_task(change_task_id);
-        parent_task.children.push(target_task);
-
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
+        this.oc.removeNodes($('#' + task_id));
     }
 
     add_participant(data){
-
-        let target_task = this.get_task(data.task_id);
-        let exist_flag = false;
-
-
-        console.log(target_task);
-
-        for (let target_task_participant of target_task.participants){
-            if(target_task_participant.id === data.id){
-                exist_flag = true;
-                break;
-            }
-        }
-
-        if(!exist_flag) {
-            target_task.participants.push(data);
-        }
+        let target_task = this.get_task(data['task_id']);
+        target_task['participants'][data['id']] = data['name'];
     }
 
     delete_participant(data){
-        let target_task = this.get_task(data.task_id);
-
-        for(let i=0; i<target_task.participants.length; i++){
-            if(target_task.participants[i].id === data.id){
-                target_task.participants.splice(i, 1);
-                break;
-            }
-        }
+        let target_task = this.get_task(data['task_id']);
+        delete target_task['participants'][data['id']];
     }
 
     drop_hierarchy(){
@@ -313,4 +300,35 @@ class Tasks {
         App.mission.change_tasktree(hierarchy);
          */
     }
+
+    /*
+    change_hierarchy(target_task_id, change_task_id){
+        let target_task;
+        let stack_tasks = [this.tasks];
+
+        delete_task_label:
+            while (stack_tasks.length > 0) {
+
+                let task = stack_tasks.pop();
+
+                for(let i=0; i<task.children.length; i++){
+                    if(task.children[i].id === target_task_id){
+                        target_task = task.children[i];
+                        task.children.splice(i, 1);
+                        break delete_task_label;
+                    }
+                }
+            }
+
+        let parent_task = this.get_task(change_task_id);
+        parent_task.children.push(target_task);
+
+        this.oc.init({
+            'data': this.tasks
+        });
+        this.oc.$chart.on('nodedrop.orgchart', function(event) {
+            setTimeout(tasks.drop_hierarchy, 100);
+        });
+    }
+    */
 }

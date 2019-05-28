@@ -6,215 +6,176 @@ class Mission {
         this.mission_id = mission_id;
     }
 
-    get_mission_id(){
-        return this.mission.id
-    }
-
-    get_mission_title(){
-        return this.mission.title
-    }
-
-    get_mission_description(){
-        return this.mission.description
-    }
-
-    get_mission_participants(){
-        return this.mission.participants
-    }
-
-    get_mission_admins(){
-        return this.mission.admins
-    }
-
     drawDeleteMissionParticipant(){
+        $('#DeleteMissionParticipantTitle').text(this.mission['name']);
         $('#ConfirmDeleteMissionParticipant').modal('show');
-        $('#DeleteMissionParticipantTitle').text(this.mission.name);
     }
 
     drawDetailMissionParticipants(){
+        let mission = this.mission;
         let MissionParticipantsTB = $('#MissionParticipantsTB');
         MissionParticipantsTB.empty();
 
-        let missionadmins_list = [];
-        for(let admin of this.mission.admins){
-            missionadmins_list.push(admin.id);
-        }
-
-        for(let participant of this.mission.participants){
-            if (missionadmins_list.indexOf(participant.id) >= 0){
-                MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td></tr>')
-            }else{
-                MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+        for(let participant_id in mission['participants']){
+            if(mission['participants'].hasOwnProperty(participant_id)){
+                if(mission['admins'].hasOwnProperty(participant_id)){
+                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td></tr>')
+                }
+                else {
+                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+                }
             }
         }
         $('#DetailMissionParticipants').modal('show');
     }
 
     drawDetailMissionAdmins(){
+        let mission = this.mission;
         let MissionAdminsTB = $('#MissionAdminsTB');
         MissionAdminsTB.empty();
 
-        if(this.mission.admins.length === 1){
-            MissionAdminsTB.append('<tr data-mission_admin="' + this.mission.admins[0].id + '"><td><strong class="mu-text">' + this.mission.admins[0].name + '</strong></td></tr>')
-        }else{
-            for(let admin of this.mission.admins){
-                MissionAdminsTB.append('<tr data-mission_admin="' + admin.id + '"><td><strong class="mu-text">' + admin.name + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+        if(Object.keys(mission['admins']).length === 1)
+        {
+            let admin_id = (Object.keys(mission['admins']))[0];
+            let admin_name = mission['admins'][admin_id];
+
+            MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + admin_name + '</strong></td></tr>')
+        }
+        else
+        {
+            for(let admin_id in mission['admins']){
+                if(mission['admins'].hasOwnProperty(admin_id)){
+                    MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + mission['admins'][admin_id] + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+                }
             }
         }
-
         $('#DetailMissionAdmins').modal('show');
     }
 
     drawDetailMission(){
+        $('#DetailMissionTitle').val(this.mission['name']);
+        $('#DetailMissionDescription').val(this.mission['description']);
         $('#DetailMission').modal('show');
-        $('#DetailMissionTitle').val(this.mission.name);
-        $('#DetailMissionDescription').val(this.mission.description);
     }
 
     drawDeleteMission(){
+        $('#DeleteMissionTitle').val(this.mission['name']);
         $('#ConfirmDeleteMission').modal('show');
-        $('#DeleteMissionTitle').val(this.mission.name);
     }
 
     update_mission(mission){
-        this.mission.name = mission.name;
-        this.mission.description = mission.description;
+        this.mission['name'] = mission['name'];
+        this.mission['description'] = mission['description'];
 
-        $('#mission-title').text(this.mission.name);
-        $('#mission-description').text(this.mission.description);
+        $('#mission-title').text(this.mission['name']);
+        $('#mission-description').text(this.mission['description']);
     }
 
-    add_participant(added_participant){
+    add_participant(data){
         let mission = this.mission;
-        let exist_flag = false;
-        for (let participant of mission.participants){
-            if(added_participant.id === participant.id){
-                exist_flag = true;
-                break;
-            }
-        }
 
-        if(exist_flag === false){
-            this.mission.participants.push(added_participant);
-            $('#ShowMissionParticipants').append('<p data-participant_id="' + added_participant.id +'">' + added_participant.name + '</p>');
-        }
+        if(!mission['participants'].hasOwnProperty(data['id'])){
+            mission['participants'][data['id']] = data['name'];
+            $('#ShowMissionParticipants').append('<p data-participant_id="' + data['id'] +'">' + data['name'] + '</p>');
 
-        let display = $('#DetailMissionParticipants').css('display');
-        if(display === 'block'){
-            let MissionParticipantsTB = $('#MissionParticipantsTB');
-            MissionParticipantsTB.empty();
+            if($('#DetailMissionParticipants').css('display') === 'block'){
+                let MissionParticipantsTB = $('#MissionParticipantsTB');
+                MissionParticipantsTB.empty();
 
-            let missionadmins_list = [];
-            for(let admin of this.mission.admins){
-                missionadmins_list.push(admin.id);
-            }
-
-            for(let participant of this.mission.participants){
-                if (missionadmins_list.indexOf(participant.id) >= 0){
-                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td></tr>')
-                }else{
-                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+                for(let participant_id in mission['participants']){
+                    if(mission['participants'].hasOwnProperty(participant_id)){
+                        if(mission['admins'].hasOwnProperty(participant_id)){
+                            MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td></tr>')
+                        }
+                        else {
+                            MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+                        }
+                    }
                 }
             }
         }
     }
 
-    delete_participant(deleted_participant){
+    delete_participant(data){
         let mission = this.mission;
-        let exist_flag = false;
-        let delete_index = null;
 
+        if(mission['participants'].hasOwnProperty(data['id'])){
+            delete mission['participants'][data['id']];
+            $('#ShowMissionParticipants').find('p[data-participant_id=' + data['id'] + ']').remove()
 
-        for(let i = 0; i < mission.participants.length; i++){
-            if(deleted_participant.id === mission.participants[i].id){
-                exist_flag = true;
-                mission.participants.splice(i, 1);
-                break;
-            }
-        }
+            if($('#DetailMissionParticipants').css('display') === 'block'){
+                let MissionParticipantsTB = $('#MissionParticipantsTB');
+                MissionParticipantsTB.empty();
 
-        if(exist_flag === true){
-            $('#ShowMissionParticipants').find('p[data-participant_id=' + deleted_participant.id + ']').remove()
-        }
-
-        let display = $('#DetailMissionParticipants').css('display');
-        if(display === 'block'){
-            let MissionParticipantsTB = $('#MissionParticipantsTB');
-            MissionParticipantsTB.empty();
-
-            let missionadmins_list = [];
-            for(let admin of this.mission.admins){
-                missionadmins_list.push(admin.id);
-            }
-
-            for(let participant of this.mission.participants){
-                if (missionadmins_list.indexOf(participant.id) >= 0){
-                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td></tr>')
-                }else{
-                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant.id + '"><td><strong class="mu-text">' + participant.name + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+                for(let participant_id in mission['participants']){
+                    if(mission['participants'].hasOwnProperty(participant_id)){
+                        if(mission['admins'].hasOwnProperty(participant_id)){
+                            MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td></tr>')
+                        }
+                        else {
+                            MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
+                        }
+                    }
                 }
             }
         }
     }
 
-    add_admin(added_admin){
+    add_admin(data){
         let mission = this.mission;
-        let exist_flag = false;
-        for (let admin of mission.admins){
-            if(added_admin.id === admin.id){
-                exist_flag = true;
-                break;
-            }
-        }
 
-        if(exist_flag === false){
-            this.mission.admins.push(added_admin);
-            $('#ShowMissionAdmins').append('<p data-admin_id="' + added_admin.id +'">' + added_admin.name + '</p>');
-        }
+        if(!mission['admins'].hasOwnProperty(data['id'])){
+            mission['admins'][data['id']] = data['name'];
+            $('#ShowMissionAdmins').append('<p data-admin_id="' + data['id'] +'">' + data['name'] + '</p>');
 
-        let display = $('#DetailMissionAdmins').css('display');
-        if(display === 'block'){
-            let MissionAdminsTB = $('#MissionAdminsTB');
-            MissionAdminsTB.empty();
+            if($('#DetailMissionAdmins').css('display') === 'block'){
+                let MissionAdminsTB = $('#MissionAdminsTB');
+                MissionAdminsTB.empty();
 
-            if(this.mission.admins.length === 1){
-                MissionAdminsTB.append('<tr data-mission_admin="' + this.mission.admins[0].id + '"><td><strong class="mu-text">' + this.mission.admins[0].name + '</strong></td></tr>')
-            }else{
-                for(let admin of this.mission.admins){
-                    MissionAdminsTB.append('<tr data-mission_admin="' + admin.id + '"><td><strong class="mu-text">' + admin.name + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+                if(Object.keys(mission['admins']).length === 1)
+                {
+                    let admin_id = (Object.keys(mission['admins']))[0];
+                    let admin_name = mission['admins'][admin_id];
+
+                    MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + admin_name + '</strong></td></tr>')
+                }
+                else
+                {
+                    for(let admin_id in mission['admins']){
+                        if(mission['admins'].hasOwnProperty(admin_id)){
+                            MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + mission['admins'][admin_id] + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+                        }
+                    }
                 }
             }
         }
     }
 
-    delete_admin(deleted_admin){
+    delete_admin(data){
         let mission = this.mission;
-        let exist_flag = false;
-        let delete_index = null;
 
+        if(mission['admins'].hasOwnProperty(data['id'])){
+            delete mission['admins'][data['id']];
+            $('#ShowMissionAdmins').find('p[data-admin_id=' + data['id'] + ']').remove();
 
-        for(let i = 0; i < mission.admins.length; i++){
-            if(deleted_admin.id === mission.admins[i].id){
-                exist_flag = true;
-                mission.admins.splice(i, 1);
-                break;
-            }
-        }
+            if($('#DetailMissionAdmins').css('display') === 'block'){
+                let MissionAdminsTB = $('#MissionAdminsTB');
+                MissionAdminsTB.empty();
 
-        if(exist_flag === true){
-            $('#ShowMissionAdmins').find('p[data-admin_id=' + deleted_admin.id + ']').remove()
-        }
+                if(Object.keys(mission['admins']).length === 1)
+                {
+                    let admin_id = (Object.keys(mission['admins']))[0];
+                    let admin_name = mission['admins'][admin_id];
 
-        let display = $('#DetailMissionAdmins').css('display');
-        if(display === 'block'){
-            let MissionAdminsTB = $('#MissionAdminsTB');
-            MissionAdminsTB.empty();
-
-            if(this.mission.admins.length === 1){
-                MissionAdminsTB.append('<tr data-mission_admin="' + this.mission.admins[0].id + '"><td><strong class="mu-text">' + this.mission.admins[0].name + '</strong></td></tr>')
-            }else{
-                for(let admin of this.mission.admins){
-                    MissionAdminsTB.append('<tr data-mission_admin="' + admin.id + '"><td><strong class="mu-text">' + admin.name + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+                    MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + admin_name + '</strong></td></tr>')
+                }
+                else
+                {
+                    for(let admin_id in mission['admins']){
+                        if(mission['admins'].hasOwnProperty(admin_id)){
+                            MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + mission['admins'][admin_id] + '</strong></td><td class="h4 delete_mission_admin">&times;</td></tr>')
+                        }
+                    }
                 }
             }
         }

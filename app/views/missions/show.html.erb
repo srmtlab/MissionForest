@@ -107,10 +107,9 @@
     let tasks, mission;
 
     function date_format2rails(datestring){
-        try {
+        if(moment(datestring,'MM/DD/YYYY HH:mm').isValid()){
             return moment(datestring,'MM/DD/YYYY HH:mm').utc().format();
-        }
-        catch {
+        }else {
             return null
         }
     }
