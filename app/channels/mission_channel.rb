@@ -41,6 +41,7 @@ class MissionChannel < ApplicationCable::Channel
       task_data_json['id'] = task.id
       task_data_json.delete(:parent_task_id)
       task_data_json['children'] = []
+      task_data_json['participants'] = []
 
       ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", {
           status: 'work',
