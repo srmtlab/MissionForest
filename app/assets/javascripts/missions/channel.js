@@ -4,7 +4,8 @@ $(function(){
 	App.mission = App.cable.subscriptions.create(
 		{
 			channel:channel,
-			mission_id:mission_id
+			mission_id:mission_id,
+			mission_group:mission_group
 		},
 		{
 			connected: function() {

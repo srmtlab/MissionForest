@@ -87,11 +87,19 @@
     const mission_id = <%= @mission.id %>;
     const lod = false;
     <% if user_signed_in? %>
+    <% if @mission.admins.include?(current_user)%>
+    const mission_group = "admin";
+    <% elsif @mission.participants.include?(current_user)%>
+    const mission_group = "participant";
+    <% else %>
+    const mission_group = "viewer";
+    <%end %>
     const user_signed_in = true;
     const user_id = <%= current_user.id %>;
     <% else %>
     const user_signed_in = false;
     const user_id = null;
+    const mission_group = "viewer";
     <% end %>
 
     const lod_graph_uri = 'http://mf.srmt.nitech.ac.jp/tags/';
