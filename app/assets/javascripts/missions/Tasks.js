@@ -25,8 +25,6 @@ class Tasks {
                     $node.append('<div class="new-icon">NEW</div>')
                 }
 
-                console.log(data.deadline_at);
-                console.log(moment(data.deadline_at).isValid());
                 if(moment(data.deadline_at).isValid() && data.deadline_at !== undefined){
                     let diff = moment().diff(moment(data.deadline_at), 'days');
                     if (diff > 0){
