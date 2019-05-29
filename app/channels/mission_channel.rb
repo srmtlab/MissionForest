@@ -66,19 +66,22 @@ class MissionChannel < ApplicationCable::Channel
     if permission[task_data_json['notify']] > permission[parent_task.notify]
       stack_tasks = [parent_task]
 
-
-
       while true do
         task = stack_tasks.last
+
+        if Mission.find(params['mission_id']).root_task.id == task.id
+          break
+        end
+
         parent_task = Task.find(task.sub_task_of)
-        if permission[task_data_json['notify']] > permission[parent_task.notify]
+        if permission[task_data_json['notify']] >= permission[parent_task.notify]
           stack_tasks.push(parent_task)
         else
           break
         end
       end
 
-      while stack_tasks.length > 0
+      while stack_tasks.length > 0 do
         task = stack_tasks.pop
         task.update_attributes(
             notify: task_data_json['notify']
@@ -132,28 +135,42 @@ class MissionChannel < ApplicationCable::Channel
     if permission[task_data_json['notify']] > permission[task.notify]
       stack_tasks = [task]
 
-      while true
+      while true do
         task = stack_tasks.last
-        parent_task = task.parenttask
-        if permission[task_data_json['notify']] > permission[parent_task.notify]
+
+        if Mission.find(params['mission_id']).root_task.id == task.id
+          break
+        end
+
+        parent_task = Task.find(task.sub_task_of)
+
+        if permission[task_data_json['notify']] >= permission[parent_task.notify]
           stack_tasks.push(parent_task)
         else
           break
         end
       end
 
-      while stack_tasks.length > 1
+      while stack_tasks.length > 1 do
         task = stack_tasks.pop
         task.update_attributes(
             notify: task_data_json['notify']
         )
 
-        send_task(task_data_json['notify'], 'task', 'update', {
+        send_task(task_data_json['notify'], 'task', 'add', {
             id: task.id,
-            notify: task.notify
+            name: task.title,
+            description: task.description,
+            deadline_at: task.deadline_at,
+            created_at: task.created_at,
+            status: task.status,
+            notify: task.notify,
+            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+            parent_task_id: task.sub_task_of
         })
       end
 
+      task = stack_tasks.pop
       if task.update_attributes(
           title: task_data_json['name'],
           description: task_data_json['description'],
@@ -161,9 +178,12 @@ class MissionChannel < ApplicationCable::Channel
           status: task_data_json['status'],
           notify: task_data_json['notify']
       )
-        send_task(task_data_json['notify'], 'task', 'update', task_data_json)
-      end
+        task_data_json['created_at'] = task.created_at
+        task_data_json['parent_task_id'] = task.sub_task_of
+        task_data_json['participants'] = Hash[task.participants.map{ |participant| [participant.id, participant.name]}]
 
+        send_task(task_data_json['notify'], 'task', 'add', task_data_json)
+      end
 
     elsif permission[task_data_json['notify']] < permission[task.notify]
 
@@ -193,8 +213,6 @@ class MissionChannel < ApplicationCable::Channel
                 id: task.id
             }
         })
-      else
-
       end
 
       stack_tasks = [task]
@@ -202,11 +220,31 @@ class MissionChannel < ApplicationCable::Channel
       while stack_tasks.length > 0 do
         target_task = stack_tasks.pop
 
+        if target_task.id == task.id
+          if target_task.update_attributes(
+              title: task_data_json['name'],
+              description: task_data_json['description'],
+              deadline_at: task_data_json['deadline_at'],
+              status: task_data_json['status'],
+              notify: task_data_json['notify']
+          )
+            send_task(task_data_json['notify'], 'task', 'update', task_data_json)
+          end
+        else
+          if target_task.update_attributes(
+              notify: task_data_json['notify']
+          )
+            send_task(task_data_json['notify'], 'task', 'update', {
+                id: target_task.id,
+                notify: task_data_json['notify']
+            })
+          end
+        end
         if target_task.subtasks.size != 0
-          parent_task = task_dic[target_task.id]
-
-          task.subtasks.each do |child|
-
+          target_task.subtasks.each do |child|
+            if permission[task_data_json['notify']] <= permission[child.notify]
+              stack_tasks.push(child)
+            end
           end
         end
       end

@@ -216,6 +216,7 @@ class Tasks {
 
     add_task(task){
         if(this.tasks.hasOwnProperty(task['id'])){
+            // 要修正
             this.update_task(task);
         }
         else{
@@ -255,6 +256,7 @@ class Tasks {
     }
 
     delete_task(target_task){
+        // 要修正
         let task_id = target_task.id;
         delete this.tasks[task_id];
 
