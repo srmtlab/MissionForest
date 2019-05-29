@@ -216,7 +216,6 @@ class Tasks {
 
     add_task(task){
         if(this.tasks.hasOwnProperty(task['id'])){
-            // 要修正
             this.update_task(task);
         }
         else{
@@ -255,12 +254,22 @@ class Tasks {
         }
     }
 
-    delete_task(target_task){
-        // 要修正
-        let task_id = target_task.id;
-        delete this.tasks[task_id];
+    delete_task(data){
+        let target_task = this.get_task(data.id)
+        
+        let stack_tasks = [target_task];
+        
+        while(stack_tasks.length > 0){
+            let task = stack_tasks.pop();
 
-        this.oc.removeNodes($('#' + task_id));
+            for(let child_task of task['children']){
+                stack_tasks.push(child_task);
+            }
+
+            delete this.tasks[task['id']];
+        }
+        
+        this.oc.removeNodes($('#' + data.id));
     }
 
     add_participant(data){
