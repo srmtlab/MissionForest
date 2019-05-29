@@ -25,6 +25,19 @@ class Tasks {
                 if (moment().diff(moment(data.created_at), 'weeks') < 1){
                     $node.append('<div class="new-icon">NEW</div>')
                 }
+
+                if(moment(data.deadline_at).isValid()){
+                    let diff = moment().diff(moment(data.deadline_at), 'days');
+                    if (diff > 0){
+                        $node.children(".title").css({"background-color": "lightgray"});
+                    } else if (diff >= -3){
+                        $node.children(".title").css({"background-color": "lightpink"});
+                    } else if(diff >= -7){
+                        $node.children(".title").css({"background-color": "khaki"});
+                    } else {
+                        $node.children(".title").css({"background-color": "powderblue"});
+                    }
+                }
             }
         };
     }
@@ -210,7 +223,21 @@ class Tasks {
             update_task['status'] = task.hasOwnProperty('status') ? task['status'] : update_task['status'];
             update_task['notify'] = task.hasOwnProperty('notify') ? task['notify'] : update_task['notify'];
 
-            $('#' + task['id'] +' .title').text(update_task['name']);
+            let $title  = $('#' + task['id'] +' .title');
+            $title.text(update_task['name']);
+
+            if(moment(update_task['deadline_at']).isValid()){
+                let diff = moment().diff(moment(update_task['deadline_at']), 'days');
+                if (diff > 0){
+                    $title.css({"background-color": "lightgray"});
+                } else if (diff >= -3){
+                    $title.css({"background-color": "lightpink"});
+                } else if(diff >= -7){
+                    $title.css({"background-color": "khaki"});
+                } else {
+                    $title.css({"background-color": "powderblue"});
+                }
+            }
         }
     }
 
