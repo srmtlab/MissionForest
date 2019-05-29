@@ -1,15 +1,13 @@
-ruby '2.4.1'
+ruby '2.6.3'
 source 'https://rubygems.org'
 
-gem 'rails', '5.1.2'
+gem 'rails', '5.2.3'
 
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 
 # LOD
-# gem 'stardog-rb'
 gem 'httpclient'
-
 
 # Asset
 gem 'uglifier', '>= 1.3.0'
@@ -18,8 +16,10 @@ gem "jquery-rails"
 # View
 gem 'kaminari'
 gem 'meta-tags'
+gem 'bootstrap', '~> 4.3.1'
+gem 'bootstrap4-datetime-picker-rails'
 gem 'momentjs-rails'
-gem 'bootstrap3-datetimepicker-rails'
+gem "font-awesome-rails"
 
 # Security
 gem 'devise'
@@ -37,8 +37,10 @@ group :development do
   gem 'rails-erd'
 end
 
-group :unicorn do
+group :production do
   gem 'unicorn', '~> 4.9.0'
   gem 'listen'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
+
+gem 'foreman'

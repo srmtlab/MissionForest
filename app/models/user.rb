@@ -1,25 +1,25 @@
 # coding: utf-8
 class User < ApplicationRecord
   include Virtuoso
-  
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
   # 認証トークンはユニークに。ただしnilは許可
-  validates:authentication_token, uniqueness: true, allow_nil: true
+  validates :authentication_token, uniqueness: true, allow_nil: true
   has_many :missions
-  
+
   has_many :participate_missions, class_name: "Mission",
-	   through: :mission_participant,
+           through: :mission_participant,
            source: :users
   has_many :mission_participant
 
   has_many :admin_of_missions, class_name: "Mission",
-          through: :mission_admin
+           through: :mission_admin
   has_many :mission_admin
 
   has_many :participate_tasks, class_name: "Task",
-	   through: :task_participant,
+           through: :task_participant,
            source: :users
   has_many :task_participant
 
@@ -42,27 +42,29 @@ class User < ApplicationRecord
     self.update(authentication_token: nil)
   end
 
-  
-
   def save(*args)
-    super(*args)
-    save2virtuoso(self)
+    if super(*args)
+      save2virtuoso(self)
+    end
   end
 
   def destroy(*args)
-    deletefromvirtuoso(self)
-    super(*args)
+    if deletefromvirtuoso(self)
+      super(*args)
+    end
   end
 
   def update(*args)
-    deletefromvirtuoso(self)
-    super(*args)
-    save2virtuoso(self)
+    if deletefromvirtuoso(self)
+      if super(*args)
+        save2virtuoso(self)
+      end
+    end
   end
 
 
 
-private
+  private
   def save2virtuoso(thisuser)
     user = User.find_by(email: thisuser.email)
 
@@ -70,7 +72,7 @@ private
     mail = '<mailto:' + user.email + '>'
     name = '"' + user.name + '"' + '@jp'
 
-    
+
     insertquery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
       prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
@@ -81,24 +83,24 @@ private
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-      EOS
-    
-    
+    EOS
+
+
     insertquery += 'INSERT INTO <http://mf.srmt.nitech.ac.jp/>'
     insertquery += '{'
-    
+
     insertquery += id + ' rdf:type mf:User .'
-#    insertquery += id + ' foaf:mail ' + mail + ' .'
+    # insertquery += id + ' foaf:mail ' + mail + ' .'
     insertquery += id + ' foaf:name '+ name + ' .'
-    
+
     insertquery += '}'
 
-    
-    clireturn = auth_query(insertquery)
-#    puts 'clireturn'
-#    puts clireturn.body
 
-    return true
+    clireturn = auth_query(insertquery)
+    # puts 'clireturn'
+    # puts clireturn.body
+
+    true
   end
 
   def deletefromvirtuoso(task)
@@ -109,19 +111,17 @@ private
       
       WITH <http://mf.srmt.nitech.ac.jp/>
       DELETE {
-      EOS
+    EOS
     deletequery += id + ' ?q ?o'
     deletequery += <<-EOS
       }
       WHERE {
-      EOS
+    EOS
     deletequery += id + ' ?q ?o'
     deletequery += '}'
-    
+
     clireturn = auth_query(deletequery)
 
-    return true
+    true
   end
-
-  
 end

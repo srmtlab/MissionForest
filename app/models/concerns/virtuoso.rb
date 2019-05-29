@@ -2,6 +2,7 @@ module Virtuoso
   extend ActiveSupport::Concern
   require 'httpclient'
   def auth_query(sparqlquery)
+=begin
     uri = 'http://localhost:8890/sparql-auth'
     client = HTTPClient.new
     user = 'dba'
@@ -12,7 +13,7 @@ module Virtuoso
     
     query = {'default-graph-uri' => default_graph_uri, 'query' => sparqlquery, 'format' => 'application/sparql-results+json'}
     clireturn = client.get(uri, query)
-
-    return clireturn
+=end
+    clireturn = 'no virtuoso'
   end
 end

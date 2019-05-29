@@ -1,0 +1,58 @@
+<!-- AddTask -->
+<div class="modal fade" id="AddTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">子タスクの追加</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="AddTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
+            <input id="AddTaskTitle" type="text" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="AddTaskDescription" class="col-form-label">概要</label>
+            <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="AddTaskDeadline" class="col-form-label">締め切り</label>
+            <div class="input-group date" id="datetimepickerAddTaskDeadline" data-target-input="nearest">
+              <input id="AddTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerAddTaskDeadline"/>
+              <div class="input-group-append" data-target="#datetimepickerAddTaskDeadline" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="AddTaskStatus" class="col-form-label">状況</label>
+            <select id="AddTaskStatus" class="form-control">
+              <option value="todo" selected>未着手</option>
+              <option value="doing">進行中</option>
+              <option value="done">完了</option>
+              <option value="cancel">取りやめ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="AddTaskNotify" class="col-form-label">公開範囲</label>
+            <select id="AddTaskNotify" class="form-control">
+              <option value="own" selected>個人的構想</option>
+              <option value="organize">組織内限定</option>
+              <option value="publish">外部公開</option>
+              <option value="lod">LOD (CC BY)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <% if user_signed_in? %>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+          <button type="button" id="AddChild" class="btn btn-primary" data-dismiss="modal">追加する</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

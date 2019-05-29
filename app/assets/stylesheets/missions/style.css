@@ -1,0 +1,139 @@
+.container{
+    width : 93%;
+}
+
+
+.ccby-license{
+    height : 15px;
+    width : 80px;
+    display : none;
+}
+.ccby-active{
+    display : block !important;
+}
+
+.oc-export-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    top: initial;
+    background: rgba(0,0,0,.15);
+}
+
+#chart-container {
+    /* height: 600px; */
+    height: 90vh;
+}
+
+.tree {
+    background: #E2E4E6;
+}
+
+.orgchart {
+    display: block;
+    background-image: none;
+}
+
+.orgchart .node .title {
+    height: 80px;
+    padding: 8px;
+    white-space: normal;
+    font-size: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    color: black;
+}
+
+.orgchart .node .add-button {
+    height: 20px;
+    white-space: normal;
+    font-size: 12px;
+    background-color: #800000;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0 0 3px 3px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.orgchart .node .delete-button {
+    position: absolute;
+    top : -5px;
+    right : -5px;
+    height: 20px;
+    width: 20px;
+    white-space: normal;
+    font-size: 12px;
+    background-color: #808080;
+    border-bottom: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.orgchart .node .description {
+    display : none;
+}
+
+.orgchart .node .deadline_at {
+    display : none;
+}
+
+.orgchart .node .status {
+    display : none;
+}
+
+.orgchart .node .notify {
+    display : none;
+}
+
+.orgchart .node .title:hover {
+    background-color: #EDEFF0;
+    border-bottom-color: #D6DADC;
+}
+
+.orgchart .node:hover {
+    background-color: transparent;
+}
+
+.orgchart .node.focused {
+    background-color: transparent;
+}
+
+
+.target_task{
+    filter: drop-shadow(0 0 30px rgba(255,255,0,1));
+}
+
+
+.orgchart .node .new-icon {
+    position : absolute;
+    top: -5px;
+    height: 20px;
+    white-space: normal;
+    font-size: 16px;
+    color: #f00;
+}
+
+#MissionParticipants{
+    white-space: nowrap;
+    max-height: 12em;
+}
+
+.mu-text{
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 393px;
+}
+
+.delete_mission_admin {
+    cursor: pointer;
+}
+
+
+.delete_mission_participant {
+    cursor: pointer;
+}

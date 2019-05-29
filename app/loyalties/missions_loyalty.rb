@@ -1,10 +1,21 @@
 class MissionsLoyalty < ApplicationLoyalty
 
+
+  def new?
+    user != nil
+  end
+
+  def create?
+    user != nil
+  end
+
   def show?
     # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
     true
   end
-  
+
+  # =====================================================
+  #
   def show_tasks?
     # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
     true
@@ -19,16 +30,8 @@ class MissionsLoyalty < ApplicationLoyalty
     true
   end
 
-  def new?
-    user != nil
-  end
-  
   def edit?
     user == record.user || record.admins.include?(user)
-  end
-
-  def create?
-    user != nil
   end
 
   def api_create?

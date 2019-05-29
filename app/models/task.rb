@@ -19,14 +19,15 @@ class Task < ApplicationRecord
   has_many :participants,
 	       through: :task_participant,
          source: :user
+
   accepts_nested_attributes_for :task_participant
 
   def self.localized_statuses
-    ["未着手", "進行中", "完了"]
+    %w(未着手 進行中 完了 取りやめ)
   end
 
   def self.localized_notifies
-    ["個人的構想", "組織内限定", "外部公開", "LOD"]
+    %w(個人的構想 組織内限定 外部公開 LOD)
   end
   
   def save(*args)
@@ -45,7 +46,7 @@ class Task < ApplicationRecord
     save2virtuoso(self)
     
     if self.direct_mission_id != nil
-      Mission.find(self.direct_mission_id).root_task_update()
+      Mission.find(self.direct_mission_id).root_task_update
     end
   end
   
@@ -66,12 +67,17 @@ class Task < ApplicationRecord
     mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id.to_s + '>'
 
     case task.status
-    when 'todo' then
+    when 'todo'
       status = '"未着手"@jp'
-    when 'doing' then
+    when 'doing'
       status = '"進行中@jp"'
     when 'done'
       status = '"完了@jp"'
+    when 'cancel'
+      status = '"取りやめ"@jp'
+    else
+      # プログラムにエラーがあった場合の誤作動を防ぐためのコード
+      status = '"未着手"@jp'
     end
 
     
@@ -107,7 +113,7 @@ class Task < ApplicationRecord
     puts 'clireturn'
     puts clireturn.body
 
-    return true
+    true
   end
 
   def deletefromvirtuoso(task)
@@ -127,6 +133,6 @@ class Task < ApplicationRecord
     deletequery += '}'
     
     clireturn = auth_query(deletequery)
-    return true
+    true
   end
 end

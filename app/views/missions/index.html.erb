@@ -1,41 +1,40 @@
 <div class="main">
   <div class="container">
-    <div class="page-header">
-      <h2>ミッション一覧</h2>
-    </div>
+    <h2 class="border-bottom border-white mb-4">ミッション一覧</h2>
+
+    <!--
     <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li>
-          <a href="#" aria-label="Previous">
+      <ul class="pagination mb-4">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
-        <li><a href="#">1</a></li>
-        <li>
-          <a href="#" aria-label="Next">
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
       </ul>
     </nav>
+    -->
+
     <div class="row">
       <% @missions.each do |mission| %>
-        <div class="col-md-4">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">
-								
-								<%= link_to mission_path(mission) do %>
-                  <%= mission.title %>
-                <% end %>
-              </h3>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <%= link_to mission_path(mission) do %>
+                <%= mission.title %>
+              <% end %>
             </div>
-            <div class="panel-body">
-              <p><%= mission.description %></p>
+            <div class="card-body">
+              <p class="card-text"><%= mission.description %></p>
             </div>
-            <div class="panel-footer">
-							<p>作成者: <%= mission.user.name %></p>
-							<p>タスク数: <%= mission.tasks.count %></p>
+            <div class="card-footer text-muted">
+              <p>作成者: <%= mission.user.name %></p>
+              <p>タスク数: <%= mission.tasks.count %></p>
             </div>
           </div>
         </div>
