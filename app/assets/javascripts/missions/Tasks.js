@@ -9,7 +9,6 @@ class Tasks {
         this.root_task_id = taskdata['root_task_id'];
         this.options = {
             'pan': true,
-            'toggleSiblingsResp': true,
             'zoom': true,
             'draggable': true,
             'createNode': function($node, data) {
@@ -26,7 +25,9 @@ class Tasks {
                     $node.append('<div class="new-icon">NEW</div>')
                 }
 
-                if(moment(data.deadline_at).isValid()){
+                console.log(data.deadline_at);
+                console.log(moment(data.deadline_at).isValid());
+                if(moment(data.deadline_at).isValid() && data.deadline_at !== undefined){
                     let diff = moment().diff(moment(data.deadline_at), 'days');
                     if (diff > 0){
                         $node.children(".title").css({"background-color": "lightgray"});
@@ -226,7 +227,7 @@ class Tasks {
             let $title  = $('#' + task['id'] +' .title');
             $title.text(update_task['name']);
 
-            if(moment(update_task['deadline_at']).isValid()){
+            if(moment(update_task['deadline_at']).isValid() && update_task['deadline_at'] !== undefined){
                 let diff = moment().diff(moment(update_task['deadline_at']), 'days');
                 if (diff > 0){
                     $title.css({"background-color": "lightgray"});
