@@ -63,17 +63,14 @@ class MissionChannel < ApplicationCable::Channel
         lod: 4
     }.with_indifferent_access
 
-    puts permission[task_data_json['notify']]
-    puts task_data_json['notify']
-    puts permission[parent_task.notify]
-    puts parent_task.notify
-
     if permission[task_data_json['notify']] > permission[parent_task.notify]
       stack_tasks = [parent_task]
 
-      while true
+
+
+      while true do
         task = stack_tasks.last
-        parent_task = task.parenttask
+        parent_task = Task.find(task.sub_task_of)
         if permission[task_data_json['notify']] > permission[parent_task.notify]
           stack_tasks.push(parent_task)
         else
@@ -89,7 +86,14 @@ class MissionChannel < ApplicationCable::Channel
 
         send_task(task_data_json['notify'], 'task', 'add', {
             id: task.id,
-            notify: task.notify
+            name: task.title,
+            description: task.description,
+            deadline_at: task.deadline_at,
+            created_at: task.created_at,
+            status: task.status,
+            notify: task.notify,
+            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+            parent_task_id: task.sub_task_of
         })
       end
     end
@@ -195,7 +199,7 @@ class MissionChannel < ApplicationCable::Channel
 
       stack_tasks = [task]
 
-      while stack_tasks.length > 0
+      while stack_tasks.length > 0 do
         target_task = stack_tasks.pop
 
         if target_task.subtasks.size != 0

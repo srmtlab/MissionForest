@@ -119,7 +119,7 @@ class Tasks {
 
         for (let participant_id in task['participants']){
             if(task['participants'].hasOwnProperty(participant_id)){
-                if (participant_id === user_id){
+                if (Number(participant_id) === user_id){
                     user_participate_flag = true;
                 }
                 TaskParticipants.append('<li>' + task['participants'][participant_id] + '</li>');
