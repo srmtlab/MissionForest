@@ -10,6 +10,7 @@ class Tasks {
         this.options = {
             'pan': true,
             'zoom': true,
+            'parentNodeSymbol': false,
             'draggable': true,
             'createNode': function($node, data) {
                 if(user_signed_in)
