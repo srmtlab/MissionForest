@@ -1,7 +1,7 @@
 <div class="main">
   <div class="container">
 
-    <h2 id="mission-title" class="border-bottom border-white mb-4"><%= @mission.title %> <span class="h5">#<%= @mission.id %></span></h2>
+    <h2 class="border-bottom border-white mb-4"><span id="mission-title" class="h2"><%= @mission.title %></span> <span class="h5">#<%= @mission.id %></span></h2>
 
     <div class="row">
       <% if user_signed_in? %>
