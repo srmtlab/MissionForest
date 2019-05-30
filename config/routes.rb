@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   root 'missions#index'
   resources :missions, :only => [:index, :new, :create, :show]
+  resources :tasks, :only => [:show]
 
   devise_for :users, :controllers => {
       :registrations => 'users/registrations',
