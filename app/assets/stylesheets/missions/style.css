@@ -2,7 +2,6 @@
     width : 93%;
 }
 
-
 .ccby-license{
     height : 15px;
     width : 80px;
@@ -106,7 +105,6 @@
     filter: drop-shadow(0 0 30px rgba(255,255,0,1));
 }
 
-
 .orgchart .node .new-icon {
     position : absolute;
     top: -5px;
@@ -129,11 +127,6 @@
     width: 393px;
 }
 
-.delete_mission_admin {
-    cursor: pointer;
-}
-
-
-.delete_mission_participant {
+.delete_mission_admin, .delete_mission_participant {
     cursor: pointer;
 }
