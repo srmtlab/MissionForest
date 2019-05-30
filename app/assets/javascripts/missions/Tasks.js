@@ -284,7 +284,7 @@ class Tasks {
     }
 
     delete_task(data){
-        let target_task = this.get_task(data.id)
+        let target_task = this.get_task(data.id);
         
         let stack_tasks = [target_task];
         

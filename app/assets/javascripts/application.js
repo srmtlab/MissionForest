@@ -5,4 +5,4 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require tempusdominus-bootstrap-4.js
-// require_tree .
+//= require_tree .
