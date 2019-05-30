@@ -39,7 +39,9 @@
           <div class="form-group">
             <label for="AddTaskNotify" class="col-form-label">公開範囲</label>
             <select id="AddTaskNotify" class="form-control">
-              <option value="own" selected>個人的構想</option>
+              <% if @mission.admins.include?(current_user)%>
+              <option value="own" selected>個人的構想</option>              
+              <% end %>
               <option value="organize">組織内限定</option>
               <option value="publish">外部公開</option>
               <option value="lod">LOD (CC BY)</option>

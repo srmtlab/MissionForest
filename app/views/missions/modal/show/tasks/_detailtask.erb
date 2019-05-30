@@ -41,7 +41,9 @@
           <div class="form-group">
             <label for="DetailTaskNotify" class="col-form-label">公開範囲</label>
             <select id="DetailTaskNotify" class="form-control">
+            <% if @mission.admins.include?(current_user)%>
               <option value="own">個人的構想</option>
+            <% end %>
               <option value="organize">組織内限定</option>
               <option value="publish">外部公開</option>
               <option value="lod">LOD (CC BY)</option>
@@ -54,7 +56,7 @@
         <h4>タグ</h4>
         <ul id="TaskTags"></ul>
       </div>
-      <% if user_signed_in? %>
+      <% if @mission.participants.include?(current_user) %>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">閉じる</button>
 

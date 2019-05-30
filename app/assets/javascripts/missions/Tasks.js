@@ -1,20 +1,20 @@
 class Tasks {
-    constructor(taskdata, user_signed_in, user_id){
+    constructor(taskdata, user_signed_in, user_id, mission_group){
         this.tasks = this._make_obj(taskdata);
         this.datetimepickerformat = 'MM/DD/YYYY HH:mm';
         this.user_signed_in = user_signed_in;
+        this.mission_group = mission_group
         this.user_id = user_id;
         this.oc = null;
         this.selected_task_id = null;
         this.root_task_id = taskdata['root_task_id'];
         this.options = {
             'pan': true,
-            'toggleSiblingsResp': true,
             'zoom': true,
+            'parentNodeSymbol': false,
             'draggable': true,
             'createNode': function($node, data) {
-                if(user_signed_in)
-                {
+                if(mission_group !== "viewer"){
                     $node.append('<div class="add-button">+</div>');
 
                     if(data.level !== 1){
@@ -24,6 +24,19 @@ class Tasks {
 
                 if (moment().diff(moment(data.created_at), 'weeks') < 1){
                     $node.append('<div class="new-icon">NEW</div>')
+                }
+
+                if(moment(data.deadline_at).isValid() && data.deadline_at !== undefined){
+                    let diff = moment().diff(moment(data.deadline_at), 'days');
+                    if (diff > 0){
+                        $node.children(".title").css({"background-color": "lightgray"});
+                    } else if (diff >= -3){
+                        $node.children(".title").css({"background-color": "lightpink"});
+                    } else if(diff >= -7){
+                        $node.children(".title").css({"background-color": "khaki"});
+                    } else {
+                        $node.children(".title").css({"background-color": "powderblue"});
+                    }
                 }
             }
         };
@@ -188,7 +201,7 @@ class Tasks {
         $('#AddTaskDescription').val('');
         $('#DetailTaskDeadline').val(null);
         $('#AddTaskStatus').val();
-        $('#AddTaskNotify').val();
+        $('#AddTaskNotify').val(this.get_task(this.selected_task_id).notify);
     }
 
     drawDeleteTask(selected_task_id){
@@ -210,7 +223,21 @@ class Tasks {
             update_task['status'] = task.hasOwnProperty('status') ? task['status'] : update_task['status'];
             update_task['notify'] = task.hasOwnProperty('notify') ? task['notify'] : update_task['notify'];
 
-            $('#' + task['id'] +' .title').text(update_task['name']);
+            let $title  = $('#' + task['id'] +' .title');
+            $title.text(update_task['name']);
+
+            if(moment(update_task['deadline_at']).isValid() && update_task['deadline_at'] !== undefined){
+                let diff = moment().diff(moment(update_task['deadline_at']), 'days');
+                if (diff > 0){
+                    $title.css({"background-color": "lightgray"});
+                } else if (diff >= -3){
+                    $title.css({"background-color": "lightpink"});
+                } else if(diff >= -7){
+                    $title.css({"background-color": "khaki"});
+                } else {
+                    $title.css({"background-color": "powderblue"});
+                }
+            }
         }
     }
 
@@ -242,12 +269,14 @@ class Tasks {
                 this.oc.addChildren($parent_task, [{
                     'id' : task['id'],
                     'name' : task['name'],
+                    'deadline_at' : task['deadline_at'],
                     'relationship' : "100"
                 }]);
             }else {
                 this.oc.addSiblings($parent_task.closest('tr').siblings('.nodes').find('.node:first'), [{
                     'id' : task['id'],
                     'name' : task['name'],
+                    'deadline_at' : task['deadline_at'],
                     'relationship' : "110"
                 }]);
             }

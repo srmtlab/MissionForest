@@ -23,7 +23,7 @@ $(function(){
 
 				if(data['status'] === "init" && typeof tasks === 'undefined')
 				{
-					tasks = new Tasks(data.tasks, user_signed_in, user_id);
+					tasks = new Tasks(data.tasks, user_signed_in, user_id, mission_group);
 					tasks.draw('#chart-container');
 					mission = new Mission(data.mission, user_signed_in, user_id, mission_id)
 				}
