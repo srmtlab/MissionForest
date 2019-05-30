@@ -10,8 +10,8 @@ class MissionsLoyalty < ApplicationLoyalty
   end
 
   def show?
-    # user == record.user || Participation.exists?(mission_id: record.id, user_id: user)
-    true
+    notify = record.root_task.notify
+    notify == 'publish' or notify == 'lod' or record.admins.include?(user) or record.participants.include?(user)
   end
 
   # =====================================================
