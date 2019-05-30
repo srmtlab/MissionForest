@@ -269,12 +269,14 @@ class Tasks {
                 this.oc.addChildren($parent_task, [{
                     'id' : task['id'],
                     'name' : task['name'],
+                    'deadline_at' : task['deadline_at'],
                     'relationship' : "100"
                 }]);
             }else {
                 this.oc.addSiblings($parent_task.closest('tr').siblings('.nodes').find('.node:first'), [{
                     'id' : task['id'],
                     'name' : task['name'],
+                    'deadline_at' : task['deadline_at'],
                     'relationship' : "110"
                 }]);
             }
