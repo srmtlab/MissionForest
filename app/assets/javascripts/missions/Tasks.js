@@ -1,8 +1,9 @@
 class Tasks {
-    constructor(taskdata, user_signed_in, user_id){
+    constructor(taskdata, user_signed_in, user_id, mission_group){
         this.tasks = this._make_obj(taskdata);
         this.datetimepickerformat = 'MM/DD/YYYY HH:mm';
         this.user_signed_in = user_signed_in;
+        this.mission_group = mission_group
         this.user_id = user_id;
         this.oc = null;
         this.selected_task_id = null;
@@ -13,8 +14,7 @@ class Tasks {
             'parentNodeSymbol': false,
             'draggable': true,
             'createNode': function($node, data) {
-                if(user_signed_in)
-                {
+                if(mission_group !== "viewer"){
                     $node.append('<div class="add-button">+</div>');
 
                     if(data.level !== 1){
@@ -201,7 +201,7 @@ class Tasks {
         $('#AddTaskDescription').val('');
         $('#DetailTaskDeadline').val(null);
         $('#AddTaskStatus').val();
-        $('#AddTaskNotify').val();
+        $('#AddTaskNotify').val(this.get_task(this.selected_task_id).notify);
     }
 
     drawDeleteTask(selected_task_id){
