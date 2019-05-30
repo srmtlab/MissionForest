@@ -114,7 +114,7 @@
     color: #f00;
 }
 
-#MissionParticipants{
+#MissionParticipants, #MissionAdmins{
     white-space: nowrap;
     max-height: 12em;
 }
@@ -124,7 +124,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 393px;
+    width: 403px;
 }
 
 .delete_mission_admin, .delete_mission_participant {

@@ -19,7 +19,7 @@ class Mission {
         for(let participant_id in mission['participants']){
             if(mission['participants'].hasOwnProperty(participant_id)){
                 if(mission['admins'].hasOwnProperty(participant_id)){
-                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td></tr>')
+                    MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td><td class="h4">&#8194;</td></tr>')
                 }
                 else {
                     MissionParticipantsTB.append('<tr data-mission_participant="' + participant_id + '"><td><strong class="mu-text">' + mission['participants'][participant_id] + '</strong></td><td class="h4 delete_mission_participant">&times;</td></tr>')
@@ -39,7 +39,7 @@ class Mission {
             let admin_id = (Object.keys(mission['admins']))[0];
             let admin_name = mission['admins'][admin_id];
 
-            MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + admin_name + '</strong></td></tr>')
+            MissionAdminsTB.append('<tr data-mission_admin="' + admin_id + '"><td><strong class="mu-text">' + admin_name + '</strong></td><td class="h4">&#8194;</td></tr>')
         }
         else
         {

@@ -87,13 +87,13 @@
     const mission_id = <%= @mission.id %>;
     const lod = false;
     <% if user_signed_in? %>
-      <% if @mission.admins.include?(current_user)%>
+    <% if @mission.admins.include?(current_user)%>
     const mission_group = "admin";
-      <% elsif @mission.participants.include?(current_user)%>
+    <% elsif @mission.participants.include?(current_user)%>
     const mission_group = "participant";
-      <% else %>
+    <% else %>
     const mission_group = "viewer";
-      <%end %>
+    <%end %>
     const user_signed_in = true;
     const user_id = <%= current_user.id %>;
     <% else %>
@@ -122,7 +122,7 @@
             tasks.drawDetailTask($(this).parent().attr('id'));
         })
         <% if user_signed_in? %>
-          <% if @mission.admins.include?(current_user)%>
+        <% if @mission.admins.include?(current_user)%>
         .on('click', '#ToAddMissionAdmin', function () {
             let admin = {
                 'mission_id' : mission_id,
@@ -136,7 +136,7 @@
                 'id': Number($(this).parent().attr('data-mission_admin'))
             };
             App.mission.send_delete_mission_admin(admin);
-        })          
+        })
         .on('click', '#DeleteMissionModal', function () {
             mission.drawDeleteMission();
         })
@@ -176,9 +176,9 @@
         })
         .on('click', '#DetailMissionAdminsModal', function () {
             mission.drawDetailMissionAdmins();
-        })                
-          <% end %>
-          <% if @mission.participants.include?(current_user)%>
+        })
+        <% end %>
+        <% if @mission.participants.include?(current_user)%>
         .on('click', '.add-button', function() {
             tasks.drawAddTask($(this).parent().attr('id'));
         })
@@ -243,7 +243,7 @@
             };
             App.mission.send_delete_mission_participant(participant);
         })
-          <% else %>
+        <% else %>
         .on('click', '#AddMissionParticipant', function () {
             let participant = {
                 'mission_id' : mission_id,
@@ -251,7 +251,7 @@
             };
             App.mission.send_add_mission_participant(participant);
         })
-          <% end %>
-        <% end %>
-        ;
+    <% end %>
+    <% end %>
+    ;
 </script>
