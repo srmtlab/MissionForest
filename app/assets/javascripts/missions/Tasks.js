@@ -94,11 +94,12 @@ class Tasks {
         this.oc = $(container_id).orgchart(this.options);
 
         this.oc.$chart.on('nodedrop.orgchart', function(event, extraParams) {
-
-
-            console.log('ノード : ' + extraParams.draggedNode.attr('id'));
-            console.log('前親ノード : ' + extraParams.dragZone.attr('id'));
-            console.log('現在親ノード : ' + extraParams.dropZone.attr('id'));
+            App.mission.send_change_hierarchy({
+                'former_parent_task_id' : extraParams.dragZone.attr('id'),
+                'id' : extraParams.draggedNode.attr('id'),
+                'latter_parent_task_id' : extraParams.dropZone.attr('id'),
+                'user_id' : this.user_id
+            });
         });
 
         $('.orgchart').addClass('noncollapsable');
@@ -136,7 +137,7 @@ class Tasks {
 
         for (let participant_id in task['participants']){
             if(task['participants'].hasOwnProperty(participant_id)){
-                if (Number(participant_id) === user_id){
+                if (Number(participant_id) === this.user_id){
                     user_participate_flag = true;
                 }
                 TaskParticipants.append('<li>' + task['participants'][participant_id] + '</li>');
@@ -250,6 +251,8 @@ class Tasks {
             this.update_task(task);
         }
         else{
+
+            let parent_task = this.get_task(task['parent_task_id']);
             this.tasks[task['id']] = {
                 'id' : task['id'],
                 'name' : task['name'],
@@ -260,11 +263,9 @@ class Tasks {
                 'notify' : task['notify'],
                 'participants' : task['participants'],
                 'children' : [],
-
-            };
-
-            let parent_task = this.get_task(task['parent_task_id']);
-            parent_task['children'].push(this.tasks[task['id']]);
+                'parent' : parent_task
+            };            
+            parent_task['children'].push(this.get_task(task['id']));
 
             let $parent_task = $('#' + task['parent_task_id']);
             let hasChild = $parent_task.parent().attr('colspan') > 0;
@@ -313,5 +314,28 @@ class Tasks {
     delete_participant(data){
         let target_task = this.get_task(data['task_id']);
         delete target_task['participants'][data['id']];
+    }
+
+    change_hierarchy(data){
+        let former_parent_task = this.get_task(data['former_parent_task_id']);
+        let target_task = this.get_task(data['id']);
+        let tmp_delete_idx = former_parent_task['children'].indexOf(target_task);
+        former_parent_task['children'].splice(tmp_delete_idx, 1); 
+
+        let latter_parent_task = this.get_task(data['latter_parent_task_id']);
+        latter_parent_task['children'].push(target_task);
+        target_task['parent'] = latter_parent_task;
+
+
+        this.oc.removeNodes($('#' + data['id']));
+
+        let $parent_task = $('#' + data['latter_parent_task_id']);
+        let hasChild = $parent_task.parent().attr('colspan') > 0;
+
+        if(!hasChild){
+            this.oc.addChildren($parent_task, [target_task]);
+        }else {
+            this.oc.addSiblings($parent_task.closest('tr').siblings('.nodes').find('.node:first'), [target_task]);
+        }
     }
 }

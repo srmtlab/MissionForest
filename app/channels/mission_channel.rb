@@ -347,8 +347,60 @@ class MissionChannel < ApplicationCable::Channel
     end
   end
 
-  def change_tasktree(data)
-    ActionCable.server.broadcast("mission_channel_#{params['mission_id']}", data['tree'])
+  def change_hierarchy(task_data_json)
+    target_task = Task.find(task_data_json['id'])
+    parent_task = Task.find(task_data_json['latter_parent_task_id'])
+
+    permission = {
+      own: 1,
+      organize: 2,
+      publish: 3,
+      lod: 4
+    }.with_indifferent_access
+
+    if permission[target_task.notify] > permission[parent_task.notify]
+      stack_tasks = [parent_task]
+
+      while true do
+        task = stack_tasks.last
+
+        if Mission.find(params['mission_id']).root_task.id == task.id
+          break
+        end
+
+        parent_task = Task.find(task.sub_task_of)
+        if permission[target_task.notify] >= permission[parent_task.notify]
+          stack_tasks.push(parent_task)
+        else
+          break
+        end
+      end
+
+      while stack_tasks.length > 0 do
+        task = stack_tasks.pop
+        task.update_attributes(
+            notify: target_task.notify
+        )
+
+        send_task(target_task.notify, 'task', 'add', {
+            id: task.id,
+            name: task.title,
+            description: task.description,
+            deadline_at: task.deadline_at,
+            created_at: task.created_at,
+            status: task.status,
+            notify: task.notify,
+            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+            parent_task_id: task.sub_task_of
+        })
+      end      
+    end
+
+    target_task.update_attributes(
+      sub_task_of: task_data_json['latter_parent_task_id'],
+    )
+
+    send_task(target_task.notify, 'task', 'change_hierarchy', task_data_json)
   end
 
   def update_mission(task_data_json)

@@ -56,6 +56,11 @@ $(function(){
 						else if(operation === "delete")
 						{
 							tasks.delete_task(fixdata);
+						}else if(operation === "change_hierarchy")
+						{
+							if(fixdata.user_id !== user_id){
+								tasks.change_hierarchy(fixdata);								
+							}
 						}
 					}
 					else if(type === "task_participant")
@@ -160,10 +165,8 @@ $(function(){
 				return this.perform('delete_mission_admin', admin)
 			},
 
-			change_tasktree: function(tree){
-				return this.perform('change_tasktree', {
-					tree:tree
-				})
+			send_change_hierarchy: function(tree){
+				return this.perform('change_hierarchy', tree)
 			}
 		});
 });
