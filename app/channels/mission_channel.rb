@@ -269,14 +269,31 @@ class MissionChannel < ApplicationCable::Channel
   end
 
   def add_task_participant(task_data_json)
-    task = Task.find(task_data_json['task_id'])
+    target_task = Task.find(task_data_json['task_id'])
     participant = User.find(task_data_json['id'])
 
-    if task.participants.include?(participant) == false
-      task.participants.push(participant)
-      if task.save
-        task_data_json['name'] = participant.name
-        send_task(task.notify, 'task_participant', 'add', task_data_json)
+    stack_tasks = [target_task]
+
+    while true do
+      task = stack_tasks.last
+
+      if Mission.find(params['mission_id']).root_task.id == task.id
+        break
+      end
+
+      parent_task = Task.find(task.sub_task_of)
+      stack_tasks.push(parent_task)
+    end
+
+    while stack_tasks.length > 0 do
+      task = stack_tasks.pop
+      if task.participants.include?(participant) == false
+        task.participants.push(participant)
+        if task.save
+          task_data_json['task_id'] = task.id
+          task_data_json['name'] = participant.name
+          send_task(task.notify, 'task_participant', 'add', task_data_json)
+        end
       end
     end
   end

@@ -140,7 +140,7 @@ class Tasks {
                 if (Number(participant_id) === this.user_id){
                     user_participate_flag = true;
                 }
-                TaskParticipants.append('<li>' + task['participants'][participant_id] + '</li>');
+                TaskParticipants.append('<li class="mr-2">' + task['participants'][participant_id] + '</li>');
             }
         }
 
