@@ -12,7 +12,7 @@ class Tasks {
             'pan': true,
             'zoom': true,
             'parentNodeSymbol': false,
-            'draggable': true,
+            'draggable': mission_group !== "viewer",
             'createNode': function($node, data) {
                 if(mission_group !== "viewer"){
                     $node.append('<div class="add-button">+</div>');
@@ -93,8 +93,12 @@ class Tasks {
 
         this.oc = $(container_id).orgchart(this.options);
 
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout('tasks.drop_hierarchy()', 100);
+        this.oc.$chart.on('nodedrop.orgchart', function(event, extraParams) {
+
+
+            console.log('ノード : ' + extraParams.draggedNode.attr('id'));
+            console.log('前親ノード : ' + extraParams.dragZone.attr('id'));
+            console.log('現在親ノード : ' + extraParams.dropZone.attr('id'));
         });
 
         $('.orgchart').addClass('noncollapsable');
@@ -310,65 +314,4 @@ class Tasks {
         let target_task = this.get_task(data['task_id']);
         delete target_task['participants'][data['id']];
     }
-
-    drop_hierarchy(){
-        let user_id = this.user_id;
-        /*
-
-        function recursion(tree, taskdb){
-            const id = tree['id'];
-            const detail = taskdb.get_task_detail(id);
-            tree['name'] = detail['title'];
-            if (tree['children'] === undefined){
-                return;
-            }
-            for (let child of tree['children']){
-                recursion(child, taskdb);
-            }
-        }
-
-        let hierarchy = oc.getHierarchy();
-        recursion(hierarchy, taskdb);
-        $.ajax({
-            type: 'PUT',
-            url: '/api/missions/<%= @mission.id %>/update_hierarchy',
-            data: {
-                tree : hierarchy,
-                user_id : user_id
-            }
-        });
-        App.mission.change_tasktree(hierarchy);
-         */
-    }
-
-    /*
-    change_hierarchy(target_task_id, change_task_id){
-        let target_task;
-        let stack_tasks = [this.tasks];
-
-        delete_task_label:
-            while (stack_tasks.length > 0) {
-
-                let task = stack_tasks.pop();
-
-                for(let i=0; i<task.children.length; i++){
-                    if(task.children[i].id === target_task_id){
-                        target_task = task.children[i];
-                        task.children.splice(i, 1);
-                        break delete_task_label;
-                    }
-                }
-            }
-
-        let parent_task = this.get_task(change_task_id);
-        parent_task.children.push(target_task);
-
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
-    }
-    */
 }
