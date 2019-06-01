@@ -55,4 +55,5 @@ Rails.application.configure do
 
   config.action_cable.disable_request_forgery_protection = false
   # config.action_cable.allowed_request_origins = [ 'https://192.168.0.1:3000' ]
+  #
 end
