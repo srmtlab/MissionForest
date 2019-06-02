@@ -21,13 +21,13 @@
           <% end %>
 
           <div class="form-group">
-            <label for="title">パスワード (8文字以上)</label>
-            <%= f.password_field :password, class: "form-control", autocomplete: "off", minlength: "8", placeholder: "パスワード (8文字以上)", required: true%>
+            <label for="title">パスワード (<%= @minimum_password_length %>文字以上)</label>
+            <%= f.password_field :password, class: "form-control", autocomplete: "off", minlength: @minimum_password_length, placeholder: "パスワード (#{@minimum_password_length}文字以上)", required: true%>
           </div>
 
           <div class="form-group">
             <label for="title">パスワード確認</label>
-            <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off", minlength: "8", placeholder: "パスワード (確認)", required: true%>
+            <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off", minlength: @minimum_password_length, placeholder: "パスワード (確認)", required: true%>
           </div>
 
           <div class="actions">
