@@ -68,7 +68,7 @@ class User < ApplicationRecord
   def save2virtuoso(thisuser)
     user = User.find_by(email: thisuser.email)
 
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id.to_s + '>'
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + thisuser.id.to_s + '>'
     mail = '<mailto:' + user.email + '>'
     name = '"' + user.name + '"' + '@jp'
 
@@ -103,8 +103,8 @@ class User < ApplicationRecord
     true
   end
 
-  def deletefromvirtuoso(task)
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id.to_s + '>'
+  def deletefromvirtuoso(thisuser)
+    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + thisuser.id.to_s + '>'
 
     deletequery = <<-EOS
       prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>

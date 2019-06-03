@@ -84,7 +84,7 @@ class Mission < ApplicationRecord
     insertquery += '}'
 
     clireturn = auth_query(insertquery)
-    return true
+    true
   end
 
   def deletefromvirtuoso(mission)
@@ -104,6 +104,6 @@ class Mission < ApplicationRecord
     deletequery += '}'
 
     clireturn = auth_query(deletequery)
-    return true
+    true
   end
 end
