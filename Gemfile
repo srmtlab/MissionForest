@@ -11,15 +11,9 @@ gem 'httpclient'
 
 # Asset
 gem 'uglifier', '>= 1.3.0'
-gem "jquery-rails"
 
 # View
 gem 'kaminari'
-gem 'meta-tags'
-gem 'bootstrap', '~> 4.3.1'
-gem 'bootstrap4-datetime-picker-rails'
-gem 'momentjs-rails'
-gem "font-awesome-rails"
 
 # Security
 gem 'devise'
