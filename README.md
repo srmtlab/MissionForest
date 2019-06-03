@@ -33,7 +33,7 @@ Open .env and modify variable
 
 3. Install library 
 ```bash
-bundle install --path vendor/bundle
+bundle install --path vendor/bundle --without test development
 ```
 
 4. make database and migrate
