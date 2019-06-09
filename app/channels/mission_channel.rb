@@ -138,7 +138,7 @@ class MissionChannel < ApplicationCable::Channel
       while true do
         task = stack_tasks.last
 
-        if Mission.find(params['mission_id']).root_task.id == task.id
+        if !task.direct_mission_id.nil?
           break
         end
 

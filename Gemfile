@@ -5,6 +5,7 @@ gem 'rails', '5.2.3'
 
 # DB
 gem 'mysql2', '>= 0.3.13', '< 0.5'
+gem 'redis-rails'
 
 # LOD
 gem 'httpclient'
@@ -29,12 +30,13 @@ group :development do
   gem 'spring'
   gem 'rubocop'
   gem 'rails-erd'
+
 end
 
 group :production do
   gem 'unicorn', '~> 4.9.0'
-  gem 'listen'
   gem 'unicorn-worker-killer', '~> 0.4.2'
+  gem 'listen'
 end
 
 gem 'foreman'
