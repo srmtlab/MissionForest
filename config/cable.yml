@@ -1,12 +1,10 @@
 development:
-  adapter: redis
-  url: redis://localhost:6379
-  channel_prefix: mission_forest_development
+  adapter: async
 
 test:
   adapter: async
 
 production:
   adapter: redis
-  url: redis://localhost:6379/1
+  url: redis://localhost:6379
   channel_prefix: mission_forest_production
