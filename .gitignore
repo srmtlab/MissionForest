@@ -25,6 +25,7 @@ config/database.yml
 ## Environment normalization:
 /.bundle
 /vendor/bundle
+/public/assets
 
 # these should all be checked in to normalize the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
@@ -47,6 +48,3 @@ bower.json
 .DS_Store
 *~
 *.swp
-
-# Ignore master key for decrypting credentials and more.
-/config/master.key
