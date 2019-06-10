@@ -55,5 +55,17 @@ Rails.application.configure do
 
   config.action_cable.disable_request_forgery_protection = false
   # config.action_cable.allowed_request_origins = [ 'https://192.168.0.1:3000' ]
-  #
+  
+  # mail setting
+  config.action_mailer.default_url_options = { host: ENV["SITE_URL"], port: ENV["SITE_PORT"] }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      :enable_starttls_auto => true,
+      :address => ENV["G_MAIL_ADDRESS"],
+      :port => 587,
+      :domain => 'smtp.gmail.com',
+      :user_name => ENV["G_MAIL_USERNAME"], #gmailアドレス
+      :password => ENV["G_MAIL_PASSWORD"], #gmailパスワード
+      :authentication => 'login',
+  }
 end
