@@ -90,6 +90,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # mail setting
+  config.action_mailer.default_url_options = { host: ENV["SITE_URL"], port: ENV["SITE_PORT"] }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       :enable_starttls_auto => true,
