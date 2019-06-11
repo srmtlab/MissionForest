@@ -25,8 +25,11 @@ git clone https://github.com/srmtlab/MissionForest.git
 cd MissionForest
 ```
 
-2. set environment variable
+2. set environment variable and generate a Rails Secret Key  
+generate a Rails Secret Key and copy this value to SECRET_KEY_BASE in .env file
+
 ```bash
+bundle exec rake secret
 mv .env.template .env
 ```
 Open .env and modify variable
