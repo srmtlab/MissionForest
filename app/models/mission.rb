@@ -26,9 +26,9 @@ class Mission < ApplicationRecord
     save2virtuoso(self)
   end
 
-  def destroy(*args)
+  def destroy
     deletefromvirtuoso(self)
-    super(*args)
+    super
   end
 
   def update(*args)

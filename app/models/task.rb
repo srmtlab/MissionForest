@@ -35,9 +35,9 @@ class Task < ApplicationRecord
     save2virtuoso(self)
   end
 
-  def destroy(*args)
+  def destroy
     deletefromvirtuoso(self)
-    super(*args)
+    super
   end
 
   def update(*args)
@@ -58,13 +58,16 @@ class Task < ApplicationRecord
       return true
     end
 
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
-    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + task.user_id.to_s + '>'
+    lod_resource
+
+    id = '<' + ENV["LOD_RESOURCE"] + 'tasks/' + task.id.to_s + '>'
+    user_id = '<' + ENV["LOD_RESOURCE"] + 'users/' + task.user_id.to_s + '>'
+    mission_id = '<' + ENV["LOD_RESOURCE"] + 'missions/' + task.mission_id.to_s + '>'
     title = '"' + task.title + '"' + '@jp'
     description = '"' + task.description + '"' + '@jp'
     created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
     updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
-    mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id.to_s + '>'
+
 
     case task.status
     when 'todo'
@@ -77,7 +80,7 @@ class Task < ApplicationRecord
       status = '"取りやめ"@jp'
     else
       # プログラムにエラーがあった場合の誤作動を防ぐためのコード
-      status = '"未着手"@jp'
+      return false
     end
 
     

@@ -2,18 +2,17 @@ module Virtuoso
   extend ActiveSupport::Concern
   require 'httpclient'
   def auth_query(sparqlquery)
-=begin
-    uri = 'http://localhost:8890/sparql-auth'
+    uri = ENV["VIRTUOSO_UPDATE_ENDPOINT"]
+
     client = HTTPClient.new
-    user = 'dba'
-    # password = 'dba'
-    password = 'srmt1ab'
-    default_graph_uri = 'http://mf.srmt.nitech.ac.jp'
-    client.set_auth('http://localhost:8890/', user, password)
+
+    user = ENV["VIRTUOSO_USER"]
+    password = ENV["VIRTUOSO_PASSWORD"]
+
+    default_graph_uri = ENV["LOD_GRAPH_URI"]
+    client.set_auth(uri, user, password)
     
     query = {'default-graph-uri' => default_graph_uri, 'query' => sparqlquery, 'format' => 'application/sparql-results+json'}
-    clireturn = client.get(uri, query)
-=end
-    clireturn = 'no virtuoso'
+    client.get(uri, query)
   end
 end

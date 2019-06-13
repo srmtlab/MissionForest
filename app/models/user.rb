@@ -48,9 +48,9 @@ class User < ApplicationRecord
     end
   end
 
-  def destroy(*args)
+  def destroy
     if deletefromvirtuoso(self)
-      super(*args)
+      super
     end
   end
 
