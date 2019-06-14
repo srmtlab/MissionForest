@@ -37,17 +37,12 @@ class Mission < ApplicationRecord
     save2virtuoso(self)
   end
 
-  def root_task_update
-    deletefromvirtuoso(self)
-    save2virtuoso(self)
-  end
-
-
   private
   def save2virtuoso(mission)
     if mission.root_task == nil
       return true
     end
+    
     if mission.root_task.notify != 'lod'
       return true
     end
@@ -55,8 +50,8 @@ class Mission < ApplicationRecord
 
     id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + mission.id.to_s + '>'
     user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + mission.user_id.to_s + '>'
-    title = '"' + mission.title + '"' + '@jp'
-    description = '"' + mission.description + '"' + '@jp'
+    title = '"' + mission.title + '"' + '@ja'
+    description = '"' + mission.description + '"' + '@ja'
     created_at = '"' + mission.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
     updated_at = '"' + mission.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
 
@@ -84,7 +79,6 @@ class Mission < ApplicationRecord
     insertquery += '}'
 
     clireturn = auth_query(insertquery)
-    true
   end
 
   def deletefromvirtuoso(mission)
@@ -104,6 +98,10 @@ class Mission < ApplicationRecord
     deletequery += '}'
 
     clireturn = auth_query(deletequery)
-    true
+  end
+
+  def root_task_update
+    deletefromvirtuoso(self)
+    save2virtuoso(self)
   end
 end

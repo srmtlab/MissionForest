@@ -32,52 +32,56 @@ class Task < ApplicationRecord
   
   def save(*args)
     super(*args)
-    save2virtuoso(self)
+    if LOD && self.notify == 'lod'
+      save2virtuoso(self)
+    end
+    true
   end
 
   def destroy
-    deletefromvirtuoso(self)
     super
+    if LOD && self.notify == 'lod'
+      deletefromvirtuoso(self)      
+    end
+    true
   end
 
   def update(*args)
-    deletefromvirtuoso(self)
     super(*args)
-    save2virtuoso(self)
+
+    if LOD && self.notify == 'lod'
+      deletefromvirtuoso(self)
+      save2virtuoso(self)        
+    end
     
     if self.direct_mission_id != nil
+      # if this Task is root task in the Mission, add Mission info to Virtuoso
       Mission.find(self.direct_mission_id).root_task_update
     end
+    true
   end
-  
-
   
   private
   def save2virtuoso(task)
-    if task.notify != 'lod'
-      return true
-    end
 
-    lod_resource
-
-    id = '<' + ENV["LOD_RESOURCE"] + 'tasks/' + task.id.to_s + '>'
-    user_id = '<' + ENV["LOD_RESOURCE"] + 'users/' + task.user_id.to_s + '>'
-    mission_id = '<' + ENV["LOD_RESOURCE"] + 'missions/' + task.mission_id.to_s + '>'
-    title = '"' + task.title + '"' + '@jp'
-    description = '"' + task.description + '"' + '@jp'
+    id = '<' + lod_resource + 'tasks/' + task.id.to_s + '>'
+    user_id = '<' + lod_resource + 'users/' + task.user_id.to_s + '>'
+    mission_id = '<' + lod_resource + 'missions/' + task.mission_id.to_s + '>'
+    title = '"' + task.title + '"' + '@ja'
+    description = '"""' + task.description + '"""' + '@ja'
     created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
     updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
 
 
     case task.status
     when 'todo'
-      status = '"未着手"@jp'
+      status = '"未着手"@ja'
     when 'doing'
-      status = '"進行中@jp"'
+      status = '"進行中@ja"'
     when 'done'
-      status = '"完了@jp"'
+      status = '"完了@ja"'
     when 'cancel'
-      status = '"取りやめ"@jp'
+      status = '"取りやめ"@ja'
     else
       # プログラムにエラーがあった場合の誤作動を防ぐためのコード
       return false
@@ -115,10 +119,12 @@ class Task < ApplicationRecord
     clireturn = auth_query(insertquery)
     puts 'clireturn'
     puts clireturn.body
-
-    true
   end
 
+  def update2virtuoso(task)
+  
+  end
+  
   def deletefromvirtuoso(task)
     id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
 
@@ -136,6 +142,5 @@ class Task < ApplicationRecord
     deletequery += '}'
     
     clireturn = auth_query(deletequery)
-    true
   end
 end

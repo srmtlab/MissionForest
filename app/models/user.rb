@@ -69,8 +69,7 @@ class User < ApplicationRecord
     user = User.find_by(email: thisuser.email)
 
     id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + thisuser.id.to_s + '>'
-    mail = '<mailto:' + user.email + '>'
-    name = '"' + user.name + '"' + '@jp'
+    name = '"' + user.name + '"' + '@ja'
 
 
     insertquery = <<-EOS
@@ -99,8 +98,6 @@ class User < ApplicationRecord
     clireturn = auth_query(insertquery)
     # puts 'clireturn'
     # puts clireturn.body
-
-    true
   end
 
   def deletefromvirtuoso(thisuser)
@@ -121,7 +118,5 @@ class User < ApplicationRecord
     deletequery += '}'
 
     clireturn = auth_query(deletequery)
-
-    true
   end
 end
