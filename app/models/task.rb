@@ -34,16 +34,14 @@ class Task < ApplicationRecord
     super(*args)
 
     if LOD && self.notify == 'lod'
-      save2virtuoso(self)
+      save2virtuoso()
     end
     true
   end
 
   def destroy
     super
-    if LOD && self.notify == 'lod'
-      deletefromvirtuoso(self)      
-    end
+    deletefromvirtuoso()
     true
   end
 
@@ -51,23 +49,23 @@ class Task < ApplicationRecord
     super(*args)
 
     if LOD && self.notify == 'lod'
-      update2virtuoso(self)
+      update2virtuoso()
     end
     
     if self.direct_mission_id != nil
       # if this Task is root task in the Mission, add Mission info to Virtuoso
-      Mission.find(self.direct_mission_id).root_task_update
+      Mission.find(self.direct_mission_id).save2virtuoso()
     end
     true
   end
   
   private
-  def save2virtuoso(task)
+  def save2virtuoso(task = self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
-    title = '"' << task.title + '"' << '@ja'
-    description = '"""' << task.description << '"""' << '@ja'
+    title = '"' << task.title << '"@ja'
+    description = '"""' << task.description << '"""@ja'
     deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
     created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
     updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
@@ -118,12 +116,11 @@ class Task < ApplicationRecord
     # clireturn = auth_query(query)
   end
 
-  def update2virtuoso(task)
+  def update2virtuoso(task = self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
-    title = '"' << task.title + '"' << '@ja'
-    description = '"""' << task.description << '"""' << '@ja'
+    title = '"' << task.title << '"@ja'
     deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
     created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
     updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
@@ -154,7 +151,8 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
     query << convert_ttl(task_resource, 'dct:title', title)
 
-    unless description.blank?
+    unless task.description.blank?
+      description = '"""' << task.description << '"""' << '@ja'
       query << convert_ttl(task_resource, 'dct:description', description)
     end
 
@@ -172,22 +170,26 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
     query << '}'
 
+    puts query
     # clireturn = auth_query(query)
   end
   
-  def deletefromvirtuoso(task)
+  def deletefromvirtuoso(task=self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
 
     query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
     query << convert_ttl(task_resource,'?p','?o') << ' } WHERE {'
     query << convert_ttl(task_resource,'?p','?o')
     query << '}'
-    clireturn = auth_query(query)
+    puts query
+    # clireturn = auth_query(query)
 
     query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
     query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',task_resource)
     query << '}'
-    clireturn = auth_query(query)
+
+    puts query
+    # clireturn = auth_query(query)
   end
 end

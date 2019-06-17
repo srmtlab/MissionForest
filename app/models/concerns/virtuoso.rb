@@ -38,7 +38,7 @@ module Virtuoso
   end
 
   def convert_ttl(subject, predicate, object)
-    subject << " " << predicate << " " << object << "."
+    subject << " " << predicate << " " << object << ". "
   end
 
   def make_ontology(query)
