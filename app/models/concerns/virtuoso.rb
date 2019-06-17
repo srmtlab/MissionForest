@@ -2,13 +2,19 @@ module Virtuoso
   extend ActiveSupport::Concern
   require 'httpclient'
 
-  LOD = ENV["LOD"]
-  LOD_RESOURCE = ENV["LOD_RESOURCE"]
-  ONTOLOGY = ENV["ONTOLOGY"]
-  TASK_RESOURCE_PREF = LOD_RESOURCE + 'tasks/'
-  USER_RESOURCE_PREF = LOD_RESOURCE + 'users/'
-  MISSION_RESOURCE_PREF = LOD_RESOURCE + 'missions/'
+  def self.cast_bool?(obj)
+    obj.to_s == "true"
+  end
 
+  LOD = cast_bool?(ENV["LOD"])
+
+  if LOD
+    LOD_RESOURCE = ENV["LOD_RESOURCE"]
+    ONTOLOGY = ENV["ONTOLOGY"]
+    TASK_RESOURCE_PREF = LOD_RESOURCE + 'tasks/'
+    USER_RESOURCE_PREF = LOD_RESOURCE + 'users/'
+    MISSION_RESOURCE_PREF = LOD_RESOURCE + 'missions/'
+  end
 
   def auth_query(sparqlquery)
     uri = ENV["VIRTUOSO_UPDATE_ENDPOINT"]
@@ -32,7 +38,11 @@ module Virtuoso
   end
 
   def convert_ttl(subject, predicate, object)
-    subject + " " + predicate + " " + object + ".\n"
+    subject << " " << predicate << " " << object << "."
+  end
+
+  def make_ontology(query)
+      "<" << ONTOLOGY << query << ">"
   end
 
 end
