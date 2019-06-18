@@ -138,7 +138,7 @@ class MissionChannel < ApplicationCable::Channel
       while true do
         task = stack_tasks.last
 
-        if !task.direct_mission_id.nil?
+        unless task.direct_mission_id.nil?
           break
         end
 
@@ -287,7 +287,7 @@ class MissionChannel < ApplicationCable::Channel
 
     while stack_tasks.length > 0 do
       task = stack_tasks.pop
-      if task.participants.include?(participant) == false
+      unless task.participants.include?(participant)
         task.participants.push(participant)
         if task.save
           task_data_json['task_id'] = task.id
@@ -315,7 +315,7 @@ class MissionChannel < ApplicationCable::Channel
       user = User.find_by(name: task_data_json['name'])
     end
 
-    if mission.participants.include?(user) == false
+    unless mission.participants.include?(user)
       mission.participants.push(user)
       if mission.save
         if task_data_json.key?('id')

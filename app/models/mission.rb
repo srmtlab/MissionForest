@@ -23,7 +23,7 @@ class Mission < ApplicationRecord
 
   def destroy
     super
-    deletefromvirtuoso()
+    deletefromvirtuoso
     true
   end
 
@@ -31,7 +31,7 @@ class Mission < ApplicationRecord
     super(*args)
 
     if LOD && self.root_task.notify == 'lod'
-      update2virtuoso()      
+      update2virtuoso
     end
     true
   end
@@ -52,6 +52,7 @@ class Mission < ApplicationRecord
     EOS
 
     query << 'INSERT INTO <' << ENV["LOD_GRAPH_URI"] << '> { '
+    query << convert_ttl(mission_resource,'rdf:type',make_ontology('Mission'))
     query << convert_ttl(mission_resource, 'dct:title', title)
 
     unless mission.description.blank?
@@ -59,12 +60,13 @@ class Mission < ApplicationRecord
       query << convert_ttl(mission_resource, 'dct:description', description)
     end
 
-    query << convert_ttl(mission_resource,'rdf:type',make_ontology('Mission'))
     query << convert_ttl(mission_resource,'dct:creator',user_resource)
 
     query << convert_ttl(mission_resource, 'dct:dateSubmitted', created_at)
     query << convert_ttl(mission_resource, 'dct:modified', updated_at)
     query << '}'
+
+    puts query
 
     # clireturn = auth_query(query)
   end

@@ -1,7 +1,7 @@
 # coding: utf-8
 class Task < ApplicationRecord
   include Virtuoso
-  
+
   belongs_to :user
   belongs_to :mission
 
@@ -9,7 +9,7 @@ class Task < ApplicationRecord
   enum notify: [:own, :organize, :publish, :lod]
 
   has_many :subtasks, class_name: "Task",
-	         dependent: :destroy,
+           dependent: :destroy,
            foreign_key: "sub_task_of"
 
   belongs_to :parenttask, class_name: "Task", optional: true
@@ -17,8 +17,8 @@ class Task < ApplicationRecord
 
   has_many :task_participant, dependent: :destroy
   has_many :participants,
-	       through: :task_participant,
-         source: :user
+           through: :task_participant,
+           source: :user
 
   accepts_nested_attributes_for :task_participant
 
@@ -29,43 +29,45 @@ class Task < ApplicationRecord
   def self.localized_notifies
     %w(個人的構想 組織内限定 外部公開 LOD)
   end
-  
+
   def save(*args)
+    puts "add"
     super(*args)
 
     if LOD && self.notify == 'lod'
-      save2virtuoso()
+      save2virtuoso
     end
     true
   end
 
   def destroy
     super
-    deletefromvirtuoso()
+    deletefromvirtuoso
     true
   end
 
   def update(*args)
-    super(*args)
+    flag = super(*args)
 
     if LOD && self.notify == 'lod'
-      update2virtuoso()
+      puts "update"
+      update2virtuoso
+      puts "pass"
+      puts self
+      unless self.direct_mission_id.nil?
+        # if this Task is root task in the Mission, add Mission info to Virtuoso
+        Mission.find(self.direct_mission_id).save2virtuoso
+      end
     end
-    
-    if self.direct_mission_id != nil
-      # if this Task is root task in the Mission, add Mission info to Virtuoso
-      Mission.find(self.direct_mission_id).save2virtuoso()
-    end
-    true
+    flag
   end
-  
+
   private
   def save2virtuoso(task = self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
     title = '"' << task.title << '"@ja'
-    description = '"""' << task.description << '"""@ja'
     deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
     created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
     updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
@@ -88,13 +90,14 @@ class Task < ApplicationRecord
       prefix dct: <http://purl.org/dc/terms/>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      EOS
+    EOS
 
     query << 'INSERT INTO <' << ENV["LOD_GRAPH_URI"] << '> { '
     query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
     query << convert_ttl(task_resource, 'dct:title', title)
 
-    unless description.blank?
+    unless task.description.blank?
+      description = '"""' << task.description << '"""@ja'
       query << convert_ttl(task_resource, 'dct:description', description)
     end
 
@@ -160,7 +163,7 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
 
     if task.sub_task_of != nil
-      parenttask_resource = '<' + TASK_RESOURCE_PREF + task.sub_task_of.id.to_s + '>'
+      parenttask_resource = '<' << TASK_RESOURCE_PREF << task.sub_task_of.id.to_s << '>'
       query << convert_ttl(task_resource, make_ontology('subTaskOf'), parenttask_resource)
     end
 
@@ -173,7 +176,7 @@ class Task < ApplicationRecord
     puts query
     # clireturn = auth_query(query)
   end
-  
+
   def deletefromvirtuoso(task=self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
 
@@ -188,7 +191,6 @@ class Task < ApplicationRecord
     query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',task_resource)
     query << '}'
-
     puts query
     # clireturn = auth_query(query)
   end

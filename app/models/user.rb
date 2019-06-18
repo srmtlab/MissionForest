@@ -45,7 +45,7 @@ class User < ApplicationRecord
   def save(*args)
     super(*args)
     if LOD 
-      save2virtuoso(self)
+      save2virtuoso
     end
   end
 
@@ -59,7 +59,7 @@ class User < ApplicationRecord
   def update(*args)
     super(*args)
     if LOD
-      update2virtuoso(self)
+      update2virtuoso
     end
   end
 
