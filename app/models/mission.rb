@@ -36,7 +36,6 @@ class Mission < ApplicationRecord
     true
   end
 
-  private
   def save2virtuoso(mission=self)
     mission_resource = '<' << MISSION_RESOURCE_PREF << mission.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << mission.user_id.to_s << '>'

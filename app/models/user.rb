@@ -63,7 +63,6 @@ class User < ApplicationRecord
     end
   end
 
-  private
   def save2virtuoso(user=self)
     user_resource = '<' << USER_RESOURCE_PREF << user.id.to_s << '>'
     name = '"' << user.name << '"@ja'

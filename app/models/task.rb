@@ -62,7 +62,6 @@ class Task < ApplicationRecord
     flag
   end
 
-  private
   def save2virtuoso(task = self)
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
