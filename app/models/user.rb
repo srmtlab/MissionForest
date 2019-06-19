@@ -61,7 +61,7 @@ class User < ApplicationRecord
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   def update2virtuoso(user=self)
@@ -85,7 +85,7 @@ class User < ApplicationRecord
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   # def deletefromvirtuoso(user)
@@ -105,6 +105,6 @@ class User < ApplicationRecord
   #   deletequery += id + ' ?q ?o'
   #   deletequery += '}'
 
-  #   clireturn = auth_query(deletequery)
+  #   auth_query(deletequery)
   # end
 end

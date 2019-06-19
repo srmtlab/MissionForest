@@ -93,7 +93,7 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   def update2virtuoso(task = self)
@@ -157,7 +157,7 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   def deletefromvirtuoso(task=self)
@@ -175,12 +175,12 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource,'?p','?o') << ' } WHERE {'
     query << convert_ttl(task_resource,'?p','?o')
     query << '}'
-    # clireturn = auth_query(query)
+    auth_query(query)
 
     query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',task_resource)
     query << '}'
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 end

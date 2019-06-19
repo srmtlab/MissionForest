@@ -54,7 +54,7 @@ class Mission < ApplicationRecord
     query << convert_ttl(mission_resource, 'dct:modified', updated_at)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   def update2virtuoso(mission=self)
@@ -92,7 +92,7 @@ class Mission < ApplicationRecord
     query << convert_ttl(mission_resource, 'dct:modified', updated_at)
     query << '}'
 
-    # clireturn = auth_query(query)
+    auth_query(query)
   end
 
   def deletefromvirtuoso(mission=self)
@@ -106,13 +106,13 @@ class Mission < ApplicationRecord
     query << convert_ttl(mission_resource,'?p','?o') << ' } WHERE {'
     query << convert_ttl(mission_resource,'?p','?o')
     query << '}'
-    # clireturn = auth_query(query)
+    auth_query(query)
 
     query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl('?s','?p',mission_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',mission_resource)
     query << '}'
+    auth_query(deletequery)
 
-    # clireturn = auth_query(deletequery)
   end
 end
