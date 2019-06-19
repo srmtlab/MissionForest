@@ -56,7 +56,7 @@ class User < ApplicationRecord
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       EOS
 
-    query << 'INSERT INTO <' << ENV["LOD_GRAPH_URI"] << '> { '
+    query << 'INSERT INTO <' << LOD_GRAPH_URI << '> { '
     query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
@@ -79,7 +79,7 @@ class User < ApplicationRecord
       prefix foaf: <http://xmlns.com/foaf/0.1/>
       EOS
 
-    query << 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
+    query << 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << user_resource << ' ?q ?o. }'
     query << 'INSERT { '
     query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))

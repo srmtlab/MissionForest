@@ -9,11 +9,12 @@ module Virtuoso
   LOD = cast_bool?(ENV["LOD"])
 
   if LOD
-    LOD_RESOURCE = ENV["LOD_RESOURCE"]
-    ONTOLOGY = ENV["ONTOLOGY"]
+    LOD_RESOURCE = ENV["MF_RESOURCE"]
+    ONTOLOGY = ENV["MF_ONTOLOGY"]
     TASK_RESOURCE_PREF = LOD_RESOURCE + 'tasks/'
     USER_RESOURCE_PREF = LOD_RESOURCE + 'users/'
     MISSION_RESOURCE_PREF = LOD_RESOURCE + 'missions/'
+    LOD_GRAPH_URI = ENV["MF_GRAPH_URI"]
   end
 
   def auth_query(sparqlquery)
@@ -24,7 +25,7 @@ module Virtuoso
     user = ENV["VIRTUOSO_USER"]
     password = ENV["VIRTUOSO_PASSWORD"]
 
-    default_graph_uri = ENV["LOD_GRAPH_URI"]
+    default_graph_uri = LOD_GRAPH_URI
     client.set_auth(uri, user, password)
     
     query = {

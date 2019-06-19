@@ -164,15 +164,12 @@ class Tasks {
 
         if(lod){
             $('#TaskTags').empty();
-            let task_id = this.selected_task_id;
             let query =
-                'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
-                + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
-                + ''
-                + 'select ?tags where{'
-                + '  ?annotate tags:target mf-task:' + task_id + ' ;'
-                + '  tags:body ?tags.'
-                + '}';
+                "PREFIX mf-task: <" + mf_resource + "tasks/> " +
+                "PREFIX tag-ont: <" + tag_ontology + "> " +
+                'select ?tags where{' +
+                '?annotate tag-ont:target mf-task:' + task['id'] + ' ;' +
+                'tag-ont:body ?tags.}';
 
             $.ajax({
                 type: 'GET',
@@ -180,11 +177,10 @@ class Tasks {
                 data: {
                     'query' : query,
                     'format' : 'application/sparql-results+json',
-                    'default-graph-uri' : lod_graph_uri
+                    'default-graph-uri' : tag_graph_uri
                 },
                 success: function(data) {
-                    console.log(data);
-                    for ( let x of data['results']['bindings'] ){
+                    for (let x of data['results']['bindings'] ){
                         let tag_name = x['tags']['value'];
                         $('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
                     }

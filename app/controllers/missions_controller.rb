@@ -52,6 +52,13 @@ class MissionsController < ApplicationController
   # GET /missions/1
   def show
     @lod = (ENV["LOD"].to_s == "true")
+    if @lod
+      @tag_graph_uri = ENV["TAG_GRAPH_URI"]
+      @sparql_endpoint = ENV["VIRTUOSO_ENDPOINT"]
+      @mf_resource = ENV["MF_RESOURCE"]
+      @tag_ontology = ENV["TAG_ONTOLOGY"]
+    end
+
     @mission = Mission.find(params[:id]).reload
     # @mission.hierarchy = get_hierarchy(@mission)
     authorize! @mission

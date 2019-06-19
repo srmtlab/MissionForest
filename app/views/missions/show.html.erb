@@ -102,8 +102,12 @@
     const mission_group = "viewer";
     <% end %>
 
-    const lod_graph_uri = 'http://mf.srmt.nitech.ac.jp/tags/';
-    const sparql_endpoint = 'http://lod.srmt.nitech.ac.jp/sparql/';
+    <% if @lod %>
+    const tag_graph_uri = "<%= @tag_graph_uri %>";
+    const sparql_endpoint = "<%= @sparql_endpoint %>";
+    const mf_resource = "<%= @mf_resource %>";
+    const tag_ontology = "<%= @tag_ontology %>";
+    <% end %>
     let tasks, mission;
 
     function date_format2rails(datestring){

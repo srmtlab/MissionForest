@@ -63,7 +63,7 @@ class Task < ApplicationRecord
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     EOS
 
-    query << 'INSERT INTO <' << ENV["LOD_GRAPH_URI"] << '> { '
+    query << 'INSERT INTO <' << LOD_GRAPH_URI << '> { '
     query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
     query << convert_ttl(task_resource, 'dct:title', title)
 
@@ -123,7 +123,7 @@ class Task < ApplicationRecord
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     EOS
 
-    query << 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
+    query << 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << task_resource << ' ?q ?o. }'
     query << 'INSERT { '
     query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
@@ -159,14 +159,14 @@ class Task < ApplicationRecord
 
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
 
-    query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
+    query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl(task_resource,'?p','?o') << ' } WHERE {'
     query << convert_ttl(task_resource,'?p','?o')
     query << '}'
     puts query
     # clireturn = auth_query(query)
 
-    query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'
+    query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',task_resource)
     query << '}'
