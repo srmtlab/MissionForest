@@ -2,6 +2,7 @@
 class MissionsController < ApplicationController
   # before_action :set_mission, only: [:show, :edit, :update, :destroy]
   rescue_from Banken::NotAuthorizedError, with: :user_not_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :mission_not_found
 
   # GET /missions
   def index
@@ -36,6 +37,7 @@ class MissionsController < ApplicationController
       task.user = current_user
       task.mission = @mission
       task.direct_mission = @mission
+      task.notify = 1
       @mission.tasks.push(task)
       @mission.root_task = task
       @mission.save
@@ -70,7 +72,11 @@ class MissionsController < ApplicationController
 
   private
   def user_not_authorized
-    redirect_to root_path, alert: 'ミッションを閲覧する権限がありません'
+    redirect_to root_path, alert: '指定されたミッションを閲覧する権限がありません'
+  end
+
+  def mission_not_found
+    redirect_to root_path, alert: '指定されたミッションは現在存在しません'
   end
 
   # # =====================================================
