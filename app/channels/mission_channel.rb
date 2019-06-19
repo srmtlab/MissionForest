@@ -10,22 +10,22 @@ class MissionChannel < ApplicationCable::Channel
   def init()
     @mission = Mission.find(params['mission_id'])
 
-    permission = %w(publish lod)
+    notifies = %w(publish lod)
 
     if @mission.admins.include?(current_user)
-      permission = %w(own organize publish lod)
+      notifies = %w(own organize publish lod)
     elsif @mission.participants.include?(current_user)
-      permission = %w(organize publish lod)
+      notifies = %w(organize publish lod)
     end
 
     ActionCable.server.broadcast("mission_channel_#{params['mission_id']}_#{params['mission_group']}", {
         status: 'init',
-        tasks: get_tasks(@mission, permission),
+        tasks: get_tasks(@mission, notifies),
         mission: get_mission(@mission)
     })
   end
 
-  def send_task(permission, type, operation, data)
+  def send_task(notify, type, operation, data)
 
     ActionCable.server.broadcast("mission_channel_#{params['mission_id']}_admin", {
         status: 'work',
@@ -34,7 +34,7 @@ class MissionChannel < ApplicationCable::Channel
         data: data
     })
 
-    if permission != 'own'
+    if notify != 'own'
       ActionCable.server.broadcast("mission_channel_#{params['mission_id']}_participant", {
           status: 'work',
           type: type,
@@ -43,7 +43,7 @@ class MissionChannel < ApplicationCable::Channel
       })
     end
 
-    if permission != 'organize'
+    if notify != 'organize'
       ActionCable.server.broadcast("mission_channel_#{params['mission_id']}_viewer", {
           status: 'work',
           type: type,
@@ -56,14 +56,7 @@ class MissionChannel < ApplicationCable::Channel
   def add_task(task_data_json)
     parent_task = Task.find(task_data_json['parent_task_id'])
 
-    permission = {
-        own: 1,
-        organize: 2,
-        publish: 3,
-        lod: 4
-    }.with_indifferent_access
-
-    if permission[task_data_json['notify']] > permission[parent_task.notify]
+    if Task.notifies[task_data_json['notify']] > parent_task.notify_before_type_cast
       stack_tasks = [parent_task]
 
       while true do
@@ -74,7 +67,7 @@ class MissionChannel < ApplicationCable::Channel
         end
 
         parent_task = Task.find(task.sub_task_of)
-        if permission[task_data_json['notify']] >= permission[parent_task.notify]
+        if Task.notifies[task_data_json['notify']] >= parent_task.notify_before_type_cast
           stack_tasks.push(parent_task)
         else
           break
@@ -123,16 +116,10 @@ class MissionChannel < ApplicationCable::Channel
   end
 
   def update_task(task_data_json)
-    permission = {
-        own: 1,
-        organize: 2,
-        publish: 3,
-        lod: 4
-    }.with_indifferent_access
 
     task = Task.find(task_data_json['id'])
 
-    if permission[task_data_json['notify']] > permission[task.notify]
+    if Task.notifies[task_data_json['notify']] > task.notify_before_type_cast
       stack_tasks = [task]
 
       while true do
@@ -144,7 +131,7 @@ class MissionChannel < ApplicationCable::Channel
 
         parent_task = Task.find(task.sub_task_of)
 
-        if permission[task_data_json['notify']] >= permission[parent_task.notify]
+        if Task.notifies[task_data_json['notify']] >= parent_task.notify_before_type_cast
           stack_tasks.push(parent_task)
         else
           break
@@ -185,7 +172,7 @@ class MissionChannel < ApplicationCable::Channel
         send_task(task_data_json['notify'], 'task', 'add', task_data_json)
       end
 
-    elsif permission[task_data_json['notify']] < permission[task.notify]
+    elsif Task.notifies[task_data_json['notify']] < task.notify_before_type_cast
 
       if task_data_json['notify'] == 'own'
         ActionCable.server.broadcast("mission_channel_#{params['mission_id']}_participant", {
@@ -242,7 +229,7 @@ class MissionChannel < ApplicationCable::Channel
         end
         if target_task.subtasks.size != 0
           target_task.subtasks.each do |child|
-            if permission[task_data_json['notify']] <= permission[child.notify]
+            if Task.notifies[task_data_json['notify']] <= child.notify_before_type_cast
               stack_tasks.push(child)
             end
           end
@@ -368,14 +355,7 @@ class MissionChannel < ApplicationCable::Channel
     target_task = Task.find(task_data_json['id'])
     parent_task = Task.find(task_data_json['latter_parent_task_id'])
 
-    permission = {
-      own: 1,
-      organize: 2,
-      publish: 3,
-      lod: 4
-    }.with_indifferent_access
-
-    if permission[target_task.notify] > permission[parent_task.notify]
+    if target_task.notify > parent_task.notify
       stack_tasks = [parent_task]
 
       while true do
@@ -386,7 +366,7 @@ class MissionChannel < ApplicationCable::Channel
         end
 
         parent_task = Task.find(task.sub_task_of)
-        if permission[target_task.notify] >= permission[parent_task.notify]
+        if target_task.notify >= parent_task.notify
           stack_tasks.push(parent_task)
         else
           break
@@ -440,11 +420,11 @@ class MissionChannel < ApplicationCable::Channel
 
 
   private
-  def get_tasks(mission, permission)
+  def get_tasks(mission, notifies)
 
     task_dic = { root_task_id: mission.root_task.id }
     mission.tasks.each do |task|
-      if permission.include?(task.notify)
+      if notifies.include?(task.notify)
         task_dic[task.id] = {
             name: task.title,
             description: task.description,
@@ -453,7 +433,7 @@ class MissionChannel < ApplicationCable::Channel
             status: task.status,
             notify: task.notify,
             participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
-            children: task.subtasks.map{ |subtask| permission.include?(subtask.notify) ? subtask.id : nil }.compact
+            children: task.subtasks.map{ |subtask| notifies.include?(subtask.notify) ? subtask.id : nil }.compact
         }
       end
     end
