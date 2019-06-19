@@ -1,25 +1,27 @@
-<h2>Change your password</h2>
+<div class="main">
+  <div class="container">
+    <h2 class="border-bottom border-white mb-4">パスワード再設定</h2>
+    <div class="card">
+      <div class="card-body">
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+          <%= devise_error_messages! %>
+          <%= f.hidden_field :reset_password_token %>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
-  <%= f.hidden_field :reset_password_token %>
+          <div class="form-group">
+            <%= f.label :password, "新しいパスワード (#{@minimum_password_length}文字以上)" %>
+            <%= f.password_field :password, class: "form-control", autocomplete: "off", minlength: @minimum_password_length, placeholder: "新しいパスワード (#{@minimum_password_length}文字以上)", required: true %>
+          </div>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-    <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "off" %>
+          <div class="form-group">
+            <%= f.label :password_confirmation, "新しいパスワード確認" %>
+            <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off", minlength: @minimum_password_length, placeholder: "新しいパスワード (確認)", required: true %>
+          </div>
+
+          <div class="actions">
+            <%= f.submit "変更する", class: "btn btn-success float-right" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
-  </div>
-<% end %>
-
-<%= render "users/shared/links" %>
+</div>

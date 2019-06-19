@@ -3,7 +3,7 @@ class Tasks {
         this.tasks = this._make_obj(taskdata);
         this.datetimepickerformat = 'MM/DD/YYYY HH:mm';
         this.user_signed_in = user_signed_in;
-        this.mission_group = mission_group
+        this.mission_group = mission_group;
         this.user_id = user_id;
         this.oc = null;
         this.selected_task_id = null;
@@ -12,7 +12,7 @@ class Tasks {
             'pan': true,
             'zoom': true,
             'parentNodeSymbol': false,
-            'draggable': true,
+            'draggable': mission_group !== "viewer",
             'createNode': function($node, data) {
                 if(mission_group !== "viewer"){
                     $node.append('<div class="add-button">+</div>');
@@ -93,8 +93,13 @@ class Tasks {
 
         this.oc = $(container_id).orgchart(this.options);
 
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout('tasks.drop_hierarchy()', 100);
+        this.oc.$chart.on('nodedrop.orgchart', function(event, extraParams) {
+            App.mission.send_change_hierarchy({
+                'former_parent_task_id' : extraParams.dragZone.attr('id'),
+                'id' : extraParams.draggedNode.attr('id'),
+                'latter_parent_task_id' : extraParams.dropZone.attr('id'),
+                'user_id' : this.user_id
+            });
         });
 
         $('.orgchart').addClass('noncollapsable');
@@ -132,10 +137,10 @@ class Tasks {
 
         for (let participant_id in task['participants']){
             if(task['participants'].hasOwnProperty(participant_id)){
-                if (Number(participant_id) === user_id){
+                if (Number(participant_id) === this.user_id){
                     user_participate_flag = true;
                 }
-                TaskParticipants.append('<li>' + task['participants'][participant_id] + '</li>');
+                TaskParticipants.append('<li class="mr-2">' + task['participants'][participant_id] + '</li>');
             }
         }
 
@@ -159,15 +164,12 @@ class Tasks {
 
         if(lod){
             $('#TaskTags').empty();
-            let task_id = this.selected_task_id;
             let query =
-                'PREFIX mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>'
-                + 'PREFIX tags: <http://lod.srmt.nitech.ac.jp/tags/ontology#>'
-                + ''
-                + 'select ?tags where{'
-                + '  ?annotate tags:target mf-task:' + task_id + ' ;'
-                + '  tags:body ?tags.'
-                + '}';
+                "PREFIX mf-task: <" + mf_resource + "tasks/> " +
+                "PREFIX tag-ont: <" + tag_ontology + "> " +
+                'select ?tags where{' +
+                '?annotate tag-ont:target mf-task:' + task['id'] + ' ;' +
+                'tag-ont:body ?tags.}';
 
             $.ajax({
                 type: 'GET',
@@ -175,11 +177,10 @@ class Tasks {
                 data: {
                     'query' : query,
                     'format' : 'application/sparql-results+json',
-                    'default-graph-uri' : lod_graph_uri
+                    'default-graph-uri' : tag_graph_uri
                 },
                 success: function(data) {
-                    console.log(data);
-                    for ( let x of data['results']['bindings'] ){
+                    for (let x of data['results']['bindings'] ){
                         let tag_name = x['tags']['value'];
                         $('#TaskTags').append('<li><a href="' + tag_name + '">' + tag_name + '</a></li>');
                     }
@@ -237,6 +238,8 @@ class Tasks {
                 } else {
                     $title.css({"background-color": "powderblue"});
                 }
+            }else {
+                $title.css({"background-color": "white"});
             }
         }
     }
@@ -246,6 +249,8 @@ class Tasks {
             this.update_task(task);
         }
         else{
+
+            let parent_task = this.get_task(task['parent_task_id']);
             this.tasks[task['id']] = {
                 'id' : task['id'],
                 'name' : task['name'],
@@ -256,11 +261,9 @@ class Tasks {
                 'notify' : task['notify'],
                 'participants' : task['participants'],
                 'children' : [],
-
-            };
-
-            let parent_task = this.get_task(task['parent_task_id']);
-            parent_task['children'].push(this.tasks[task['id']]);
+                'parent' : parent_task
+            };            
+            parent_task['children'].push(this.get_task(task['id']));
 
             let $parent_task = $('#' + task['parent_task_id']);
             let hasChild = $parent_task.parent().attr('colspan') > 0;
@@ -284,7 +287,7 @@ class Tasks {
     }
 
     delete_task(data){
-        let target_task = this.get_task(data.id)
+        let target_task = this.get_task(data.id);
         
         let stack_tasks = [target_task];
         
@@ -311,64 +314,26 @@ class Tasks {
         delete target_task['participants'][data['id']];
     }
 
-    drop_hierarchy(){
-        let user_id = this.user_id;
-        /*
+    change_hierarchy(data){
+        let former_parent_task = this.get_task(data['former_parent_task_id']);
+        let target_task = this.get_task(data['id']);
+        let tmp_delete_idx = former_parent_task['children'].indexOf(target_task);
+        former_parent_task['children'].splice(tmp_delete_idx, 1); 
 
-        function recursion(tree, taskdb){
-            const id = tree['id'];
-            const detail = taskdb.get_task_detail(id);
-            tree['name'] = detail['title'];
-            if (tree['children'] === undefined){
-                return;
-            }
-            for (let child of tree['children']){
-                recursion(child, taskdb);
-            }
+        let latter_parent_task = this.get_task(data['latter_parent_task_id']);
+        latter_parent_task['children'].push(target_task);
+        target_task['parent'] = latter_parent_task;
+
+
+        this.oc.removeNodes($('#' + data['id']));
+
+        let $parent_task = $('#' + data['latter_parent_task_id']);
+        let hasChild = $parent_task.parent().attr('colspan') > 0;
+
+        if(!hasChild){
+            this.oc.addChildren($parent_task, [target_task]);
+        }else {
+            this.oc.addSiblings($parent_task.closest('tr').siblings('.nodes').find('.node:first'), [target_task]);
         }
-
-        let hierarchy = oc.getHierarchy();
-        recursion(hierarchy, taskdb);
-        $.ajax({
-            type: 'PUT',
-            url: '/api/missions/<%= @mission.id %>/update_hierarchy',
-            data: {
-                tree : hierarchy,
-                user_id : user_id
-            }
-        });
-        App.mission.change_tasktree(hierarchy);
-         */
     }
-
-    /*
-    change_hierarchy(target_task_id, change_task_id){
-        let target_task;
-        let stack_tasks = [this.tasks];
-
-        delete_task_label:
-            while (stack_tasks.length > 0) {
-
-                let task = stack_tasks.pop();
-
-                for(let i=0; i<task.children.length; i++){
-                    if(task.children[i].id === target_task_id){
-                        target_task = task.children[i];
-                        task.children.splice(i, 1);
-                        break delete_task_label;
-                    }
-                }
-            }
-
-        let parent_task = this.get_task(change_task_id);
-        parent_task.children.push(target_task);
-
-        this.oc.init({
-            'data': this.tasks
-        });
-        this.oc.$chart.on('nodedrop.orgchart', function(event) {
-            setTimeout(tasks.drop_hierarchy, 100);
-        });
-    }
-    */
 }

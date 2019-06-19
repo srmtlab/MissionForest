@@ -1,19 +1,49 @@
 module Virtuoso
   extend ActiveSupport::Concern
   require 'httpclient'
-  def auth_query(sparqlquery)
-=begin
-    uri = 'http://localhost:8890/sparql-auth'
-    client = HTTPClient.new
-    user = 'dba'
-    # password = 'dba'
-    password = 'srmt1ab'
-    default_graph_uri = 'http://mf.srmt.nitech.ac.jp'
-    client.set_auth('http://localhost:8890/', user, password)
-    
-    query = {'default-graph-uri' => default_graph_uri, 'query' => sparqlquery, 'format' => 'application/sparql-results+json'}
-    clireturn = client.get(uri, query)
-=end
-    clireturn = 'no virtuoso'
+
+  def self.cast_bool?(obj)
+    obj.to_s == "true"
   end
+
+  LOD = cast_bool?(ENV["LOD"])
+
+  if LOD
+    LOD_RESOURCE = ENV["MF_RESOURCE"]
+    ONTOLOGY = ENV["MF_ONTOLOGY"]
+    TASK_RESOURCE_PREF = LOD_RESOURCE + 'tasks/'
+    USER_RESOURCE_PREF = LOD_RESOURCE + 'users/'
+    MISSION_RESOURCE_PREF = LOD_RESOURCE + 'missions/'
+    LOD_GRAPH_URI = ENV["MF_GRAPH_URI"]
+  end
+
+  def auth_query(sparqlquery)
+    uri = ENV["VIRTUOSO_UPDATE_ENDPOINT"]
+
+    client = HTTPClient.new
+
+    user = ENV["VIRTUOSO_USER"]
+    password = ENV["VIRTUOSO_PASSWORD"]
+
+    default_graph_uri = LOD_GRAPH_URI
+    client.set_auth(uri, user, password)
+    
+    query = {
+      'default-graph-uri' => default_graph_uri, 
+      'query' => sparqlquery, 
+      'format' => 'application/json',
+      'timeout' => '0'
+    }
+    
+    client.get(uri, query)
+  end
+
+  def convert_ttl(subject, predicate, object)
+    subject + " " + predicate + " " + object + ". "
+  end
+
+  def make_ontology(query)
+      "<" + ONTOLOGY + query + ">"
+  end
+
 end

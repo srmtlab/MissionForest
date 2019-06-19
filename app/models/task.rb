@@ -1,7 +1,7 @@
 # coding: utf-8
 class Task < ApplicationRecord
   include Virtuoso
-  
+
   belongs_to :user
   belongs_to :mission
 
@@ -9,7 +9,7 @@ class Task < ApplicationRecord
   enum notify: [:own, :organize, :publish, :lod]
 
   has_many :subtasks, class_name: "Task",
-	         dependent: :destroy,
+           dependent: :destroy,
            foreign_key: "sub_task_of"
 
   belongs_to :parenttask, class_name: "Task", optional: true
@@ -17,8 +17,8 @@ class Task < ApplicationRecord
 
   has_many :task_participant, dependent: :destroy
   has_many :participants,
-	       through: :task_participant,
-         source: :user
+           through: :task_participant,
+           source: :user
 
   accepts_nested_attributes_for :task_participant
 
@@ -29,110 +29,158 @@ class Task < ApplicationRecord
   def self.localized_notifies
     %w(個人的構想 組織内限定 外部公開 LOD)
   end
-  
-  def save(*args)
-    super(*args)
-    save2virtuoso(self)
-  end
 
-  def destroy(*args)
-    deletefromvirtuoso(self)
-    super(*args)
-  end
-
-  def update(*args)
-    deletefromvirtuoso(self)
-    super(*args)
-    save2virtuoso(self)
-    
-    if self.direct_mission_id != nil
-      Mission.find(self.direct_mission_id).root_task_update
-    end
-  end
-  
-
-  
-  private
-  def save2virtuoso(task)
-    if task.notify != 'lod'
+  def save2virtuoso(task = self)
+    unless LOD || task.notify == 'lod'
       return true
     end
 
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
-    user_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + task.user_id.to_s + '>'
-    title = '"' + task.title + '"' + '@jp'
-    description = '"' + task.description + '"' + '@jp'
-    created_at = '"' + task.created_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
-    updated_at = '"' + task.updated_at.strftime('%Y-%m-%dT%H:%M:%S+09:00') + '"^^xsd:dateTime'
-    mission_id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/' + task.mission_id.to_s + '>'
+    unless task.direct_mission_id.nil?
+      task.mission.save2virtuoso
+    end
+
+    task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
+    user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
+    mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
+    title = '"' << task.title << '"@ja'
+    created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
+    updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
 
     case task.status
     when 'todo'
-      status = '"未着手"@jp'
+      status = '"未着手"@ja'
     when 'doing'
-      status = '"進行中@jp"'
+      status = '"進行中@ja"'
     when 'done'
-      status = '"完了@jp"'
+      status = '"完了@ja"'
     when 'cancel'
-      status = '"取りやめ"@jp'
+      status = '"取りやめ"@ja'
     else
       # プログラムにエラーがあった場合の誤作動を防ぐためのコード
-      status = '"未着手"@jp'
+      return false
     end
 
-    
-    insertquery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
-      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
-      prefix foaf: <http://xmlns.com/foaf/0.1/>
+    query = <<-EOS
       prefix dct: <http://purl.org/dc/terms/>
-      prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
-      prefix mf: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/ontology#>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    EOS
 
-      EOS
-    
-    
-    insertquery += 'INSERT INTO <http://mf.srmt.nitech.ac.jp>'
-    insertquery += '{'
-    insertquery += id + ' rdf:type mf:Task .'
-    insertquery += id + ' dct:creator ' + user_id + ' .'
-    insertquery += id + ' dct:modified '+ updated_at + ' .'
-    insertquery += id + ' dct:description '+ description + ' .'
-    insertquery += id + ' dct:dateSubmitted '+ created_at + ' .'
-    insertquery += id + ' mf:status '+ status + ' .'
-    insertquery += id + ' mf:mission '+ mission_id + ' .'
-    insertquery += id + ' dct:title '+ title + '.'
-    insertquery += '}'
+    query << 'INSERT INTO <' << LOD_GRAPH_URI << '> { '
+    query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
+    query << convert_ttl(task_resource, 'dct:title', title)
 
-    puts 'insertquery'
-    puts insertquery
-    
-    clireturn = auth_query(insertquery)
-    puts 'clireturn'
-    puts clireturn.body
+    unless task.description.blank?
+      description = '"""' << task.description << '"""@ja'
+      query << convert_ttl(task_resource, 'dct:description', description)
+    end
 
-    true
+    query << convert_ttl(task_resource, make_ontology('status'), status)
+
+    unless task.deadline_at.nil?
+      deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
+      query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
+    end
+
+    unless task.sub_task_of.nil?
+      parenttask_resource = '<' + TASK_RESOURCE_PREF + task.sub_task_of.to_s + '>'
+      query << convert_ttl(task_resource, make_ontology('subTaskOf'), parenttask_resource)
+    end
+
+    query << convert_ttl(task_resource, 'dct:creator', user_resource)
+    query << convert_ttl(task_resource, make_ontology('mission'), mission_resource)
+    query << convert_ttl(task_resource, 'dct:dateSubmitted', created_at)
+    query << convert_ttl(task_resource, 'dct:modified', updated_at)
+    query << '}'
+
+    auth_query(query)
   end
 
-  def deletefromvirtuoso(task)
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/' + task.id.to_s + '>'
+  def update2virtuoso(task = self)
+    unless LOD || task.notify == 'lod'
+      return true
+    end
 
-    deletequery = <<-EOS
-      prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
-      
-      DELETE {
-      EOS
-    deletequery += id + ' ?q ?o'
-    deletequery += <<-EOS
-      }
-      WHERE {
-      EOS
-    deletequery += id + ' ?q ?o'
-    deletequery += '}'
-    
-    clireturn = auth_query(deletequery)
-    true
+    task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
+    user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
+    mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
+    title = '"' << task.title << '"@ja'
+    created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
+    updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
+
+    case task.status
+    when 'todo'
+      status = '"未着手"@ja'
+    when 'doing'
+      status = '"進行中@ja"'
+    when 'done'
+      status = '"完了@ja"'
+    when 'cancel'
+      status = '"取りやめ"@ja'
+    else
+      # プログラムにエラーがあった場合の誤作動を防ぐためのコード
+      return false
+    end
+
+    query = <<-EOS
+      prefix dct: <http://purl.org/dc/terms/>
+      prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    EOS
+
+    query << 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
+    query << task_resource << ' ?q ?o. }'
+    query << 'INSERT { '
+    query << convert_ttl(task_resource, 'rdf:type', make_ontology('Task'))
+    query << convert_ttl(task_resource, 'dct:title', title)
+
+    unless task.description.blank?
+      description = '"""' << task.description << '"""' << '@ja'
+      query << convert_ttl(task_resource, 'dct:description', description)
+    end
+
+    query << convert_ttl(task_resource, make_ontology('status'), status)
+
+    unless task.deadline_at.nil?
+      deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
+      query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
+    end
+
+    unless task.sub_task_of.nil?
+      parenttask_resource = '<' << TASK_RESOURCE_PREF << task.sub_task_of.to_s << '>'
+      query << convert_ttl(task_resource, make_ontology('subTaskOf'), parenttask_resource)
+    end
+
+    query << convert_ttl(task_resource, 'dct:creator', user_resource)
+    query << convert_ttl(task_resource, make_ontology('mission'), mission_resource)
+    query << convert_ttl(task_resource, 'dct:dateSubmitted', created_at)
+    query << convert_ttl(task_resource, 'dct:modified', updated_at)
+    query << '}'
+
+    auth_query(query)
+  end
+
+  def deletefromvirtuoso(task=self)
+    unless LOD
+      return true
+    end
+
+    unless task.direct_mission_id.nil?
+      task.mission.deletefromvirtuoso
+    end
+
+    task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
+
+    query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
+    query << convert_ttl(task_resource,'?p','?o') << ' } WHERE {'
+    query << convert_ttl(task_resource,'?p','?o')
+    query << '}'
+    auth_query(query)
+
+    query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
+    query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
+    query << convert_ttl('?s','?p',task_resource)
+    query << '}'
+    auth_query(query)
   end
 end

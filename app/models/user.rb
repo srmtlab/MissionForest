@@ -42,86 +42,69 @@ class User < ApplicationRecord
     self.update(authentication_token: nil)
   end
 
-  def save(*args)
-    if super(*args)
-      save2virtuoso(self)
+  def save2virtuoso(user=self)
+    unless LOD
+      return true
     end
-  end
 
-  def destroy(*args)
-    if deletefromvirtuoso(self)
-      super(*args)
-    end
-  end
+    user_resource = '<' << USER_RESOURCE_PREF << user.id.to_s << '>'
+    name = '"' << user.name << '"@ja'
 
-  def update(*args)
-    if deletefromvirtuoso(self)
-      if super(*args)
-        save2virtuoso(self)
-      end
-    end
-  end
-
-
-
-  private
-  def save2virtuoso(thisuser)
-    user = User.find_by(email: thisuser.email)
-
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id.to_s + '>'
-    mail = '<mailto:' + user.email + '>'
-    name = '"' + user.name + '"' + '@jp'
-
-
-    insertquery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
-      prefix mf-mission: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/missions/>
-      prefix foaf: <http://xmlns.com/foaf/0.1/>
+    query = <<-EOS
       prefix dct: <http://purl.org/dc/terms/>
-      prefix mf-task: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/tasks/>
-      prefix mf: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/ontology#>
       prefix xsd: <http://www.w3.org/2001/XMLSchema#>
       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      EOS
 
-    EOS
+    query << 'INSERT INTO <' << LOD_GRAPH_URI << '> { '
+    query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))
+    query << convert_ttl(user_resource, 'foaf:name', name)
+    query << '}'
 
-
-    insertquery += 'INSERT INTO <http://mf.srmt.nitech.ac.jp/>'
-    insertquery += '{'
-
-    insertquery += id + ' rdf:type mf:User .'
-    # insertquery += id + ' foaf:mail ' + mail + ' .'
-    insertquery += id + ' foaf:name '+ name + ' .'
-
-    insertquery += '}'
-
-
-    clireturn = auth_query(insertquery)
-    # puts 'clireturn'
-    # puts clireturn.body
-
-    true
+    auth_query(query)
   end
 
-  def deletefromvirtuoso(task)
-    id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + user.id.to_s + '>'
+  def update2virtuoso(user=self)
+    unless LOD
+      return true
+    end
 
-    deletequery = <<-EOS
-      prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
+    user_resource = '<' << USER_RESOURCE_PREF << user.id.to_s << '>'
+    name = '"' << user.name << '"@ja'
+
+    query = <<-EOS
+      prefix dct: <http://purl.org/dc/terms/>
+      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      prefix foaf: <http://xmlns.com/foaf/0.1/>
+      EOS
+
+    query << 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
+    query << user_resource << ' ?q ?o. }'
+    query << 'INSERT { '
+    query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))
+    query << convert_ttl(user_resource, 'foaf:name', name)
+    query << '}'
+
+    auth_query(query)
+  end
+
+  # def deletefromvirtuoso(user)
+  #   id = '<http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/' + thisuser.id.to_s + '>'
+
+  #   deletequery = <<-EOS
+  #     prefix mf-user: <http://lod.srmt.nitech.ac.jp/resource/MissionForest/users/>
       
-      WITH <http://mf.srmt.nitech.ac.jp/>
-      DELETE {
-    EOS
-    deletequery += id + ' ?q ?o'
-    deletequery += <<-EOS
-      }
-      WHERE {
-    EOS
-    deletequery += id + ' ?q ?o'
-    deletequery += '}'
+  #     WITH <http://mf.srmt.nitech.ac.jp/>
+  #     DELETE {
+  #   EOS
+  #   deletequery += id + ' ?q ?o'
+  #   deletequery += <<-EOS
+  #     }
+  #     WHERE {
+  #   EOS
+  #   deletequery += id + ' ?q ?o'
+  #   deletequery += '}'
 
-    clireturn = auth_query(deletequery)
-
-    true
-  end
+  #   auth_query(deletequery)
+  # end
 end
