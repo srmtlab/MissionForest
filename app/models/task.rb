@@ -30,39 +30,11 @@ class Task < ApplicationRecord
     %w(個人的構想 組織内限定 外部公開 LOD)
   end
 
-  def save(*args)
-    puts "add"
-    super(*args)
-
-    if LOD && self.notify == 'lod'
-      save2virtuoso
-    end
-    true
-  end
-
-  def destroy
-    super
-    deletefromvirtuoso
-    true
-  end
-
-  def update(*args)
-    flag = super(*args)
-
-    if LOD && self.notify == 'lod'
-      puts "update"
-      update2virtuoso
-      puts "pass"
-      puts self
-      unless self.direct_mission_id.nil?
-        # if this Task is root task in the Mission, add Mission info to Virtuoso
-        Mission.find(self.direct_mission_id).save2virtuoso
-      end
-    end
-    flag
-  end
-
   def save2virtuoso(task = self)
+    unless LOD || task.notify == 'lod'
+      return true
+    end
+
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
@@ -119,6 +91,10 @@ class Task < ApplicationRecord
   end
 
   def update2virtuoso(task = self)
+    unless LOD || task.notify == 'lod'
+      return true
+    end
+
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
@@ -177,6 +153,10 @@ class Task < ApplicationRecord
   end
 
   def deletefromvirtuoso(task=self)
+    unless LOD
+      return true
+    end
+
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
 
     query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'

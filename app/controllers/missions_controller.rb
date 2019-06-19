@@ -51,6 +51,7 @@ class MissionsController < ApplicationController
 
   # GET /missions/1
   def show
+    @lod = (ENV["LOD"].to_s == "true")
     @mission = Mission.find(params[:id]).reload
     # @mission.hierarchy = get_hierarchy(@mission)
     authorize! @mission

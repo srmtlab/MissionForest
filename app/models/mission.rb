@@ -1,7 +1,6 @@
 class Mission < ApplicationRecord
   include Virtuoso
 
-
   belongs_to :user
   has_many :tasks, :dependent => :destroy
   accepts_nested_attributes_for :tasks
@@ -21,22 +20,12 @@ class Mission < ApplicationRecord
            source: :user
   accepts_nested_attributes_for :mission_admin
 
-  def destroy
-    super
-    deletefromvirtuoso
-    true
-  end
-
-  def update(*args)
-    super(*args)
-
-    if LOD && self.root_task.notify == 'lod'
-      update2virtuoso
-    end
-    true
-  end
 
   def save2virtuoso(mission=self)
+    unless LOD || mission.root_task.notify == 'lod'
+      return true
+    end
+
     mission_resource = '<' << MISSION_RESOURCE_PREF << mission.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << mission.user_id.to_s << '>'
     title = '"' << mission.title << '"@ja'
@@ -71,6 +60,10 @@ class Mission < ApplicationRecord
   end
 
   def update2virtuoso(mission=self)
+    unless LOD || mission.root_task.notify == 'lod'
+      return true
+    end
+
     mission_resource = '<' << MISSION_RESOURCE_PREF << mission.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << mission.user_id.to_s << '>'
     title = '"' << mission.title << '"@ja'
@@ -105,6 +98,10 @@ class Mission < ApplicationRecord
   end
 
   def deletefromvirtuoso(mission=self)
+    unless LOD
+      return true
+    end
+
     mission_resource = '<' << MISSION_RESOURCE_PREF << mission.id.to_s << '>'
 
     query = 'WITH <' << ENV["LOD_GRAPH_URI"] << '> DELETE {'

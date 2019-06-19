@@ -85,7 +85,7 @@
 
 <script>
     const mission_id = <%= @mission.id %>;
-    const lod = false;
+    const lod = <%= @lod %>;
     <% if user_signed_in? %>
     <% if @mission.admins.include?(current_user)%>
     const mission_group = "admin";

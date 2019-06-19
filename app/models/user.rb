@@ -42,28 +42,11 @@ class User < ApplicationRecord
     self.update(authentication_token: nil)
   end
 
-  def save(*args)
-    super(*args)
-    if LOD 
-      save2virtuoso
-    end
-  end
-
-  # def destroy
-  #   super
-  #   if LOD 
-  #     deletefromvirtuoso(self)
-  #   end
-  # end
-
-  def update(*args)
-    super(*args)
-    if LOD
-      update2virtuoso
-    end
-  end
-
   def save2virtuoso(user=self)
+    unless LOD
+      return true
+    end
+
     user_resource = '<' << USER_RESOURCE_PREF << user.id.to_s << '>'
     name = '"' << user.name << '"@ja'
 
@@ -83,6 +66,10 @@ class User < ApplicationRecord
   end
 
   def update2virtuoso(user=self)
+    unless LOD
+      return true
+    end
+
     user_resource = '<' << USER_RESOURCE_PREF << user.id.to_s << '>'
     name = '"' << user.name << '"@ja'
 
