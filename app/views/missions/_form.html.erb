@@ -13,13 +13,13 @@
   <% end %>
 
   <div class="form-group">
-    <%= f.label :title, "ミッション名" %>
+    <%= f.label :title, 'ミッション名 <span style="color: red">(必須)</span>'.html_safe %>
     <%= f.text_field :title, class: "form-control", placeholder: "ミッション名", required: true%>
   </div>
 
   <div class="form-group">
-    <%= f.label :description, "概要" %>
-    <%= f.text_area :description, class: "form-control", placeholder: "ミッション概要"%>
+    <%= f.label :description, '概要 <span style="color: red">(必須)</span>'.html_safe %>
+    <%= f.text_area :description, class: "form-control", placeholder: "ミッション概要", required: true%>
   </div>
 
   <div class="actions">
