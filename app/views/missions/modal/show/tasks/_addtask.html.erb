@@ -9,19 +9,22 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form name="addTask" novalidate>
           <div class="form-group">
             <label for="AddTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
-            <input id="AddTaskTitle" type="text" class="form-control" required>
+            <input id="AddTaskTitle" type="text" class="form-control" placeholder="タスク名" required>
+            <div class="invalid-feedback">
+              タスク名を入力してください.
+            </div>
           </div>
           <div class="form-group">
             <label for="AddTaskDescription" class="col-form-label">概要</label>
-            <textarea id="AddTaskDescription" class="form-control" rows="3"></textarea>
+            <textarea id="AddTaskDescription" class="form-control" placeholder="概要" rows="3"></textarea>
           </div>
           <div class="form-group">
             <label for="AddTaskDeadline" class="col-form-label">締め切り</label>
             <div class="input-group date" id="datetimepickerAddTaskDeadline" data-target-input="nearest">
-              <input id="AddTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerAddTaskDeadline"/>
+              <input id="AddTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerAddTaskDeadline" placeholder="締め切り"/>
               <div class="input-group-append" data-target="#datetimepickerAddTaskDeadline" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
               </div>

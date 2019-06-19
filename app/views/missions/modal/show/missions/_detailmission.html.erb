@@ -11,14 +11,20 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form name="editMission" novalidate>
           <div class="form-group">
             <label for="DetailMissionTitle" class="col-form-label">ミッション名 <span style="color: red">(必須)</span></label>
-            <input id="DetailMissionTitle" type="text" class="form-control" value="" required>
+            <input id="DetailMissionTitle" type="text" class="form-control" placeholder="ミッション名" value="" required>
+            <div class="invalid-feedback">
+              ミッション名を入力してください.
+            </div>
           </div>
           <div class="form-group">
             <label for="DetailMissionDescription" class="col-form-label">概要 <span style="color: red">(必須)</span></label>
-            <textarea id="DetailMissionDescription" class="form-control" rows="4" required></textarea>
+            <textarea id="DetailMissionDescription" class="form-control" rows="4" placeholder="概要" required></textarea>
+            <div class="invalid-feedback">
+              概要を入力してください.
+            </div>
           </div>
         </form>
       </div>

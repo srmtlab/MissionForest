@@ -11,19 +11,22 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form name="editTask" novalidate>
           <div class="form-group">
             <label for="DetailTaskTitle" class="col-form-label">タスク名 <span style="color: red">(必須)</span></label>
-            <input id="DetailTaskTitle" type="text" class="form-control" value="" required>
+            <input id="DetailTaskTitle" type="text" class="form-control" value="" placeholder="タスク名" required>
+            <div class="invalid-feedback">
+              タスク名を入力してください.
+            </div>
           </div>
           <div class="form-group">
             <label for="DetailTaskDescription" class="col-form-label">概要</label>
-            <textarea id="DetailTaskDescription" class="form-control" rows="3"></textarea>
+            <textarea id="DetailTaskDescription" class="form-control" rows="3" placeholder="概要"></textarea>
           </div>
           <div class="form-group input-group date datepicker">
             <label for="DetailTaskDeadline" class="col-form-label">締め切り</label>
             <div class="input-group date" id="datetimepickerDetailTaskDeadline" data-target-input="nearest">
-              <input id="DetailTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDetailTaskDeadline"/>
+              <input id="DetailTaskDeadline" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDetailTaskDeadline" placeholder="締め切り"/>
               <div class="input-group-append" data-target="#datetimepickerDetailTaskDeadline" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
               </div>
