@@ -35,11 +35,14 @@ class Task < ApplicationRecord
       return true
     end
 
+    unless task.direct_mission_id.nil?
+      task.mission.save2virtuoso
+    end
+
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
     title = '"' << task.title << '"@ja'
-    deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
     created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
     updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
 
@@ -73,10 +76,14 @@ class Task < ApplicationRecord
     end
 
     query << convert_ttl(task_resource, make_ontology('status'), status)
-    query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
 
-    if task.sub_task_of != nil
-      parenttask_resource = '<' + TASK_RESOURCE_PREF + task.sub_task_of.id.to_s + '>'
+    unless task.deadline_at.nil?
+      deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
+      query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
+    end
+
+    unless task.sub_task_of.nil?
+      parenttask_resource = '<' + TASK_RESOURCE_PREF + task.sub_task_of.to_s + '>'
       query << convert_ttl(task_resource, make_ontology('subTaskOf'), parenttask_resource)
     end
 
@@ -86,7 +93,6 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
     query << '}'
 
-    puts query
     # clireturn = auth_query(query)
   end
 
@@ -99,7 +105,6 @@ class Task < ApplicationRecord
     user_resource = '<' << USER_RESOURCE_PREF << task.user_id.to_s << '>'
     mission_resource = '<' << MISSION_RESOURCE_PREF << task.mission_id.to_s << '>'
     title = '"' << task.title << '"@ja'
-    deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
     created_at = '"' << task.created_at.iso8601 << '"^^xsd:dateTime'
     updated_at = '"' << task.updated_at.iso8601 << '"^^xsd:dateTime'
 
@@ -135,10 +140,14 @@ class Task < ApplicationRecord
     end
 
     query << convert_ttl(task_resource, make_ontology('status'), status)
-    query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
 
-    if task.sub_task_of != nil
-      parenttask_resource = '<' << TASK_RESOURCE_PREF << task.sub_task_of.id.to_s << '>'
+    unless task.deadline_at.nil?
+      deadline_at = '"' << task.deadline_at.iso8601 << '"^^xsd:dateTime'
+      query << convert_ttl(task_resource, make_ontology('deadline'), deadline_at)
+    end
+
+    unless task.sub_task_of.nil?
+      parenttask_resource = '<' << TASK_RESOURCE_PREF << task.sub_task_of.to_s << '>'
       query << convert_ttl(task_resource, make_ontology('subTaskOf'), parenttask_resource)
     end
 
@@ -148,7 +157,6 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
     query << '}'
 
-    puts query
     # clireturn = auth_query(query)
   end
 
@@ -157,20 +165,22 @@ class Task < ApplicationRecord
       return true
     end
 
+    unless task.direct_mission_id.nil?
+      task.mission.deletefromvirtuoso
+    end
+
     task_resource = '<' << TASK_RESOURCE_PREF << task.id.to_s << '>'
 
     query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl(task_resource,'?p','?o') << ' } WHERE {'
     query << convert_ttl(task_resource,'?p','?o')
     query << '}'
-    puts query
     # clireturn = auth_query(query)
 
     query = 'WITH <' << LOD_GRAPH_URI << '> DELETE {'
     query << convert_ttl('?s','?p',task_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',task_resource)
     query << '}'
-    puts query
     # clireturn = auth_query(query)
   end
 end

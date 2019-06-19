@@ -76,21 +76,27 @@ class MissionChannel < ApplicationCable::Channel
 
       while stack_tasks.length > 0 do
         task = stack_tasks.pop
-        task.update_attributes(
-            notify: task_data_json['notify']
-        )
 
-        send_task(task_data_json['notify'], 'task', 'add', {
-            id: task.id,
-            name: task.title,
-            description: task.description,
-            deadline_at: task.deadline_at,
-            created_at: task.created_at,
-            status: task.status,
-            notify: task.notify,
-            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
-            parent_task_id: task.sub_task_of
-        })
+        if task.notify_before_type_cast != 3 && Task.notifies[task_data_json['notify']] == 3
+          task.save2virtuoso
+        end
+
+        if task.update_attributes(
+            notify: task_data_json['notify']
+          )
+
+          send_task(task_data_json['notify'], 'task', 'add', {
+              id: task.id,
+              name: task.title,
+              description: task.description,
+              deadline_at: task.deadline_at,
+              created_at: task.created_at,
+              status: task.status,
+              notify: task.notify,
+              participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+              parent_task_id: task.sub_task_of
+          })
+        end
       end
     end
 
@@ -110,6 +116,10 @@ class MissionChannel < ApplicationCable::Channel
       task_data_json['created_at'] = task.created_at
       task_data_json['children'] = []
       task_data_json['participants'] = []
+
+      if task.notify_before_type_cast == 3
+        task.save2virtuoso
+      end
 
       send_task(task_data_json['notify'], 'task', 'add', task_data_json)
     end
@@ -140,21 +150,26 @@ class MissionChannel < ApplicationCable::Channel
 
       while stack_tasks.length > 1 do
         task = stack_tasks.pop
-        task.update_attributes(
+
+        if task.notify_before_type_cast != 3 && Task.notifies[task_data_json['notify']] == 3
+          task.save2virtuoso
+        end
+
+        if task.update_attributes(
             notify: task_data_json['notify']
         )
-
-        send_task(task_data_json['notify'], 'task', 'add', {
-            id: task.id,
-            name: task.title,
-            description: task.description,
-            deadline_at: task.deadline_at,
-            created_at: task.created_at,
-            status: task.status,
-            notify: task.notify,
-            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
-            parent_task_id: task.sub_task_of
-        })
+          send_task(task_data_json['notify'], 'task', 'add', {
+              id: task.id,
+              name: task.title,
+              description: task.description,
+              deadline_at: task.deadline_at,
+              created_at: task.created_at,
+              status: task.status,
+              notify: task.notify,
+              participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+              parent_task_id: task.sub_task_of
+          })
+        end
       end
 
       task = stack_tasks.pop
@@ -165,6 +180,10 @@ class MissionChannel < ApplicationCable::Channel
           status: task_data_json['status'],
           notify: task_data_json['notify']
       )
+        if task.notify_before_type_cast == 3
+          task.save2virtuoso
+        end
+
         task_data_json['created_at'] = task.created_at
         task_data_json['parent_task_id'] = task.sub_task_of
         task_data_json['participants'] = Hash[task.participants.map{ |participant| [participant.id, participant.name]}]
@@ -207,6 +226,10 @@ class MissionChannel < ApplicationCable::Channel
       while stack_tasks.length > 0 do
         target_task = stack_tasks.pop
 
+        if target_task.notify_before_type_cast == 3
+          target_task.deletefromvirtuoso
+        end
+
         if target_task.id == task.id
           if target_task.update_attributes(
               title: task_data_json['name'],
@@ -243,6 +266,10 @@ class MissionChannel < ApplicationCable::Channel
           status: task_data_json['status'],
           notify: task_data_json['notify']
       )
+        if task.notify_before_type_cast == 3
+          task.update2virtuoso
+        end
+
         send_task(task_data_json['notify'], 'task', 'update', task_data_json)
       end
     end
@@ -251,6 +278,7 @@ class MissionChannel < ApplicationCable::Channel
   def delete_task(task_data_json)
     task = Task.find(task_data_json['id'])
     if task.destroy
+      task.deletefromvirtuoso
       send_task(task.notify, 'task', 'delete', task_data_json)
     end
   end
@@ -375,21 +403,25 @@ class MissionChannel < ApplicationCable::Channel
 
       while stack_tasks.length > 0 do
         task = stack_tasks.pop
-        task.update_attributes(
+        if task.update_attributes(
             notify: target_task.notify
         )
+          if task.notify_before_type_cast != 3 && target_task.notify_before_type_cast == 3
+            task.save2virtuoso
+          end
 
-        send_task(target_task.notify, 'task', 'add', {
-            id: task.id,
-            name: task.title,
-            description: task.description,
-            deadline_at: task.deadline_at,
-            created_at: task.created_at,
-            status: task.status,
-            notify: task.notify,
-            participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
-            parent_task_id: task.sub_task_of
-        })
+          send_task(target_task.notify, 'task', 'add', {
+              id: task.id,
+              name: task.title,
+              description: task.description,
+              deadline_at: task.deadline_at,
+              created_at: task.created_at,
+              status: task.status,
+              notify: task.notify,
+              participants: Hash[task.participants.map{ |participant| [participant.id, participant.name]}],
+              parent_task_id: task.sub_task_of
+          })
+        end
       end      
     end
 
@@ -403,6 +435,10 @@ class MissionChannel < ApplicationCable::Channel
   def update_mission(task_data_json)
     mission = Mission.find(params['mission_id'])
 
+    if mission.root_task.notify == 'lod'
+      mission.update2virtuoso
+    end
+
     if mission.update_attributes(
         title: task_data_json['name'],
         description: task_data_json['description']
@@ -413,6 +449,7 @@ class MissionChannel < ApplicationCable::Channel
 
   def delete_mission(task_data_json)
     mission = Mission.find(params['mission_id'])
+    mission.deletefromvirtuoso
     if mission.destroy
       send_task('publish', 'mission', 'delete', task_data_json)
     end

@@ -238,6 +238,8 @@ class Tasks {
                 } else {
                     $title.css({"background-color": "powderblue"});
                 }
+            }else {
+                $title.css({"background-color": "white"});
             }
         }
     }

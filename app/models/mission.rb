@@ -54,8 +54,6 @@ class Mission < ApplicationRecord
     query << convert_ttl(mission_resource, 'dct:modified', updated_at)
     query << '}'
 
-    puts query
-
     # clireturn = auth_query(query)
   end
 
@@ -114,6 +112,7 @@ class Mission < ApplicationRecord
     query << convert_ttl('?s','?p',mission_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',mission_resource)
     query << '}'
+
     # clireturn = auth_query(deletequery)
   end
 end
