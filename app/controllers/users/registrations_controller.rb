@@ -8,20 +8,22 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
   #
-  # # POST /resource
-  # def create
-  #   super
-  # end
+  # POST /resource
+  def create
+    super
+    resource.save2virtuoso
+  end
   #
   # # GET /resource/edit
   # def edit
   #   super
   # end
   #
-  # # PUT /resource
-  # def update
-  #   super
-  # end
+  # PUT /resource
+  def update
+    super
+    resource.update2virtuoso
+  end
   #
   # # DELETE /resource
   # def destroy

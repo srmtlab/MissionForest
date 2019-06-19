@@ -61,7 +61,6 @@ class User < ApplicationRecord
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
 
-    puts query
     # clireturn = auth_query(query)
   end
 
@@ -86,7 +85,6 @@ class User < ApplicationRecord
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
 
-    puts query
     # clireturn = auth_query(query)
   end
 
