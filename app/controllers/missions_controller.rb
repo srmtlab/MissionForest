@@ -1,6 +1,7 @@
 # coding: utf-8
 class MissionsController < ApplicationController
   # before_action :set_mission, only: [:show, :edit, :update, :destroy]
+  rescue_from Banken::NotAuthorizedError, with: :user_not_authorized
 
   # GET /missions
   def index
@@ -57,6 +58,11 @@ class MissionsController < ApplicationController
 
   def mission_params
     params[:mission].permit(:title, :description)
+  end
+
+  private
+  def user_not_authorized
+    redirect_to root_path, alert: 'ミッションを閲覧する権限がありません'
   end
 
   # # =====================================================
