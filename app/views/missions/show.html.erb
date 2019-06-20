@@ -170,6 +170,9 @@
             
             $('#DetailMission').modal('hide');
         })
+        .on('hidden.bs.modal', '#DetailMission',function () {
+            document.editMission.classList.remove("was-validated");
+        })
         .on('click', '#DetailMissionParticipantsModal', function () {
             mission.drawDetailMissionParticipants();
         })
@@ -228,6 +231,9 @@
             App.mission.send_update_task(task);
             $('#DetailTask').modal('hide');
         })
+        .on('hidden.bs.modal', '#DetailTask',function () {
+            document.editTask.classList.remove("was-validated");
+        })
         .on('click', '#AddChild', function(){
             let Task_form = document.addTask;
             if(Task_form.checkValidity() === false){
@@ -245,6 +251,9 @@
             };
             App.mission.send_add_task(task);
             $('#AddTask').modal('hide');
+        })
+        .on('hidden.bs.modal', '#AddTask',function () {
+            document.addTask.classList.remove("was-validated");
         })
         .on('click', '#ToParticipate', function () {
             let participant = {
@@ -281,4 +290,9 @@
     <% end %>
     <% end %>
     ;
+
+
+
+
+
 </script>
