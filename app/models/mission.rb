@@ -90,7 +90,7 @@ class Mission < ApplicationRecord
 
     query << convert_ttl(mission_resource, 'dct:dateSubmitted', created_at)
     query << convert_ttl(mission_resource, 'dct:modified', updated_at)
-    query << '}'
+    query << '} WHERE { ' << mission_resource << ' ?q ?o. }'
 
     auth_query(query)
   end
@@ -112,7 +112,7 @@ class Mission < ApplicationRecord
     query << convert_ttl('?s','?p',mission_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',mission_resource)
     query << '}'
-    auth_query(deletequery)
+    auth_query(query)
 
   end
 end

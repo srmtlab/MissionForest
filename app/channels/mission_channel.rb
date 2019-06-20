@@ -383,7 +383,7 @@ class MissionChannel < ApplicationCable::Channel
     target_task = Task.find(task_data_json['id'])
     parent_task = Task.find(task_data_json['latter_parent_task_id'])
 
-    if target_task.notify > parent_task.notify
+    if target_task.notify_before_type_cast > parent_task.notify_before_type_cast
       stack_tasks = [parent_task]
 
       while true do
@@ -394,7 +394,7 @@ class MissionChannel < ApplicationCable::Channel
         end
 
         parent_task = Task.find(task.sub_task_of)
-        if target_task.notify >= parent_task.notify
+        if target_task.notify_before_type_cast >= parent_task.notify_before_type_cast
           stack_tasks.push(parent_task)
         else
           break
@@ -403,13 +403,13 @@ class MissionChannel < ApplicationCable::Channel
 
       while stack_tasks.length > 0 do
         task = stack_tasks.pop
+        if task.notify_before_type_cast != 3 && target_task.notify_before_type_cast == 3
+          task.save2virtuoso
+        end
+
         if task.update_attributes(
             notify: target_task.notify
         )
-          if task.notify_before_type_cast != 3 && target_task.notify_before_type_cast == 3
-            task.save2virtuoso
-          end
-
           send_task(target_task.notify, 'task', 'add', {
               id: task.id,
               name: task.title,
@@ -435,22 +435,23 @@ class MissionChannel < ApplicationCable::Channel
   def update_mission(task_data_json)
     mission = Mission.find(params['mission_id'])
 
-    if mission.root_task.notify == 'lod'
-      mission.update2virtuoso
-    end
-
     if mission.update_attributes(
         title: task_data_json['name'],
         description: task_data_json['description']
-    )
+      )
+
+      if mission.root_task.notify == 'lod'
+        mission.update2virtuoso
+      end
+
       send_task('publish', 'mission', 'update', task_data_json)
     end
   end
 
   def delete_mission(task_data_json)
     mission = Mission.find(params['mission_id'])
-    mission.deletefromvirtuoso
     if mission.destroy
+      mission.deletefromvirtuoso
       send_task('publish', 'mission', 'delete', task_data_json)
     end
   end

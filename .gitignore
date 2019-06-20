@@ -8,6 +8,7 @@ ra-*.html
 *.orig
 rerun.txt
 pickle-email-*.html
+*.ttl
 
 # Ignore all logfiles and tempfiles.
 /log/*

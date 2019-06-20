@@ -60,7 +60,7 @@ class User < ApplicationRecord
     query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))
     query << convert_ttl(user_resource, 'foaf:name', name)
     query << '}'
-
+    
     auth_query(query)
   end
 
@@ -83,7 +83,7 @@ class User < ApplicationRecord
     query << 'INSERT { '
     query << convert_ttl(user_resource, 'rdf:type', make_ontology('User'))
     query << convert_ttl(user_resource, 'foaf:name', name)
-    query << '}'
+    query << '} WHERE { ' << user_resource << ' ?q ?o. }'
 
     auth_query(query)
   end

@@ -1,6 +1,7 @@
 module Virtuoso
   extend ActiveSupport::Concern
   require 'httpclient'
+  require 'uri'
 
   def self.cast_bool?(obj)
     obj.to_s == "true"
@@ -27,15 +28,17 @@ module Virtuoso
 
     default_graph_uri = LOD_GRAPH_URI
     client.set_auth(uri, user, password)
-    
-    query = {
+
+
+    uri = URI(uri)
+    uri.query = {
       'default-graph-uri' => default_graph_uri, 
       'query' => sparqlquery, 
       'format' => 'application/json',
       'timeout' => '0'
-    }
+    }.to_param
     
-    client.get(uri, query)
+    client.get(uri.to_s)
   end
 
   def convert_ttl(subject, predicate, object)

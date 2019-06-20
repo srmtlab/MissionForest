@@ -155,12 +155,23 @@
             mission.drawDetailMission();
         })
         .on('click', '#ChangeMissionDetail', function () {
+            let mission_form = document.editMission;
+            if(mission_form.checkValidity() === false){
+              mission_form.classList.add("was-validated");
+              return;
+            }
+
             let mission = {
                 'id' : mission_id,
                 'name' : $('#DetailMissionTitle').val(),
                 'description' : $('#DetailMissionDescription').val()
             };
             App.mission.send_update_mission(mission);
+            
+            $('#DetailMission').modal('hide');
+        })
+        .on('hidden.bs.modal', '#DetailMission',function () {
+            document.editMission.classList.remove("was-validated");
         })
         .on('click', '#DetailMissionParticipantsModal', function () {
             mission.drawDetailMissionParticipants();
@@ -203,6 +214,12 @@
             App.mission.send_delete_task(task);
         })
         .on('click', '#ChangeDetail', function(){
+            let Task_form = document.editTask;
+            if(Task_form.checkValidity() === false){
+              Task_form.classList.add("was-validated");
+              return;
+            }
+            
             let task = {
                 'id' : tasks.get_selected_task_id(),
                 'name' : $('#DetailTaskTitle').val(),
@@ -212,8 +229,18 @@
                 'notify' : $('#DetailTaskNotify').val()
             };
             App.mission.send_update_task(task);
+            $('#DetailTask').modal('hide');
+        })
+        .on('hidden.bs.modal', '#DetailTask',function () {
+            document.editTask.classList.remove("was-validated");
         })
         .on('click', '#AddChild', function(){
+            let Task_form = document.addTask;
+            if(Task_form.checkValidity() === false){
+              Task_form.classList.add("was-validated");
+              return;
+            }
+
             let task = {
                 'parent_task_id' : tasks.get_selected_task_id(),
                 'name' : $('#AddTaskTitle').val(),
@@ -223,6 +250,10 @@
                 'notify' : $('#AddTaskNotify').val()
             };
             App.mission.send_add_task(task);
+            $('#AddTask').modal('hide');
+        })
+        .on('hidden.bs.modal', '#AddTask',function () {
+            document.addTask.classList.remove("was-validated");
         })
         .on('click', '#ToParticipate', function () {
             let participant = {
@@ -259,4 +290,9 @@
     <% end %>
     <% end %>
     ;
+
+
+
+
+
 </script>
