@@ -112,7 +112,7 @@ class Mission < ApplicationRecord
     query << convert_ttl('?s','?p',mission_resource) << ' } WHERE {'
     query << convert_ttl('?s','?p',mission_resource)
     query << '}'
-    auth_query(deletequery)
+    auth_query(query)
 
   end
 end
