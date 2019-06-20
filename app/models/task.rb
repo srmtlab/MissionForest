@@ -155,7 +155,7 @@ class Task < ApplicationRecord
     query << convert_ttl(task_resource, make_ontology('mission'), mission_resource)
     query << convert_ttl(task_resource, 'dct:dateSubmitted', created_at)
     query << convert_ttl(task_resource, 'dct:modified', updated_at)
-    query << '}'
+    query << '} WHERE { ' << task_resource << ' ?q ?o. }'
 
     auth_query(query)
   end
