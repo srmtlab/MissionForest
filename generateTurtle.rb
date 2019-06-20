@@ -9,7 +9,7 @@ MISSION_RESOURCE_PREF = MF_RESOURCE + 'missions/'
 MF_GRAPH_URI = ENV["MF_GRAPH_URI"]
 
 def convert_ttl(subject, predicate, object)
-    subject + " " + predicate + " " + object + ". "
+    subject + " " + predicate + " " + object + ". \n"
 end
 
 def make_ontology(query)
@@ -17,10 +17,10 @@ def make_ontology(query)
 end
 
 ttl = <<-EOS
-prefix foaf: <http://xmlns.com/foaf/0.1/>
-prefix dct: <http://purl.org/dc/terms/>
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>
-prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+@prefix foaf: <http://xmlns.com/foaf/0.1/>
+@prefix dct: <http://purl.org/dc/terms/>
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 EOS
 
 Mission.all.each do |mission|
