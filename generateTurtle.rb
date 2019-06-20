@@ -110,4 +110,6 @@ User.all.each do |user|
     ttl << convert_ttl(user_resource, 'foaf:name', name)
 end
 
-puts ttl
+File.open("lod.ttl","w") do |file|
+  file.puts ttl
+end
