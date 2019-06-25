@@ -28,6 +28,7 @@ If you publish data as LOD, you should set this app.
 - Under Construction
 
 ### On-premise
+See also [`How to deploy the MissionForest`](https://github.com/srmtlab/MissionForest/wiki/Deploy).
 
 # Authors
 - Akira Kamiya
