@@ -40,3 +40,6 @@ See also [`How to deploy the MissionForest`](https://github.com/srmtlab/MissionF
   
 # LICENCE
 - The MIT LICENCE (MIT)
+
+# References
+- [研究室内外の協働を促進する (Knowledge Connector)](http://idea.linkdata.org/idea/idea1s2394i)
