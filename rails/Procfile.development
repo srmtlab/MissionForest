@@ -1,0 +1,1 @@
+web: bundle exec unicorn_rails -p 3000 -o 0.0.0.0 -c ./config/unicorn.rb
