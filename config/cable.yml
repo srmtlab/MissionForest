@@ -2,8 +2,8 @@ development:
   adapter: redis
   host: <%= ENV["REDIS_HOST"] %>
   port: <%= ENV["REDIS_PORT"] %>
-  channel_prefix: mission_forest_production
-
+  channel_prefix: <%= ENV["REDIS_CHANNEL_PREFIX"] %>
+  
 test:
   adapter: async
 
@@ -11,4 +11,4 @@ production:
   adapter: redis
   host: <%= ENV["REDIS_HOST"] %>
   port: <%= ENV["REDIS_PORT"] %>
-  channel_prefix: mission_forest_production
+  channel_prefix: <%= ENV["REDIS_CHANNEL_PREFIX"] %>

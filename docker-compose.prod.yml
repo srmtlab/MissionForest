@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  rails: &rails
+    build:
+      context: .
+      dockerfile: ./compose/production/rails/Dockerfile
+    image: missionforest_production_rails
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - missionforest_production_rails_asset_data:/app/public/assets
+      - missionforest_production_rails_upload_data:/app/public/uploads
+    env_file:
+      - ./.envs/.production/.rails
+      - ./.envs/.production/.mysql
+      - ./.envs/.production/.redis
+    command: /start
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: missionforest_production_nginx
+    depends_on:
+      - rails
+    volumes:
+      - missionforest_production_nginx_data:/etc/nginx/conf.d
+      - missionforest_production_rails_asset_data:/assets
+      - missionforest_production_rails_upload_data:/uploads
+    ports: 
+      - "0.0.0.0:80:3000"
+
+  redis:
+    image: redis:5.0.6-alpine
+
+  mysql:
+    image: mysql:5.7.28
+    volumes:
+      - missionforest_production_mysql_data:/var/lib/mysql
+      env_file:
+        - ./.envs/.production/.mysql
+    
+volumes:
+  missionforest_production_rails_asset_data:
+  missionforest_production_rails_upload_data:
+  missionforest_production_nginx_data:
+  missionforest_production_mysql_data:
