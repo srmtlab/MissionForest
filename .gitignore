@@ -149,3 +149,8 @@ tags
 
 # Local History for Visual Studio Code
 .history/
+
+### Project template
+.env
+.envs/*
+!.envs/.development/
