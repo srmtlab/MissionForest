@@ -10,7 +10,7 @@ WORKDIR ${APP_DIR}
 
 RUN apk update \
   # Dependencies are installed here.
-  && apk add --virtual .build-deps nodejs build-base mariadb-dev tzdata git
+  && apk add nodejs build-base mariadb-dev tzdata git
 
 # see : https://docs.docker.com/compose/startup-order/
 # install dockerize : https://github.com/jwilder/dockerize
@@ -25,11 +25,7 @@ RUN addgroup -S ${APP_USER} \
 # Requirements are installed here.
 COPY ./Gemfile ${APP_DIR}/Gemfile
 COPY ./Gemfile.lock ${APP_DIR}/Gemfile.lock
-RUN bundle install
-
-COPY ./package.json ${APP_DIR}/package.json
-COPY ./yarn.lock ${APP_DIR}/yarn.lock
-RUN yarn install
+RUN bundle install --without test development
 
 COPY ./compose/production/rails/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
@@ -40,6 +36,8 @@ RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
 COPY . ${APP_DIR}
+
+RUN mkdir public/assets public/uploads
 RUN chown -R ${APP_USER} ${APP_DIR}
 
 USER ${APP_USER}

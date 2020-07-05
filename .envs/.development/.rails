@@ -1,8 +1,6 @@
 RAILS_MASTER_KEY=467d73395d791c6230a698aafbf5f30d
 RAILS_ENV=development
 
-RAILS_SPROCKETS_CACHE=/rails_sprockets_cache
-
 # REDIS
 REDIS_CHANNEL_PREFIX=missionforest_development
 

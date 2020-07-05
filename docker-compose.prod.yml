@@ -12,6 +12,7 @@ services:
     volumes:
       - missionforest_production_rails_asset_data:/app/public/assets
       - missionforest_production_rails_upload_data:/app/public/uploads
+      - missionforest_production_rails_log_data:/app/log
     env_file:
       - ./.envs/.production/.rails
       - ./.envs/.production/.mysql
@@ -39,11 +40,12 @@ services:
     image: mysql:5.7.28
     volumes:
       - missionforest_production_mysql_data:/var/lib/mysql
-      env_file:
-        - ./.envs/.production/.mysql
+    env_file:
+      - ./.envs/.production/.mysql
     
 volumes:
   missionforest_production_rails_asset_data:
   missionforest_production_rails_upload_data:
+  missionforest_production_rails_log_data:    
   missionforest_production_nginx_data:
   missionforest_production_mysql_data:

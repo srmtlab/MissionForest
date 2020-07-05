@@ -19,6 +19,8 @@ services:
       - ./.envs/.development/.rails
       - ./.envs/.development/.mysql
       - ./.envs/.development/.redis
+    environment: 
+      - RAILS_SPROCKETS_CACHE=/rails_sprockets_cache      
     command: /start
 
   redis:
