@@ -1,0 +1,8 @@
+MYSQL_HOST=mysql
+MYSQL_PORT=3306
+MYSQL_ROOT_PASSWORD=v9V9jbXpcxXKAMqxDLRTBAUM2T7n4qnfyqaxZgtvJPXnMRGtepDGQTnkSSDWEUts
+
+# If you deploy this app, you should change the following variable properly.
+MYSQL_USER=missionforest
+MYSQL_PASSWORD=missionforest
+MYSQL_DATABASE=missionforest_production

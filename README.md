@@ -28,11 +28,23 @@ cd MissionForest
 
 ## Production
 ### Using docker-compose
+Set the environment variables in `.envs/.production/` properly. If you want to deploy this app externally, you should change the following variables.
+
+```bash
+# .envs/.production/.mysql
+MYSQL_ROOT_PASSWORD=  # mysql root password
+MYSQL_PASSWORD= # mysql password
+
+# .envs/.production/.rails
+G_MAIL_USERNAME= # Gmail account
+G_MAIL_PASSWORD= # password for Gmail account 
+```
+
 Run MissionForest:
 ```bash
 docker-compose -f docker-compose.prod.yml up
 ```
-Go to http://localhost:3000
+Go to http://localhost
 
 ### On-premise
 - Under Construction

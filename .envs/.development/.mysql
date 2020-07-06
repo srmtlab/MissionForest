@@ -1,8 +1,3 @@
 MYSQL_HOST=mysql
 MYSQL_PORT=3306
 MYSQL_ROOT_PASSWORD=v9V9jb4qaxZgtvJPXnMRGtepDGQTnfyqXpcxXKAMqxDLRTBAUM2T7nkSSDWEUnts
-
-# If you deploy this app, you should below variable properly.
-# MYSQL_USER=missionforest
-# MYSQL_PASSWORD=missionforest_password
-# MYSQL_DATABASE=missionforest_production
