@@ -57,7 +57,7 @@ docker-compose up
 
 # Migrate database
 docker-compose exec rails bundle exec rails db:migrate
-# Run MissionForest:
+# Run MissionForest: http://localhost:3000
 docker-compose exec rails bundle exec rails s
 ```
 
