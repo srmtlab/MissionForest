@@ -46,9 +46,6 @@ docker-compose -f docker-compose.prod.yml up
 ```
 Go to http://localhost
 
-### On-premise
-- Under Construction
-
 ## Development
 ### Using docker-compose
 Run MissionForest:
