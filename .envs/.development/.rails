@@ -7,6 +7,7 @@ REDIS_CHANNEL_PREFIX=missionforest_development
 # Mail Setting
 G_MAIL_USERNAME=
 G_MAIL_PASSWORD=
+# url, host to MissionForest (used by the mailer), e.g. http://localhost:3000
 SITE_URL=localhost
 SITE_PORT=3000
 
