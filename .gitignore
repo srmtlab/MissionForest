@@ -152,5 +152,3 @@ tags
 
 ### Project template
 .env
-.envs/*
-!.envs/.development/

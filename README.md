@@ -42,8 +42,12 @@ Go to http://localhost:3000
 Run MissionForest:
 ```bash
 docker-compose up
+
+# Migrate database
+docker-compose exec rails bundle exec rails db:migrate
+# Run MissionForest:
+docker-compose exec rails bundle exec rails s
 ```
-Go to http://localhost:3000
 
 # Authors
 - Akira Kamiya
