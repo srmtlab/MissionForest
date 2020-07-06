@@ -1,0 +1,33 @@
+RAILS_MASTER_KEY=467d73395d791c6230a698aafbf5f30d
+RAILS_ENV=development
+
+# REDIS
+REDIS_CHANNEL_PREFIX=missionforest_development
+
+# Mail Setting
+G_MAIL_USERNAME=
+G_MAIL_PASSWORD=
+# url, host to MissionForest (used by the mailer), e.g. http://localhost:3000
+SITE_URL=localhost
+SITE_PORT=3000
+
+# LOD Setting : if you publish data as LOD, you should set below variable as true
+LOD=false
+
+# MF_RESOURCE, TAG_RESOURCE needs trailing slash at the end.
+MF_RESOURCE=
+TAG_RESOURCE=
+
+MF_GRAPH_URI=
+TAG_GRAPH_URI=
+
+VIRTUOSO_ENDPOINT=
+
+# ontology setting
+MF_ONTOLOGY=http://lod.srmt.nitech.ac.jp/ontology/MissionForest#
+TAG_ONTOLOGY=http://lod.srmt.nitech.ac.jp/ontology/Tag#
+
+# VIRTUOSO Setting : if you publish data as LOD, you should write below variable.
+VIRTUOSO_USER=
+VIRTUOSO_PASSWORD=
+VIRTUOSO_UPDATE_ENDPOINT=

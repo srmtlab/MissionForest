@@ -1,34 +1,38 @@
 version: '3'
 
 services:
-  rails:
+  rails: &rails
     build:
-      context: ./rails
-      dockerfile: ./Dockerfile
-    links:
-      - mysql:mysql
-      - redis:redis
+      context: .
+      dockerfile: ./compose/development/rails/Dockerfile
+    image: missionforest_development_rails
     depends_on:
       - mysql
       - redis
-    command: sh
-    tty: true
     volumes:
-      - ./rails:/opt/MissionForest
+      - missionforest_development_rails_sprockets_cache:/rails_sprockets_cache
+      - .:/app
+    tty: true      
     ports:
       - "3000:3000"
+    env_file:
+      - ./.envs/.development/.rails
+      - ./.envs/.development/.mysql
+      - ./.envs/.development/.redis
+    environment: 
+      - RAILS_SPROCKETS_CACHE=/rails_sprockets_cache      
+    command: /start
 
   redis:
     image: redis:5.0.6-alpine
 
   mysql:
     image: mysql:5.7.28
-    ports:
-      - "3306:3306"
     volumes:
-      - mysql_db:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
+      - missionforest_development_mysql_data:/var/lib/mysql
+    env_file:
+      - ./.envs/.development/.mysql
     
 volumes:
-  mysql_db:
+  missionforest_development_mysql_data:
+  missionforest_development_rails_sprockets_cache:
