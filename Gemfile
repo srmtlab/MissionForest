@@ -21,6 +21,9 @@ gem 'devise'
 gem 'bcrypt', '~> 3.1.7'
 gem 'banken'
 
+# Environment
+gem 'dotenv-rails' # https://github.com/bkeepers/dotenv
+
 # Use Puma as the app server
 gem 'puma'
 
