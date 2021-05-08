@@ -4,5 +4,5 @@ MYSQL_ROOT_PASSWORD=v9V9jbXpcxXKAMqxDLRTBAUM2T7n4qnfyqaxZgtvJPXnMRGtepDGQTnkSSDW
 
 # If you deploy this app, you should change the following variable properly.
 MYSQL_USER=missionforest
-MYSQL_PASSWORD=missionforest
+MYSQL_PASSWORD=WEfyqXpcxXKAMqxDLRTBUntsZgGtepDGQTnv9V9jb4qaxtvJPXnMRAUM2T7nkSSD
 MYSQL_DATABASE=missionforest_production

@@ -28,6 +28,7 @@ services:
 
   mysql:
     image: mysql:5.7.28
+    command: mysqld --character-set-server=utf8
     volumes:
       - missionforest_development_mysql_data:/var/lib/mysql
     env_file:

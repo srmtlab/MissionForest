@@ -2,18 +2,20 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: root
-  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
-  host: <%= ENV["MYSQL_HOST"] %>
-  port: <%= ENV["MYSQL_PORT"] %>
+  host: <%= ENV.fetch("MYSQL_HOST") { "127.0.0.1" } %>
+  port: <%= ENV.fetch("MYSQL_PORT") { 3306 } %>
 
 development:
   <<: *default
-  database: missionforest_development
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV["MYSQL_PASSWORD"] %>
+  database: <%= ENV.fetch("MYSQL_DATABASE") { missionforest_development } %>
 
 test:
   <<: *default
-  database: missionforest_test
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV["MYSQL_PASSWORD"] %>
+  database: <%= ENV.fetch("MYSQL_DATABASE") { missionforest_test } %>
 
 production:
   <<: *default
