@@ -1,14 +1,14 @@
 development:
   adapter: redis
-  host: <%= ENV["REDIS_HOST"] %>
-  port: <%= ENV["REDIS_PORT"] %>
-  channel_prefix: <%= ENV["REDIS_CHANNEL_PREFIX"] %>
+  host: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>
+  port: <%= ENV.fetch("REDIS_PORT") { 6379 } %>
+  channel_prefix: <%= ENV.fetch("REDIS_CHANNEL_PREFIX") { missionforest_development } %>
   
 test:
   adapter: async
 
 production:
   adapter: redis
-  host: <%= ENV["REDIS_HOST"] %>
-  port: <%= ENV["REDIS_PORT"] %>
-  channel_prefix: <%= ENV["REDIS_CHANNEL_PREFIX"] %>
+  host: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>
+  port: <%= ENV.fetch("REDIS_PORT") { 6379 } %>
+  channel_prefix: <%= ENV.fetch("REDIS_CHANNEL_PREFIX") { missionforest_production } %>
