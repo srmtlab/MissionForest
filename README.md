@@ -9,54 +9,23 @@ MissionForest has been developed as successor system since 2016 in order to over
 ## Online demo
 - [http://mf.srmt.nitech.ac.jp/](http://mf.srmt.nitech.ac.jp/)
 
-## Install dependencies
-- Git
-- Docker
-- Docker Compose
-
-If you publish data as LOD, you should set this app.
-- [Virtuoso](https://virtuoso.openlinksw.com/rdf/) (Optional)
-
-## Get the code
-
-You need to clone the repository:
-
-```bash
-git clone https://github.com/srmtlab/MissionForest.git
-cd MissionForest
-```
+![Demo image](./docs/images/demo.png)
 
 ## Production
 ### Using docker-compose
-Set the environment variables in `.envs/.production/` properly. If you want to deploy this app externally, you should change the following variables.
+- [Launch with docker-compose](./docs/prod/docker-compose.md)
 
-```
-# .envs/.production/.mysql
-MYSQL_ROOT_PASSWORD=  # mysql root password
-MYSQL_PASSWORD= # mysql password
-
-# .envs/.production/.rails
-G_MAIL_USERNAME= # Gmail account
-G_MAIL_PASSWORD= # password for Gmail account 
-```
-
-Run MissionForest:
-```bash
-docker-compose -f docker-compose.prod.yml up
-```
-Go to http://localhost
+### On-premise
+- [Deploy MissionForest on-premise](./docs/prod/on-premise.md)
 
 ## Development
 ### Using docker-compose
-Run MissionForest:
-```bash
-docker-compose up
+- [Set up the development environment with docker-compose](./docs/dev/docker-compose.md)
 
-# Migrate database
-docker-compose exec rails bundle exec rails db:migrate
-# Run MissionForest: http://localhost:3000
-docker-compose exec rails bundle exec rails s
-```
+### On-premise
+- :construction: Under Construction
+- See [Deploy MissionForest on-premise](./docs/prod/on-premise.md) as reference.
+  - `開発環境構築のためのページでないことに注意！！本番環境構築のやり方を参考にしてください`
 
 # Authors
 - Akira Kamiya

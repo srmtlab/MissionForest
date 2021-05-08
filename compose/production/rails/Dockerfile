@@ -10,17 +10,17 @@ WORKDIR ${APP_DIR}
 
 RUN apk update \
   # Dependencies are installed here.
-  && apk add nodejs build-base mariadb-dev tzdata git
+  && apk add nodejs build-base mariadb-dev tzdata git shared-mime-info
 
 # see : https://docs.docker.com/compose/startup-order/
 # install dockerize : https://github.com/jwilder/dockerize
 RUN apk add --no-cache openssl
 RUN wget https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-	&& tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-	&& rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
+  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
+  && rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
 
 RUN addgroup -S ${APP_USER} \
-    && adduser -S -G ${APP_USER} ${APP_USER}
+  && adduser -S -G ${APP_USER} ${APP_USER}
 
 # Requirements are installed here.
 COPY ./Gemfile ${APP_DIR}/Gemfile
