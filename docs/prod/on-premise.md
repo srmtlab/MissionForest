@@ -6,7 +6,7 @@ How to deploy the MissionForest on-premise
 - Web server (Nginx, Apache, ...)
     - to serve static content and proxy
 - Node.js v14
-    - recommend installing ruby using [nodenv](https://github.com/nodenv/nodenv)
+    - recommend installing node using [nodenv](https://github.com/nodenv/nodenv)
 - Redis
 - MySQL5.x
 
@@ -31,9 +31,7 @@ bundle install --path vendor/bundle --without test development
 
 generate `.env.production.local` and `credentials.yml.enc`
 ```bash
-cd .envs/.production
-awk 1 .rails .mysql .redis > ../../.env.production.local
-cd ../../
+cp .env.production.local.template .env.production.local
 
 # Generate a config/credentials.yml.enc
 EDITOR=vi bundle exec rails credentials:edit
