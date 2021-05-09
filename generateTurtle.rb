@@ -1,4 +1,4 @@
-# foreman run bundle exec rails c
+# bundle exec rails c
 # load 'generateTurtle.rb'
 
 MF_RESOURCE = ENV["MF_RESOURCE"]
