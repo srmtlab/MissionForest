@@ -29,7 +29,7 @@ sudo apt install libmysqlclient-dev shared-mime-info tzdata
 bundle install --path vendor/bundle
 ```
 
-generate `.env.production.local` and `credentials.yml.enc`
+generate `.env.development.local` and `credentials.yml.enc`
 ```bash
 # Read https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 cp .env.development.local.template .env.development.local
