@@ -27,7 +27,7 @@ MissionForest has been developed as successor system since 2016 in order to over
 
 # Authors
 - Akira Kamiya
-  - 2019-03 - 
+  - 2019-03 - 2021-03
 - Masaru Watanabe
   - 2017-03 - 2019-03
 - Yasuaki Goto
