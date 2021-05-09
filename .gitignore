@@ -29,6 +29,9 @@ credentials.yml.enc
 # TODO Comment out this rule if environment variables can be committed
 .env
 .env.*
+!.env.development.local.template
+!.env.test.local.template
+!.env.production.local.template
 
 ## Environment normalization:
 /.bundle

@@ -1,4 +1,4 @@
-How to deploy the MissionForest on-premise
+How to set up the MissionForest development environment
 ===
 ## Install dependencies
 - ruby 2.6.3
@@ -26,19 +26,19 @@ cd MissionForest
 # For Ubuntu
 sudo apt install libmysqlclient-dev shared-mime-info tzdata
 
-bundle install --path vendor/bundle --without test development
+bundle install --path vendor/bundle
 ```
 
 generate `.env.production.local` and `credentials.yml.enc`
 ```bash
 # Read https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
-cp .env.production.local.template .env.production.local
+cp .env.development.local.template .env.development.local
 
 # Generate a config/credentials.yml.enc
 EDITOR=vi bundle exec rails credentials:edit
 ```
 
-Open `.env.production.local` and modify below variable
+Open `.env.development.local` and modify below variable
 
 below variable is about MySQL, Redis
 - MYSQL_HOST : MySQL Host (default 127.0.0.1)
@@ -66,73 +66,16 @@ If you publish data in MissionForest as Linked Open Data, you should set below v
 
 ### Migrate database
 ```bash
-bundle exec rails db:create RAILS_ENV=production
-bundle exec rails db:migrate RAILS_ENV=production
-```
-
-### Precompile assets
-```bash
-bundle exec rails assets:precompile RAILS_ENV=production
-```
-
-### Set up the proxy server
-You have to set up the proxy server to be told to proxy traffic to the running Puma instances. 
-In this section I write the proxy server setting about Nginx.  
-```bash
-cd /etc/nginx/sites-available
-sudo touch MissionForest
-```
-Open `MissionForest` and modify below setting, 
-```
-# this setting is about MissionForest
-
-upstream MissionForest {
-    server localhost:8000;
-}
-
-map $http_upgrade $connection_upgrade {
-    default Upgrade;
-    ''      close;
-}
-
-server {
-        listen 80;
-        listen [::]:80;
-
-        server_name mf.com;
-
-        location / {
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Port $server_port;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_pass http://MissionForest;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
-            proxy_read_timeout 900s;
-        }
-        
-        location /assets/ {
-            # MissionForest's Asset files - amend as required
-            # default MissionForest_ROOT/public/assets/
-            alias /path/to/your/MissionForest/ASSETS_ROOT/;
-        }
-}
-```
-Symlink to this file from /etc/nginx/sites-enabled so nginx can see it, and Restart nginx:
-```bash
-sudo ln -s /etc/nginx/sites-available/MissionForest /etc/nginx/sites-enabled/MissionForest
-sudo nginx -s reload
+bundle exec rails db:create
+bundle exec rails db:migrate
 ```
 
 ## run the app
 ```bash
-bundle exec rails server -p 8000 -e production
+bundle exec rails server 
 ```
 
 If you run the app in background
 ```bash
-bundle exec rails server -p 8000 -e production -d
+bundle exec rails server -d
 ```

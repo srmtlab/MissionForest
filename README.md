@@ -23,9 +23,7 @@ MissionForest has been developed as successor system since 2016 in order to over
 - [Set up the development environment with docker-compose](./docs/dev/docker-compose.md)
 
 ### On-premise
-- :construction: Under Construction
-- See [Deploy MissionForest on-premise](./docs/prod/on-premise.md) as reference.
-  - `開発環境構築のためのページでないことに注意！！本番環境構築のやり方を参考にしてください`
+- [Set up the development environment](./docs/dev/on-premise.md)
 
 # Authors
 - Akira Kamiya
