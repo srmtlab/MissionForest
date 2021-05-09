@@ -6,7 +6,7 @@ How to deploy the MissionForest on-premise
 - Web server (Nginx, Apache, ...)
     - to serve static content and proxy
 - Node.js v14
-    - recommend installing node using [nodenv](https://github.com/nodenv/nodenv)
+    - recommend installing Node.js using [nodenv](https://github.com/nodenv/nodenv)
 - Redis
 - MySQL5.x
 
